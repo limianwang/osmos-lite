@@ -1,0 +1,26 @@
+{
+  "name": "osmos",
+  "version": "0.1.0",
+  "author": "Marco Tabini <marcot@tabini.ca>",
+  "description": "A general purpose, strict, simple ORM for Node.js apps",
+  "contributors": [],
+  "main" : "./lib/index.js",
+  "scripts": {
+    "test": "./node_modules/mocha/bin/mocha --harmony-proxies -R dot -u tdd tests/"
+  },
+  "dependencies" : {
+    "async"  :  ">=0.2.8",
+    "bunyan" : ">=0.21.1"
+  },
+  "devDependencies" : {
+    "mocha" : ">=1.9.0",
+    "chai" : ">=1.6.0"
+  },
+  "keywords" : ["orm", "data", "nosql", "data mapping"],
+  "engines": {
+    "node": ">=0.8.7"
+  },
+  "repository" : { "type" : "git" , "url" : "http://github.com/mtabini/osmos.git" },
+  "licenses": [ { "type": "MIT", "url": "http://github.com/mtabini/osmos/raw/master/LICENSE" } ]
+}
+
