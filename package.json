@@ -6,7 +6,7 @@
   "contributors": [],
   "main" : "./lib/index.js",
   "scripts": {
-    "test": "./node_modules/mocha/bin/mocha --harmony-proxies -R dot -u tdd tests/"
+    "test": "./node_modules/mocha/bin/mocha --harmony-proxies -R dot -u tdd $(find tests -name 'test_*.js')"
   },
   "dependencies" : {
     "async"  :  ">=0.2.8",

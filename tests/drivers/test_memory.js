@@ -1,6 +1,6 @@
-var Osmos = require('../lib');
+var Osmos = require('../../lib');
 var Driver = Osmos.drivers.Memory;
-var Model = require('./mocks/simplemodel');
+var Model = require('../mocks/simplemodel');
 
 var expect = require('chai').expect;
 var async = require('async');
