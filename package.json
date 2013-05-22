@@ -10,7 +10,8 @@
   },
   "dependencies" : {
     "async"  :  ">=0.2.8",
-    "bunyan" : ">=0.21.1"
+    "bunyan" : ">=0.21.1",
+    "clone" : ">=0.1.7"
   },
   "devDependencies" : {
     "mocha" : ">=1.9.0",

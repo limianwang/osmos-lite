@@ -1,0 +1,79 @@
+var Model = function OsmosSimpleModel(data) {
+    this.driver = Model.driver;
+    this.data = data || {};
+    this.constructor = Model;
+};
+
+Model.driver = null;
+
+Model.get = function get(id, callback) {
+    Model.driver.get(id, function(err, result) {
+        callback(err, result ? new Model(result) : null);
+    });
+};
+
+Model.find = function find(spec, callback) {
+    Model.driver.find(spec, function(err, result) {
+        var models = [];
+
+        if (result && result.forEach) {            
+            result.forEach(function(record) {
+                models.push(new Model(record));
+            });
+        }
+        
+        callback(err, models);
+    });
+};
+
+Model.findOne = function findOne(spec, callback) {
+    Model.driver.findOne(spec, function(err, result) {
+        callback(err, result ? new Model(result) : null);
+    });
+};
+
+Model.delete = function deleteRecord(id, callback) {
+    Model.driver.delete(id, callback);
+};
+
+Model.prototype = {
+    
+    get primaryKey() {
+        return this.data.id;
+    },
+    
+    set primaryKey(value) {
+        this.data.id = value;
+    },
+    
+    get id() {
+        return this.data.id;
+    },
+    
+    set id(value) {
+        this.data.id = value;
+    },
+    
+    get datum() {
+        return this.data.datum;
+    },
+    
+    set datum(value) {
+        this.data.datum = value;
+    },
+    
+    save: function save(callback) {
+        if (this.id != undefined) {
+            this.driver.put(this, callback);
+        } else {
+            this.driver.post(this, callback);
+        }
+    },
+    
+    toJSON : function toJSON() {
+        return JSON.parse(JSON.stringify(this.data));
+    },
+    
+}
+
+module.exports = Model;

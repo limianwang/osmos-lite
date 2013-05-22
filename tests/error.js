@@ -15,4 +15,10 @@ describe('The Error object', function() {
         
         expect(err.statusCode).to.equal(444);
     });
+    
+    it('should correctly record and report a message', function() {
+        var err = new osmos.Error('Error');
+        
+        expect(err.message).to.equal('Error');
+    });
 });
