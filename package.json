@@ -6,12 +6,13 @@
   "contributors": [],
   "main" : "./lib/index.js",
   "scripts": {
-    "test": "./node_modules/mocha/bin/mocha --harmony-proxies -R dot -u tdd $(find tests -name 'test_*.js')"
+    "test": "./node_modules/mocha/bin/mocha --harmony -R dot -u tdd $(find tests -name 'test_*.js')"
   },
   "dependencies" : {
     "async"  :  ">=0.2.8",
     "bunyan" : ">=0.21.1",
-    "clone" : ">=0.1.7"
+    "clone" : ">=0.1.7",
+    "harmony-reflect" : "*"
   },
   "devDependencies" : {
     "mocha" : ">=1.9.0",
