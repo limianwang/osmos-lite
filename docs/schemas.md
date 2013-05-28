@@ -140,9 +140,9 @@ You can also write your own configurators; they are simple functions that take a
     var expect = Osmos.expect;
     var Schema = Osmos.Schema;
 
-    var myPrimaryKey = function(document, key, callback) {
+    var myPrimaryKey = function(document, field, callback) {
         expect(document.primaryKeyFieldName).to.be.undefined;
-        document.primaryKeyFieldName = key;
+        document.primaryKeyFieldName = field.name;
         callback();
     };
     
@@ -164,15 +164,15 @@ Remember that a field can have zero validators, in which case no validation is p
 
 Like with configurators, you can create your own validators to perform whatever checks you need in your code by creating a custom function that follow this signature:
 
-    var validator = function(document, key, value, callback);
+    var validator = function(document, field, value, callback);
     
     validator.constructor = Osmos.Schema.Validator;
     
-The `document` parameter points to the current document, while `key` identifies the field that is being validated, and `value` its value. When the validation is complete, the validator should call `callback` with either an instance of `Osmos.Error` to indicate an error condition, which will cause the field's value not to be set and an error being bubbled up to the original caller.
+The `document` parameter points to the current document, while `field` identifies the field that is being validated, and `value` its value. When the validation is complete, the validator should call `callback` with either an instance of `Osmos.Error` to indicate an error condition, which will cause the field's value not to be set and an error being bubbled up to the original caller.
 
 For example, here's a way to validate the ISBN number associated with a field:
 
-    var isbnValidator = function isbnValidator(document, key, value, callback) {
+    var isbnValidator = function isbnValidator(document, field, value, callback) {
         // Validators are always executed in parallel. We delegate
         // making sure that the value is a string to another validator,
         // but we still need to make sure that the value has 
@@ -242,9 +242,9 @@ It is sometimes useful to represent data in JavaScript using a custom class even
     var expect = Osmos.expect;
 
     var Mongo.tranformers.objectId = {
-        get : function get(document, key, value, callback) {
+        get : function get(document, field, value, callback) {
             try {
-                expect(value.toHexString, 'The field ' + key + ' is not an ObjectID.').to.be.a.('function');
+                expect(value.toHexString, 'The field ' + field.name + ' is not an ObjectID.').to.be.a.('function');
             } catch(e) {
                 return callback(e);
             }
@@ -252,10 +252,10 @@ It is sometimes useful to represent data in JavaScript using a custom class even
             return value.toHexString();
         }
         
-        set : function set(document, key, value, callback) {
+        set : function set(document, field, value, callback) {
             try {
-                expect(value, 'The field ' + key + ' can only accept string values.').to.be.a('string');
-                expect(value, 'The field ' + key + ' must be 24 characters long.').to.have.length(24);
+                expect(value, 'The field ' + field.name + ' can only accept string values.').to.be.a('string');
+                expect(value, 'The field ' + field.name + ' must be 24 characters long.').to.have.length(24);
             } catch(e) {
                 return callback(e);
             }
@@ -276,7 +276,7 @@ The other typical use case for transformers is when you want to use a different 
     var expect = Osmos.expect;
 
     var isbnTransformer = function isbnTransformer {
-        get : function get(document, key, value, callback) {
+        get : function get(document, field, value, callback) {
             if (value.length == 13) {
                 return value.substr(0, 3) + '-' +
                        value.substr(3, 1) + '-' +
@@ -286,7 +286,7 @@ The other typical use case for transformers is when you want to use a different 
             }
         }
     
-        set : function set(document, key, value, callback) {
+        set : function set(document, field, value, callback) {
             callback(null, value.replace(/-/, ''));
         }
     }
