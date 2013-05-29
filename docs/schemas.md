@@ -126,7 +126,7 @@ Typically, you can use the global validator to perform complex validations that 
 
 ## Configurators
 
-Configurators are called when a new document is instantiated (either directly or by loading data from a backing store), and can be used to alter the field's metadata in whatever way is appropriate. Osmos comes with a number of built-in configurators (found in the `lib/schema/configurators` directory), such as:
+Configurators are called when a new field is instantiated (typically by creating a new schema), and can be used to alter the field's metadata in whatever way is appropriate. Osmos comes with a number of built-in configurators (found in the `lib/schema/configurators` directory), such as:
 
 - `Osmos.Schema.configurators.primaryKey` indicates that a field is the primary key of a document
 - `Osmos.Schema.configurators.optional` indicates that the field is optional
@@ -134,21 +134,20 @@ Configurators are called when a new document is instantiated (either directly or
 
 ### Custom configurators
 
-You can also write your own configurators; they are simple functions that take a document, a field name, and a callback, which takes an optional `Osmos.Error` instance to indicate an error (which will cause an exception to be thrown). To let Osmos know that these methods are, in fact, configurators, you must also use `Osmos.Schema.Configurator` as their constructor. For example:
+You can also write your own configurators; they are simple functions that take a field and a callback, which takes an optional `Osmos.Error` instance to indicate an error (which will cause an exception to be thrown). To let Osmos know that these methods are, in fact, configurators, you must also use `Osmos.Schema.Configurator` as their constructor. For example:
 
     var Osmos = require('osmos');
     var expect = Osmos.expect;
     var Schema = Osmos.Schema;
 
-    var myPrimaryKey = function(document, field, callback) {
-        expect(document.primaryKeyFieldName).to.be.undefined;
-        document.primaryKeyFieldName = field.name;
+    var myPrimaryKey = function(field, callback) {
+        field.primaryKey = true;
         callback();
     };
     
     myPrimaryKey.constructor = Schema.Configurator;
     
-Note that configurators are executed asynchronously and in parallel. Therefore, it is a programmer error to expect them to run in a particular order.
+Note that configurators may be executed asynchronously and in parallel. Therefore, it is a programmer error to expect them to run in a particular order.
     
 ## Validators
 
