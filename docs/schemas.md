@@ -154,8 +154,8 @@ Note that configurators may be executed asynchronously and in parallel. Therefor
 The job of a validator, as its name implies, is to inspect the data that flows into a model and ensure that it conforms to an arbitrary set of rules. Osmos comes with a small number of built-in validators to reflect its focus on simplicity—more validators may be available as plugins:
 
 - `Osmos.Schema.validators.numberRange(min, max)` ensures that a number falls within a given range
-- `Osmos.Schema.validators.stringMatch(regex)` ensures that a string value matches a given regular expression
-- `Osmos.Schema.validators.stringEnum(possibleValues)` ensures that a string value matches one of a specific set of values
+- `Osmos.Schema.validators.stringMatch(regex, errorString)` ensures that a string value matches a given regular expression
+- `Osmos.Schema.validators.stringEnum(possibleValues, errorString)` ensures that a string value matches one of a specific set of values
 
 Remember that a field can have zero validators, in which case no validation is performed.
 
