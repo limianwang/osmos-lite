@@ -29,7 +29,7 @@ describe('The field object', function() {
     
     it('should require an array type validator for array fields', function() {
         function test() {
-            new Osmos.Schema.Field([ Array ]);
+            new Osmos.Schema.Field('test', [ Array ]);
         }
         
         expect(test).to.throw(Osmos.Error);
