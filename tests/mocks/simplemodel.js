@@ -7,13 +7,13 @@ var Model = function OsmosSimpleModel(data) {
 Model.driver = null;
 
 Model.get = function get(id, callback) {
-    Model.driver.get(id, function(err, result) {
+    Model.driver.get(null, id, function(err, result) {
         callback(err, result ? new Model(result) : null);
     });
 };
 
 Model.find = function find(spec, callback) {
-    Model.driver.find(spec, function(err, result) {
+    Model.driver.find(null, spec, function(err, result) {
         var models = [];
 
         if (result && result.forEach) {            
@@ -27,13 +27,13 @@ Model.find = function find(spec, callback) {
 };
 
 Model.findOne = function findOne(spec, callback) {
-    Model.driver.findOne(spec, function(err, result) {
+    Model.driver.findOne(null, spec, function(err, result) {
         callback(err, result ? new Model(result) : null);
     });
 };
 
 Model.delete = function deleteRecord(id, callback) {
-    Model.driver.delete(id, callback);
+    Model.driver.delete(null, { _primaryKey : id }, callback);
 };
 
 Model.prototype = {
@@ -64,9 +64,9 @@ Model.prototype = {
     
     save: function save(callback) {
         if (this.id != undefined) {
-            this.driver.put(this, callback);
+            this.driver.put(null, this, callback);
         } else {
-            this.driver.post(this, callback);
+            this.driver.post(null, this, callback);
         }
     },
     

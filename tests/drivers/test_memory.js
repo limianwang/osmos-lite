@@ -62,7 +62,7 @@ describe('The memory driver', function() {
             var key = obj.primaryKey;
             
             Model.delete(key, function(err) {
-                expect(err).to.be.undefined;
+                expect(err).to.be.null;
                 
                 Model.get(key, function(err, result) {
                     expect(err).to.be.undefined;

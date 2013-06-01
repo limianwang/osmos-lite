@@ -32,19 +32,27 @@ The initialization of a driver is considered an implementation detail. Since Osm
 
 Crud operations follow the REST model, and use names patterned after the corresponding HTTP verb:
 
-- `get(primaryKey, callback)`
-- `post(model, callback)`
-- `put(model, callback)`
-- `delete(primaryKey, callback)`
+- `get(bucket, primaryKey, callback)`
+- `post(bucket, document, callback)`
+- `put(bucket, document, callback)`
+- `delete(bucket, spec, callback)`
+
+Drivers must also implement a `create` method that instantiates an empty document (the meaning of “empty” being dependent on the driver):
+
+- `create(bucket, callback)`
 
 ### Search
 
 Search operations are used when the end developer invokes `findOne()` or `find()` on a model. Because the search mechanism is likely to vary greatly between data stores (and even between different search mechanism inside a data store), the `spec` parameter is passed as-is from the model:
 
-- `find(spec, callback)`
-- `findOne(spec, callback)`
+- `find(bucket, spec, callback)`
+- `findOne(bucket, spec, callback)`
 
 Note that the difference between `find` and `findOne` is dependent on the individual data store, and indicates the end developer's intention only in that context. For example, on dat stores that support versioning or conflict resolution, like Riak, it is acceptable for `findOne()` to return more than one version of the same document (Osmos expect the end developer to be aware of this fact.)
+
+### Deletion
+
+The `delete` method can be used to remove an arbitrary number of rows from the data store. In input, it receives a spec, whose meaning depends on the individual data store (but should, at a minimum, behave in the same way as a call to `find()`). Upon completion, it executes its callback, passing an optional error and the number of records that were deleted.
 
 ### Result format
 
