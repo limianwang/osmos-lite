@@ -9,16 +9,27 @@ describe('The Model object', function() {
     it('should exist', function() {
         expect(Osmos.Model).to.be.a('function');
     });
-
+    
     var schema = new Schema({
         id : [ String , Schema.configurators.primaryKey ],
         name : String            
+    });
+
+    it('should support both named and direct stores', function() {
+        function testModel() {
+            var db = new Memory();
+            Osmos.registerDriverInstance('db', db);
+            
+            new Model(schema, '', 'db');
+        }
+    
+        expect(testModel).not.to.throw(Osmos.Error);
     });
     
     var db = new Memory();
     var model = new Model(schema, '', db);
     
-    db.post('', { name : 'Marco' , toJSON : function() { return { name : 'Marco' }} }, function() {});
+    db.post('', {}, { name : 'Marco' , toJSON : function() { return { name : 'Marco' }} }, function() {});
     
     it('should allow the creation of new documents', function(done) {
         model.create(function(err, doc) {

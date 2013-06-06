@@ -32,14 +32,16 @@ The initialization of a driver is considered an implementation detail. Since Osm
 
 Crud operations follow the REST model, and use names patterned after the corresponding HTTP verb:
 
-- `get(bucket, primaryKey, callback)`
-- `post(bucket, document, callback)`
-- `put(bucket, document, callback)`
-- `delete(bucket, spec, callback)`
+- `get(bucket, primaryKey, callback(err, doc))`
+- `post(bucket, document, data, callback(err))`
+- `put(bucket, document, data, callback(err))`
+- `delete(bucket, spec, callback(err))`
+
+In all this methods, `document` is an instance of `OsmosDocument`, and `data` is the actual data that should be written to the data store. Note that `post()` is required to write any newly derived primary keys to `document` using its `primaryKey` property (e.g.: if creating a new record generates a new auto-incrementing or auto-generated unique identifier).
 
 Drivers must also implement a `create` method that instantiates an empty document (the meaning of “empty” being dependent on the driver):
 
-- `create(bucket, callback)`
+- `create(bucket, callback(err, doc))`
 
 ### Search
 

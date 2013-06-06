@@ -6,40 +6,33 @@ describe('The number range validator', function() {
         expect(Osmos.Schema.validators.numberRange).to.be.a('function');
     });
 
-    it('should work with a valid value', function(done) {
+    it('should work with a valid value', function() {
         var validator = Osmos.Schema.validators.numberRange(10, 12);
-        
-        validator('doc', 'field', 11, function(err) {
-            expect(err).to.equal(undefined);
-            done();
-        });
+        var err = validator('doc', 'field', 11);
+
+        expect(err).to.equal(undefined);
     });
     
-    it('should work at the lower boundary', function(done) {
+    it('should work at the lower boundary', function() {
         var validator = Osmos.Schema.validators.numberRange(10, 12);
+        var err = validator('doc', 'field', 10);
         
-        validator('doc', 'field', 10, function(err) {
-            expect(err).to.equal(undefined);
-            done();
-        });
+        expect(err).to.equal(undefined);
     });
     
-    it('should work at the upper boundary', function(done) {
+    it('should work at the upper boundary', function() {
         var validator = Osmos.Schema.validators.numberRange(10, 12);
+        var err = validator('doc', 'field', 12);
         
-        validator('doc', 'field', 12, function(err) {
-            expect(err).to.equal(undefined);
-            done();
-        });
+        expect(err).to.equal(undefined);
     });
     
-    it('should handle invalid values properly', function(done) {
+    it('should handle invalid values properly', function() {
         var validator = Osmos.Schema.validators.numberRange(10, 12);
+        var err = validator('doc', 'field', 13);
         
-        validator('doc', 'field', 13, function(err) {
-            expect(err).to.be.an('object');
-            expect(err.constructor.name).to.equal('OsmosError');
-            done();
-        });
+        expect(err).to.be.an('object');
+        expect(err.constructor.name).to.equal('OsmosError');
+        expect(err.statusCode).to.equal(400);
     });
 });

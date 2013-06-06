@@ -1,6 +1,7 @@
 var Model = function OsmosSimpleModel(data) {
     this.driver = Model.driver;
     this.data = data || {};
+    this.primaryKey = data._primaryKey;
     this.constructor = Model;
 };
 
@@ -64,9 +65,9 @@ Model.prototype = {
     
     save: function save(callback) {
         if (this.id != undefined) {
-            this.driver.put(null, this, callback);
+            this.driver.put(null, this, this.toJSON(), callback);
         } else {
-            this.driver.post(null, this, callback);
+            this.driver.post(null, this, this.toJSON(), callback);
         }
     },
     

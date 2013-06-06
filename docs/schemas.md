@@ -151,7 +151,7 @@ Note that configurators may be executed asynchronously and in parallel. Therefor
     
 ## Validators
 
-The job of a validator, as its name implies, is to inspect the data that flows into a model and ensure that it conforms to an arbitrary set of rules. Osmos comes with a small number of built-in validators to reflect its focus on simplicity—more validators may be available as plugins:
+The job of a validator, as its name implies, is to inspect the data that flows into a specific field and ensure that it conforms to an arbitrary set of rules. Osmos comes with a small number of built-in validators to reflect its focus on simplicity—more validators may be available as plugins:
 
 - `Osmos.Schema.validators.numberRange(min, max)` ensures that a number falls within a given range
 - `Osmos.Schema.validators.stringMatch(regex, errorString)` ensures that a string value matches a given regular expression
@@ -163,22 +163,16 @@ Remember that a field can have zero validators, in which case no validation is p
 
 Like with configurators, you can create your own validators to perform whatever checks you need in your code by creating a custom function that follow this signature:
 
-    var validator = function(document, field, value, callback);
+    var validator = function(document, field, value);
     
     validator.constructor = Osmos.Schema.Validator;
     
-The `document` parameter points to the current document, while `field` identifies the field that is being validated, and `value` its value. When the validation is complete, the validator should call `callback` with either an instance of `Osmos.Error` to indicate an error condition, which will cause the field's value not to be set and an error being bubbled up to the original caller.
+The `document` parameter points to the current document, while `field` identifies the field that is being validated, and `value` its value. When the validation is complete, the validator should return either an instance of `Osmos.Error` to indicate an error condition, which will cause the field's value not to be set and an error being bubbled up to the original caller, or `null` (or `undefined`) to indicate success. Validators should not throw exceptions unless they are sure that they are reporting a developer error.
 
 For example, here's a way to validate the ISBN number associated with a field:
 
-    var isbnValidator = function isbnValidator(document, field, value, callback) {
-        // Validators are always executed in parallel. We delegate
-        // making sure that the value is a string to another validator,
-        // but we still need to make sure that the value has 
-        // the required method and properties to allow us to perform
-        // our validation
-        
-        if (!value.length || !value.substr) return callback();
+    var isbnValidator = function isbnValidator(document, field, value) {
+        if (!value.length || !value.substr) return;
         
         var index, sum;
         
@@ -191,7 +185,7 @@ For example, here's a way to validate the ISBN number associated with a field:
                 }
                 
                 if (parseInt(index.substr(-1, 1)) != (sum % 11)) {
-                    return callback(new Osmos.Error('ISBN string fails checksum.'));
+                    return new Osmos.Error('ISBN string fails checksum.');
                 }
             
                 break;
@@ -203,21 +197,21 @@ For example, here's a way to validate the ISBN number associated with a field:
                 }
             
                 if (parseInt(index.substr(-1, 1)) != (sum % 10)) {
-                    return callback(new Osmos.Error('ISBN string fails checksum.'));
+                    return new Osmos.Error('ISBN string fails checksum.');
                 }
                 
                 break;
                 
             default:
             
-                callback(new Osmos.Error('Invalid ISBN string.'));
+                return new Osmos.Error('Invalid ISBN string.');
         }
         
     };
     
     isbnValidator.constructor = Osmos.Schema.Validator;
     
-Note that validators, like configurators, are executed asynchronously and in parallel. Expecting them to run in a specific order is, in the same way, programmer error.
+Note that validators, are executed synchronously (although Osmos does not guarantee that they will be executed in a particular oreder). Therefore you should avoid executing blocking tasks inside them—that's what the global validator, which runs _asynchronously_ is for.
 
 ### Type validators
 
@@ -241,25 +235,17 @@ It is sometimes useful to represent data in JavaScript using a custom class even
     var expect = Osmos.expect;
 
     var Mongo.tranformers.objectId = {
-        get : function get(document, field, value, callback) {
-            try {
-                expect(value.toHexString, 'The field ' + field.name + ' is not an ObjectID.').to.be.a.('function');
-            } catch(e) {
-                return callback(e);
-            }
+        get : function get(document, field, value) {
+            expect(value.toHexString, 'The field ' + field.name + ' is not an ObjectID.').to.be.a.('function');
             
             return value.toHexString();
         }
         
-        set : function set(document, field, value, callback) {
-            try {
-                expect(value, 'The field ' + field.name + ' can only accept string values.').to.be.a('string');
-                expect(value, 'The field ' + field.name + ' must be 24 characters long.').to.have.length(24);
-            } catch(e) {
-                return callback(e);
-            }
+        set : function set(document, field, value) {
+            expect(value, 'The field ' + field.name + ' can only accept string values.').to.be.a('string');
+            expect(value, 'The field ' + field.name + ' must be 24 characters long.').to.have.length(24);
             
-            callback(null, new ObjectID(value));
+            return new ObjectID(value)
         }
     }
     
@@ -275,7 +261,7 @@ The other typical use case for transformers is when you want to use a different 
     var expect = Osmos.expect;
 
     var isbnTransformer = function isbnTransformer {
-        get : function get(document, field, value, callback) {
+        get : function get(document, field, value) {
             if (value.length == 13) {
                 return value.substr(0, 3) + '-' +
                        value.substr(3, 1) + '-' +
@@ -285,8 +271,8 @@ The other typical use case for transformers is when you want to use a different 
             }
         }
     
-        set : function set(document, field, value, callback) {
-            callback(null, value.replace(/-/, ''));
+        set : function set(document, field, value) {
+            return value.replace(/-/, '');
         }
     }
     
@@ -294,7 +280,7 @@ The other typical use case for transformers is when you want to use a different 
 
 ### Some notes on transformers
 
-As you have probably noticed, the line between validators and transformers is somewhat blurry. As a general rule, you should keep validation into the validators whenever possible, because they are executed in parallel, and because that's their intended purpose. The only circumstance under which it makes sense to perform validation inside a transformer is when you're dealing with a custom class.
+As you have probably noticed, the line between validators and transformers is somewhat blurry. As a general rule, you should keep validation into the validators whenever possible, because—well, that's their intended purpose. The only circumstance under which it makes sense to perform validation inside a transformer is when you're dealing with a custom class.
 
 Also, you should keep in mind that transformers are _not_ formatters, and should be used with care. A good example of when it's _not_ a good idea to use a formatter is when you want to display a number in human-readable format (e.g.: 12,324 instead of 12324). In this case, a formatter corners you into only being able to access the value as a string, preventing you from using it mathematical expressions.
 
