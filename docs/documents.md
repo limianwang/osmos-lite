@@ -75,7 +75,9 @@ To accommodate situations in which it is impossible to predict the exact schema 
 
 ## Avoiding naming conflicts
 
-It's entirely possible for a document to have fields whose name conflicts with a method or property of the underlying `OsmosDocument` instance. In this case, Osmos _always_ gives document data the precedence, which means that the underlying property or method cannot be accessed directly. For example:
+It's entirely possible for a document to have fields whose name conflicts with a method or property of the underlying `OsmosDocument` instance. In this case, Osmos _almost always_ gives document data the precedence, which means that the underlying property or method cannot be accessed directly. (The only exception to this rule is the `constructor` property, which is required to identify documents and overrides everything else.)
+
+For example:
 
     var schema = new Schema({
         errors: [Array, String]
