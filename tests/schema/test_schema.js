@@ -78,7 +78,6 @@ describe('The schema object', function() {
         var err = s.validateField({}, 'id', 123);
         
         expect(err).to.be.an('object');
-        expect(err).to.be.an('object');
         expect(err.message).to.equal('This value must be between 1 and 10');
         expect(err.fieldName).to.equal('id');
     });

@@ -55,8 +55,9 @@ describe('The field object', function() {
         expect(field.arrayTypeValidator).to.be.null;
         expect(field.subdocumentSchema).to.be.null;
         
-        expect(field.validators).to.have.length(1);
-        expect(field.validators[0]).to.equal(validator);
+        expect(field.validators).to.have.length(2);
+        expect(field.validators).to.include(validator);
+        expect(field.validators).to.include(Osmos.Schema.validators.string);
         
         expect(field.transformers).to.have.length(1);
         expect(field.transformers[0]).to.equal(transformer);
