@@ -106,6 +106,8 @@ describe('A document with an array field', function() {
 
             data.vals.push(1);
             
+            console.log(doc.errors);
+            
             expect(data.vals.__raw__).to.be.an('array');
             expect(data.vals.__raw__[0]).to.equal('one');
             
@@ -133,6 +135,7 @@ describe('A document with an array field', function() {
     
     it('should properly work when dereferenced directly from its containing document', function(done) {
         model.create(function(err, doc) {
+            console.log(doc.vals.constructor.name);
             doc.vals.push(1);
             doc.vals.push(1);
             doc.vals.push(2);
@@ -216,6 +219,27 @@ describe('A document with an array field', function() {
                 done();
             }
         );
+    });
+    
+    it('should reject a non-array value set explicitly', function(done) {
+        model.create(function(err, doc) {
+            doc.vals = 10;
+            
+            expect(doc.errors).to.be.an('array');
+            expect(doc.errors).to.have.length(1);
+            
+            var err = doc.errors[0];
+
+            expect(err).to.be.an('object');
+            expect(err.constructor.name).to.equal('OsmosError');
+            expect(err.fieldName).to.equal('vals');
+            
+            done();
+        });
+    });
+    
+    it.skip('should accept an array value and wrap it in an array proxy appropriately', function(done) {
+        
     });
     
 });
