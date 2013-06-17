@@ -202,8 +202,33 @@ describe('A document with a subdocument', function() {
         });
     });
     
-    it.skip('should refuse to save a document when one of its subdocuments contains invalid data', function(done) {
-        
+    it('should refuse to save a document when one of its subdocuments contains invalid data', function(done) {
+        model.create(function(err, doc) {
+            doc.friend = {
+                name: 'Marco',
+                email: 'm'
+            };
+            
+            doc.name = 'Manu';
+            
+            expect(doc.errors).to.be.an('array');
+            expect(doc.errors).to.have.length(0);
+            
+            doc.save(function(errs) {
+                expect(errs).to.be.an('array');
+                expect(errs).to.have.length(1);
+                
+                var err = errs[0];
+                
+                expect(err).to.be.an('object');
+                expect(err.constructor.name).to.equal('OsmosError');
+                expect(err.fieldName).to.equal('friend.email');
+                
+                expect(doc._primaryKey).to.equal(undefined);
+                
+                done();
+            });
+        });
     });
     
     it.skip('should allow the nesting of multiple subdocuments', function(done) {
