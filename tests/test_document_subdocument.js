@@ -230,13 +230,5 @@ describe('A document with a subdocument', function() {
             });
         });
     });
-    
-    it.skip('should allow the nesting of multiple subdocuments', function(done) {
         
-    });
-    
-    it.skip('should allow the creation of arrays of subdocuments', function(done) {
-        
-    });
-    
 });
