@@ -167,8 +167,39 @@ describe('A document with a subdocument', function() {
         });
     });
     
-    it.skip('should properly save data to the backing store', function(done) {
-        
+    it('should properly save data to the backing store', function(done) {
+        model.create(function(err, doc) {
+            doc.friend = {
+                name: 'Marco',
+                email: 'marcot@tabini.ca'
+            };
+            
+            doc.name = 'Manu';
+            
+            expect(doc.errors).to.be.an('array');
+            expect(doc.errors).to.have.length(0);
+            
+            doc.save(function(errs) {
+                expect(errs).to.equal(undefined);
+
+                expect(doc._primaryKey).not.to.be.null;
+                
+                model.get(doc._primaryKey, function(err, doc) {
+                    expect(err).to.equal(null);
+                    expect(doc).to.be.an('object');
+                    
+                    expect(doc.constructor.name).to.equal('OsmosDocument');
+
+                    expect(doc.friend).to.be.an('object');
+                    expect(doc.friend.constructor.name).to.equal('OsmosSubdocument');
+                    
+                    expect(doc.name).to.equal('Manu');
+                    expect(doc.friend.toJSON()).to.deep.equal({ name : 'Marco' , email : 'marcot@tabini.ca' });
+                
+                    done();
+                });
+            });
+        });
     });
     
     it.skip('should refuse to save a document when one of its subdocuments contains invalid data', function(done) {
