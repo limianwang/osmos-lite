@@ -73,6 +73,31 @@ If Osmos were hardwired to convert the `age` field to a `Number` before executin
 
 To accommodate situations in which it is impossible to predict the exact schema of a document in all cases, Osmos exposes a `__data__` property that represents the actual raw data as it was received from—and will be sent to when `save()` is called—the backing store. No transformations and validations are performed when accessing this property and its contents—which, needless to say, means you should only use it under extraordinary circumstances.
 
+## Nested subdocuments and arrays
+
+You should be able to nest subdocuments arbitrarily, and even use them inside arrays. Osmos adds a new method, `append()`, to its array proxies to add a new, empty document at the end of an array that you can then populate. For example:
+
+    var friendSchema = new Schema({
+        name : String,
+        email : String
+    });
+
+    var schema = new Schema({
+        name : String,
+        friends : [ Array , Object , friendSchema ]
+    });
+    
+    var model = new Model(schema, 'bucket', db);
+    
+    model.create(err, doc) {
+        var friend = doc.friends.append();
+        
+        friend.name = 'Marco';
+        friend.email = 'marco@example.com';
+    };
+    
+As you can see, `append()` works almost exactly like `push()`, except that it bypasses the initial data validation, making it easier to access individual fields. (An alternative is to pass fully-formed objects, but, in that case, every field must pass validation).
+
 ## Avoiding naming conflicts
 
 It's entirely possible for a document to have fields whose name conflicts with a method or property of the underlying `OsmosDocument` instance. In this case, Osmos _almost always_ gives document data the precedence, which means that the underlying property or method cannot be accessed directly. (The only exception to this rule is the `constructor` property, which is required to identify documents and overrides everything else.)
