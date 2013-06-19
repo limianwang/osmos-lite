@@ -38,7 +38,7 @@ describe('The field object', function() {
     it('should accept a proper descriptor', function() {
         var configurator = function(field, callback) {
             field.primaryKey = true;
-            callback()
+            callback(null)
         };
         configurator.constructor = Osmos.Schema.Configurator;
         

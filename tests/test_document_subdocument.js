@@ -180,7 +180,7 @@ describe('A document with a subdocument', function() {
             expect(doc.errors).to.have.length(0);
             
             doc.save(function(errs) {
-                expect(errs).to.equal(undefined);
+                expect(errs).to.equal(null);
 
                 expect(doc._primaryKey).not.to.be.null;
                 

@@ -41,12 +41,12 @@ describe('The Pluggable object', function() {
 
         emitter.hook('leftHook', function(data, callback) {
             v1 = true;
-            callback();
+            callback(null);
         });
         
         emitter.hook('leftHook', function(data, callback) {
             v2 = true;
-            callback();
+            callback(null);
         });
         
         emitter.callLeftHook(function() {

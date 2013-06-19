@@ -22,9 +22,9 @@ An object can be asked for a list of its hooks by calling the `getAllHooks` meth
 
     var hooks = document.getAllHooks();
     
-## Create explicit plugins
+## Creating plugins
 
-An explicit plugin is just a closure that is passed to the `plugin` method of either a `Document` or `Model` instance. The closure is called immediately, receives the instance as its sole parameter, and is responsible for altering it as needed and/or attaching to all necessary hooks.
+A plugin is just a closure that is passed to the `plugin` method of either a `Document` or `Model` instance. The closure is called immediately, receives the instance as its sole parameter, and is responsible for altering it as needed and/or attaching to all necessary hooks.
 
 For example, suppose you have this model:
 

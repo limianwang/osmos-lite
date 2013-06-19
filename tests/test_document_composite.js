@@ -101,9 +101,9 @@ describe('Composite documents', function() {
             expect(doc.errors).to.have.length(0);
             
             doc.save(function(errs) {
-                expect(errs).to.be.undefined;
+                expect(errs).to.be.null;
                 
-                expect(doc._primaryKey).not.to.be.undefined;
+                expect(doc._primaryKey).not.to.be.null;
                 
                 singleFriendModel.get(doc._primaryKey, function(err, doc) {
                     expect(err).to.be.null;
@@ -205,7 +205,7 @@ describe('Composite documents', function() {
             expect(doc.errors).to.have.length(0);
 
             doc.save(function(errs) {
-                expect(errs).to.be.undefined;
+                expect(errs).to.be.null;
                 
                 multiFriendModel.get(doc._primaryKey, function(err, doc) {
                     expect(err).to.be.null;

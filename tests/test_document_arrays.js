@@ -156,7 +156,7 @@ describe('A document with an array field', function() {
                     doc.name = 'marco';
                     
                     doc.save(function(err) {
-                        expect(err).to.be.undefined;
+                        expect(err).to.be.null;
                         expect(doc.primaryKey).to.be.a('string');
                         
                         callback(err, doc.primaryKey);
@@ -172,12 +172,12 @@ describe('A document with an array field', function() {
 
                     expect(doc.vals).to.have.length(1);
                     
-                    callback();
+                    callback(null);
                 }
             ],
             
             function(err) {
-                expect(err).to.equal(undefined);
+                expect(err).to.equal(null);
                 
                 done();
             }
@@ -204,14 +204,14 @@ describe('A document with an array field', function() {
                         expect(err.constructor.name).to.equal('OsmosError');
                         expect(err.fieldName).to.equal('vals');
                         
-                        callback();
+                        callback(null);
                     });
                 },
                 
             ],
             
             function(err) {
-                expect(err).to.equal(undefined);
+                expect(err).to.equal(null);
                 
                 done();
             }

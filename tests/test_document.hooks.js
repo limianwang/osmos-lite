@@ -30,7 +30,7 @@ describe('The document class hook system', function() {
                 
                 data.errors.push(new Error('Invalid astroturfing bit.'));
                 
-                callback();
+                callback(null);
             });
         };
         

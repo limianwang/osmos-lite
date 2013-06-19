@@ -17,7 +17,7 @@ describe('The memory driver', function() {
         expect(obj.datum).to.equal(123);
         
         obj.save(function(err) {
-            expect(err).to.be.undefined;
+            expect(err).to.be.null;
             expect(obj.primaryKey).to.be.a('string');
             
             done();
@@ -32,7 +32,7 @@ describe('The memory driver', function() {
         expect(obj.datum).to.equal(123);
         
         obj.save(function(err) {
-            expect(err).to.equal(undefined);
+            expect(err).to.equal(null);
             expect(obj.primaryKey).to.be.a('string');
             
             var key = obj.primaryKey;
@@ -56,7 +56,7 @@ describe('The memory driver', function() {
         expect(obj.datum).to.equal(123);
         
         obj.save(function(err) {
-            expect(err).to.equal(undefined);
+            expect(err).to.equal(null);
             expect(obj.primaryKey).to.be.a('string');
             
             var key = obj.primaryKey;
@@ -65,7 +65,7 @@ describe('The memory driver', function() {
                 expect(err).to.be.null;
                 
                 Model.get(key, function(err, result) {
-                    expect(err).to.be.undefined;
+                    expect(err).to.be.null;
                     expect(result).to.be.null;
                 
                     done();
@@ -82,7 +82,7 @@ describe('The memory driver', function() {
         expect(obj.datum).to.equal(123);
         
         obj.save(function(err) {
-            expect(err).to.equal(undefined);
+            expect(err).to.equal(null);
             expect(obj.primaryKey).to.be.a('string');
             
             var key = obj.primaryKey;
@@ -90,7 +90,7 @@ describe('The memory driver', function() {
             obj.datum = 124;
             
             obj.save(function(err) {
-                expect(err).to.be.undefined;
+                expect(err).to.be.null;
                 
                 Model.get(key, function(err, result) {
                     expect(err).to.be.null;
@@ -110,7 +110,7 @@ describe('The memory driver', function() {
         expect(obj.datum).to.equal(153);
         
         obj.save(function(err) {
-            expect(err).to.equal(undefined);
+            expect(err).to.equal(null);
             expect(obj.primaryKey).to.be.a('string');
             
             Model.findOne({ datum : 153 }, function(err, match) {

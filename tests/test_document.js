@@ -142,7 +142,7 @@ describe('The document class', function() {
             doc.val = 1;
             
             doc.save(function(err) {
-                expect(err).to.equal(undefined);
+                expect(err).to.equal(null);
                 
                 done();
             });
@@ -161,7 +161,7 @@ describe('The document class', function() {
                     doc.val = 1;
                     
                     doc.save(function(err) {
-                        expect(err).to.equal(undefined);
+                        expect(err).to.equal(null);
                         
                         callback(null, doc.primaryKey);
                     });
@@ -186,7 +186,7 @@ describe('The document class', function() {
                     expect(doc.primaryKey).to.be.a('string');
                     expect(doc.primaryKey).to.equal(primaryKey);
                     
-                    callback();
+                    callback(null);
                 }
             ],
             
@@ -200,8 +200,8 @@ describe('The document class', function() {
             doc.val = 1;
             
             doc.save(function(err) {
-                expect(err).to.equal(undefined);
-                expect(doc.primaryKey).not.to.equal(undefined);
+                expect(err).to.equal(null);
+                expect(doc.primaryKey).not.to.equal(null);
                 
                 done();
             });
@@ -240,7 +240,7 @@ describe('The document class', function() {
                     doc.val = 1;
                     
                     doc.save(function(err) {
-                        expect(err).to.equal(undefined);
+                        expect(err).to.equal(null);
                         
                         callback(err, doc);
                     });
@@ -254,16 +254,16 @@ describe('The document class', function() {
                 
                 function(primaryKey, callback) {
                     model.get(primaryKey, function(err, doc) {
-                        expect(err).to.equal(undefined);
+                        expect(err).to.equal(null);
                         expect(doc).to.equal(undefined);
                         
-                        callback();
+                        callback(null);
                     });
                 }
             ],
             
             function(err) {
-                expect(err).to.equal(undefined);
+                expect(err).to.equal(null);
                 
                 done();
             }
