@@ -106,8 +106,8 @@ To give your handler the ability to modify the values associated with a hook, th
 - `willValidate({ document : OsmosDocument , errors : Array })`
 - `didValidate({ document : OsmosDocument , errors: Array })`
 
-- `willSave({ document : OsmosDocument , errors : Array })`
+- `willSave({ document : OsmosDocument , data : Object, errors : Array })`
 - `didSave({ document : OsmosDocument })`
 
-- `willDelete({ document : OsmosDocument , error : OsmosError })`
+- `willDelete({ document : OsmosDocument , spec : Object, error : OsmosError })`
 - `didDelete({ document : OsmosDocument })`
