@@ -39,12 +39,14 @@ describe('The Pluggable object', function() {
         
         var v1 = false, v2 = false;
 
-        emitter.hook('leftHook', function() {
+        emitter.hook('leftHook', function(data, callback) {
             v1 = true;
+            callback();
         });
         
-        emitter.hook('leftHook', function() {
+        emitter.hook('leftHook', function(data, callback) {
             v2 = true;
+            callback();
         });
         
         emitter.callLeftHook(function() {

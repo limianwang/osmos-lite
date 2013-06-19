@@ -11,11 +11,11 @@ var HookEmitter = function HookEmitter() {
 util.inherits(HookEmitter, osmos.Hookable);
 
 HookEmitter.prototype.callLeftHook = function callLeftHook(callback) {
-    this.callHook('leftHook', arguments, callback);
+    this.callHook('leftHook', {}, callback);
 }
 
 HookEmitter.prototype.callInvalidHook = function callInvalidHook(callback) {
-    this.callHook('invalidHook', arguments, callback);
+    this.callHook('invalidHook', {}, callback);
 }
 
 module.exports = HookEmitter;
