@@ -86,16 +86,16 @@ To give your handler the ability to modify the values associated with a hook, th
 
 ### Model
 
-- `willCreate({ error : OsmosError })`
+- `willCreate({ model : OsmosModel , error : OsmosError })`
 - `didCreate({ document : OsmosDocument , error : OsmosError })`
 
-- `willGet({ primaryKey : Object , error : OsmosError })`
+- `willGet({ model : OsmosModel , primaryKey : Object , error : OsmosError })`
 - `didGet({ document: doc , error : OsmosError })`
 
-- `willFindOne({ spec: Object , error : OsmosError })`
+- `willFindOne({ model : OsmosModel , spec: Object , error : OsmosError })`
 - `didFindOne({ document: OsmosDocument ,  error : OsmosError })`
 
-- `willFind({ spec : Object ,  error : OsmosError })`
+- `willFind({ model : OsmosModel , spec : Object ,  error : OsmosError })`
 - `didFind({ documents : Array ,  error : OsmosError })`
 
 - `willDelete({ spec : Object , error : OsmosError })`
