@@ -136,7 +136,7 @@ describe('Composite documents', function() {
             expect(doc).to.be.an('object');
             expect(doc.constructor.name).to.equal('OsmosDocument');
             
-            expect(doc.friends).to.be.an('object');
+            expect(doc.friends).to.be.an('array');
             expect(doc.friends.constructor.name).to.equal('Array');
             
             done();
@@ -212,8 +212,8 @@ describe('Composite documents', function() {
                     
                     expect(doc).to.be.an('object');
                     expect(doc.constructor.name).to.equal('OsmosDocument');
-                    
-                    expect(doc.friends).to.be.an('object');
+
+                    expect(doc.friends).to.be.an('array');
                     expect(doc.friends).to.have.length(2);
                     
                     var friend = doc.friends[1];

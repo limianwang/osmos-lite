@@ -1,6 +1,6 @@
 {
   "name": "osmos",
-  "version": "0.1.0",
+  "version": "0.7.0",
   "author": "Marco Tabini <marcot@tabini.ca>",
   "description": "A general purpose, strict, simple ORM for Node.js apps",
   "contributors": [],
@@ -12,11 +12,14 @@
     "async"  :  ">=0.2.8",
     "bunyan" : ">=0.21.1",
     "clone" : ">=0.1.7",
-    "harmony-reflect" : "*"
+    "harmony-reflect" : "*",
+    "riak-js" : "*",
+    "node.extend" : "*"
   },
   "devDependencies" : {
     "mocha" : ">=1.9.0",
-    "chai" : ">=1.6.0"
+    "chai" : ">=1.6.0",
+    "mock-riak" : "*"
   },
   "keywords" : ["orm", "data", "nosql", "data mapping"],
   "engines": {

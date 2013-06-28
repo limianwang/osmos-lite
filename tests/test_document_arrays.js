@@ -242,7 +242,7 @@ describe('A document with an array field', function() {
             expect(doc.errors).to.be.an('array');
             expect(doc.errors).to.have.length(0);
             
-            expect(doc.vals).to.be.an('object');
+            expect(doc.vals).to.be.an('array');
             expect(doc.vals.constructor.name).to.equal('Array');
             
             done();
