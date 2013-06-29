@@ -336,6 +336,85 @@ describe('The Riak driver', function() {
         );        
     });
     
+    it('should properly support autoindexing', function(done) {
+        var data = [
+            {
+                name: 'Jack',
+                email: 'jack@example.org',
+            },
+            {
+                name: 'Joe',
+                email: 'joe@example.org',
+            },
+            {
+                name: 'Jill',
+                email: 'jill@example.org',
+            },
+        ];
+        
+        var bucket = 'users4';
+        
+        var model = new Riak.Model(schema, bucket, 'riak');
+        
+        model.autoIndex('email', function(x) { return x.toUpperCase(); });
+        
+        async.series(
+            [
+                function(callback) {
+                    async.each(
+                        data,
+                        
+                        function iterator(record, callback) {
+                            model.create(function(err, doc) {
+                                expect(err).to.be.null;
+                                
+                                Object.keys(record).forEach(function(key) {
+                                    doc[key] = record[key];
+                                });
+                                
+                                doc.save(callback);
+                            });
+                        },
+                        
+                        function finalCallback(err) {
+                            expect(err).to.be.null;
+                            
+                            callback(err);
+                        }
+                    );
+                },
+                
+                function(callback) {
+                    model.find(
+                        {
+                            email: 'JILL@EXAMPLE.ORG'
+                        },
+                        
+                        function(err, docs) {
+                            expect(err).to.be.null;
+                            
+                            expect(docs).to.be.an('array');
+                            expect(docs).to.have.length(1);
+                            
+                            var doc = docs[0];
+                            
+                            expect(doc).to.be.an('object');
+                            expect(doc.toJSON()).to.deep.equal(data[2]);
+                            
+                            done();
+                        }
+                    );
+                }
+            ],
+            
+            function finalCallback(err) {
+                expect(err).to.be.null;
+                
+                done();
+            }
+        );        
+    });
+    
     after(function(done) {
         server.stop(done);
     });
