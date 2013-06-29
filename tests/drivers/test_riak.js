@@ -225,6 +225,117 @@ describe('The Riak driver', function() {
         );
     });
     
+    it('should properly support map/reduce operations', function(done) {
+        var data = [
+            {
+                data: {
+                    name: 'Jack',
+                    email: 'jack@example.org',
+                },
+                indices: {
+                    name: 'jack',
+                    age: 15
+                }
+            },
+            {
+                data: {
+                    name: 'Joe',
+                    email: 'joe@example.org',
+                },
+                indices: {
+                    name: 'joe',
+                    age: 18
+                }
+            },
+            {
+                data: {
+                    name: 'Jill',
+                    email: 'jill@example.org',
+                },
+                indices: {
+                    name: 'jill',
+                    age: 35
+                }
+            },
+        ];
+        
+        var model = new Riak.Model(schema, 'users3', 'riak');
+        
+        async.series(
+            [
+                function(callback) {
+                    async.each(
+                        data,
+                        
+                        function iterator(record, callback) {
+                            model.create(function(err, doc) {
+                                expect(err).to.be.null;
+                                
+                                Object.keys(record.data).forEach(function(key) {
+                                    doc[key] = record.data[key];
+                                });
+                                
+                                doc.meta.index = record.indices;
+                                
+                                doc.save(callback);
+                            });
+                        },
+                        
+                        function finalCallback(err) {
+                            expect(err).to.be.null;
+                            
+                            callback(err);
+                        }
+                    );
+                },
+                
+                function(callback) {
+                    model.mapReduce
+                        .add({ bucket : 'users3' })
+                        .map('Riak.mapValuesJson')
+                        .map(function(value) {
+                            var res = {};
+                            
+                            res[value.email] = 1;
+                            
+                            return res;
+                        })
+                        .reduce(function(values) {
+                            var result = {};
+                
+                            values.forEach(function(values) {
+                                Object.keys(values).forEach(function(value) {
+                                    if (value in result) {
+                                        result[value] += values[value];
+                                    } else {
+                                        result[value] = values[value];
+                                    }
+                                });
+                            });
+                
+                            return [ result ];
+                        })
+                        .run(function(err, results) {
+                            expect(err).to.be.null;
+                            
+                            expect(results).to.be.an('array');
+                            expect(results).to.have.length(1);
+                            
+                            expect(Object.keys(results[0])).to.have.length(3);
+                            
+                            callback();
+                        });
+                }
+            ],
+            
+            function finalCallback(err) {
+                expect(err).to.be.null;
+                
+                done();
+            }
+        );        
+    });
+    
     after(function(done) {
         server.stop(done);
     });
