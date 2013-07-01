@@ -1,5 +1,5 @@
 {
-  "name": "osmos",
+  "name": "osmos-odm",
   "version": "0.7.0",
   "author": "Marco Tabini <marcot@tabini.ca>",
   "description": "A general purpose, strict, simple ORM for Node.js apps",
@@ -21,7 +21,7 @@
     "chai" : ">=1.6.0",
     "mock-riak" : "*"
   },
-  "keywords" : ["orm", "data", "nosql", "data mapping"],
+  "keywords" : ["odm", "data", "nosql", "data mapping", "riak"],
   "engines": {
     "node": ">=0.8.7"
   },
