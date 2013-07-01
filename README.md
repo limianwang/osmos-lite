@@ -78,3 +78,7 @@ Using Osmos requires the following steps:
 1. **Define your models.** A model applies a schema to data that is extracted from a data store's specific bucket. [Learn more about models](https://github.com/mtabini/osmos/blob/master/docs/models.md)
 
 1. **CRUD.** Models can be used to create, read, update and delete existing objects. [Learn more about documents](https://github.com/mtabini/osmos/blob/master/docs/documents.md).
+
+## Contributing
+
+Contributions in the form of patches and pull requests are welcome, provided that you also commit to writing covering unit tests. [Learn more about contributing](https://github.com/mtabini/osmos/blob/master/docs/contributing.md).
