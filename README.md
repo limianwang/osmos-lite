@@ -77,8 +77,14 @@ Using Osmos requires the following steps:
 
 1. **Define your models.** A model applies a schema to data that is extracted from a data store's specific bucket. [Learn more about models](https://github.com/mtabini/osmos/blob/master/docs/models.md)
 
-1. **CRUD.** Models can be used to create, read, update and delete existing objects. [Learn more about documents](https://github.com/mtabini/osmos/blob/master/docs/documents.md).
+1. **CRUD.** Models can be used to create, read, update and delete existing document. Two find methods are also supplied. [Learn more about documents](https://github.com/mtabini/osmos/blob/master/docs/documents.md).
+
+1. **Additional functionality** can be also added to Osmos by a plugin or by a driver—for example, to provide access to features of a data store that are not part of the basic CRUD quartet.
 
 ## Contributing
 
 Contributions in the form of patches and pull requests are welcome, provided that you also commit to writing covering unit tests. [Learn more about contributing](https://github.com/mtabini/osmos/blob/master/docs/contributing.md).
+
+## Roadmap
+
+Although Osmos itself is pretty good shape (expect possibly for bugs), its data store support is not; currently, only a Riak driver exists, but more are needed.
