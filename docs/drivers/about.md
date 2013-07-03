@@ -10,6 +10,8 @@ At this time, Osmos comes bundled with two drivers:
 
 - **[Riak](https://github.com/mtabini/osmos/blob/master/docs/drivers/riak.md)** (`Osmos.drivers.Riak`) allows interfacing with Basho's [Riak](http://basho.com/riak/) database and supports most of its functionality.
 
+- **[Redis](https://github.com/mtabini/osmos/blob/master/docs/drivers/riak.md)** (`Osmos.drivers.Redis`) allows mapping of documents to [Redis](http://redis.io) hashes.
+
 All built-in drivers reside in the `Osmos.drivers` namespace.
 
 ## Using a driver

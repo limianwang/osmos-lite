@@ -1,6 +1,6 @@
 {
   "name": "osmos-odm",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "author": "Marco Tabini <marcot@tabini.ca>",
   "description": "A general purpose, strict, simple ORM for Node.js apps",
   "contributors": [],
@@ -14,12 +14,15 @@
     "clone" : ">=0.1.7",
     "harmony-reflect" : "*",
     "riak-js" : "*",
-    "node.extend" : "*"
+    "node.extend" : "*",
+    "hiredis" : "*",
+    "redis" : "*"
   },
   "devDependencies" : {
     "mocha" : ">=1.9.0",
     "chai" : ">=1.6.0",
-    "mock-riak" : "*"
+    "mock-riak" : "*",
+    "redis-mock" : "*"
   },
   "keywords" : ["odm", "data", "nosql", "data mapping", "riak"],
   "engines": {

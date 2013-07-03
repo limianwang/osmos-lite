@@ -8,7 +8,7 @@ Osmos is a object data mapper (ODM) designed to bridge Node.js apps with any dat
 
 - **Don't replace developer knowledge.** Osmos is designed to be a generic ODM that will work well with just about any data store that supports CRUD operations. However, it is _not_ meant to be an abstraction layer; instead, it assumes that developers know best, and provides only a simple interface that can be easily extended through plugins.
 
-The current version of Osmos only supports Riak, but it should be easy to [write drivers](https://github.com/mtabini/osmos/blob/master/docs/drivers/drivers.md) for just about any data store—and contributions are warmly welcome!
+The current version of Osmos only supports Riak and Redis, but it should be easy to [write drivers](https://github.com/mtabini/osmos/blob/master/docs/drivers/drivers.md) for just about any data store—and contributions are warmly welcome!
 
 ## Installation
 
@@ -87,4 +87,4 @@ Contributions in the form of patches and pull requests are welcome, provided tha
 
 ## Roadmap
 
-Although Osmos itself is pretty good shape (expect possibly for bugs), its data store support is not; currently, only a Riak driver exists, but more are needed.
+Although Osmos itself is pretty good shape (expect possibly for bugs), its data store support is not; currently, only drivers for Riak and Redis exist, but more are needed.
