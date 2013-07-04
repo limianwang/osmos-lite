@@ -115,3 +115,41 @@ For example:
     });
     
 Attempting to read `errors` from a document derived from the schema above poses a problem: does the developer want to access the `errors` field in the data, or the `errors` property of the `OsmosDocument` instance? Osmos will always return the former; if you want to access the latter, you can do so by using the `__document__` pseudo-property, which bypasses Osmos's proxying functionality and gives you direct access to the `OsmosDocument` class methods.
+
+## Extending documents
+
+Because Osmos uses proxying to strictly marshal access to documents, they cannot be extended through traditional means, like simply adding a new method to their prototype.
+
+Instead, the Model object provides two hashes, `documentMethods` and `documentProperties` that can be used to add methods and virtual properties to every object that is instantiated by a particular model. a `documentInitializer` method is also provided, which is called by the document during construction—this is useful for initializing values, setting construction conditions, and so on. 
+
+For example:
+
+```javascript
+var model = new Model(schema, bucket, db);
+
+model.documentInitializer = function initializer() {
+    this.age = 10;
+}
+
+model.documentMethods.outputData = function outputData() {
+    console.log(this.data);
+};
+
+model.documentProperties.age = {
+    get : function getAge() {
+        return this.age;
+    },
+    
+    set : function setAge(value) {
+        this.age = 10;
+    }
+};
+
+model.create(err, doc) {
+    doc.outputData(); // will output the contents of the document
+    doc.age = 20;
+    
+    console.log(doc.age);
+};
+```
+

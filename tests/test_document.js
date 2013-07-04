@@ -270,4 +270,45 @@ describe('The document class', function() {
         );
     });
     
+    it('should support extension through the model methods', function(done) {
+        var model = new Model(schema, '', 'db');
+        
+        model.documentInitializer = function() {
+            this.toes = 10;
+        };
+        
+        model.documentProperties.toes = {
+            get: function getToes() {
+                return this.toes;
+            },
+            
+            set: function setToes(value) {
+                this.toes = value;
+            }
+        };
+        
+        model.documentMethods.getThis = function getThis() {
+            return this;
+        };
+        
+        model.create(function (err, doc) {
+            expect(err).to.be.null;
+            
+            expect(doc.toes).to.equal(10);
+
+            doc.toes = 20;
+            
+            expect(doc.toes).to.equal(20);
+            
+            expect(doc.getThis).to.be.a('function');
+            
+            var obj = doc.getThis();
+            
+            expect(obj).to.be.an('object');
+            expect(obj.constructor.name).to.equal('OsmosDocument');
+            
+            done();
+        });
+    });
+    
 });
