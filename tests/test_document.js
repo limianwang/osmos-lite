@@ -5,6 +5,7 @@ var Osmos = require('../lib');
 var Error = Osmos.Error;
 var Schema = Osmos.Schema;
 var Model = Osmos.Model;
+var Document = Osmos.Document;
 var validators = Schema.validators;
 var configurators = Schema.configurators;
 var drivers = Osmos.drivers;
@@ -310,5 +311,51 @@ describe('The document class', function() {
             done();
         });
     });
+    
+    // it('should support extension through the documentClass method', function(done) {
+    //     var MyDocument = function(model, data, schema) {
+    //         Document.apply(this, arguments);
+    //         
+    //         this.toes = 10;
+    //     };
+    //     
+    //     Document.extend(MyDocument, Document);
+    //     
+    //     MyDocument.prototype.readableProperties.toes = 1;
+    //     MyDocument.prototype.writeableProperties.toes = 1;
+    //     
+    //     Object.defineProperty(
+    //         MyDocument,
+    //         'toes',
+    //         {
+    //             enumerable: true,
+    //             configurable: true,
+    //             
+    //             get: function getToes() {
+    //                 return this.toes;
+    //             },
+    //             
+    //             set: function setToes(value) {
+    //                 this.toes = value;
+    //             }
+    //         }
+    //     );
+    //     
+    //     var model = new Model(schema, '', 'db');
+    //     model.documentClass = MyDocument;
+    //     
+    //     model.create(function(err, doc) {
+    //         expect(err).to.be.null;
+    //         
+    //         expect(doc).to.be.an('object');
+    //         expect(doc.toes).to.equal(10);
+    //         
+    //         doc.toes = 20;
+    //         
+    //         expect(doc.toes).to.equal(20);
+    //         
+    //         done();
+    //     });
+    // });
     
 });
