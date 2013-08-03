@@ -8,9 +8,11 @@ At this time, Osmos comes bundled with two drivers:
 
 - **[Memory](https://github.com/mtabini/osmos/blob/master/lib/drivers/memory.js)** (`Osmos.drivers.Memory`) is a simple, unoptimized memory-based data store that Osmos uses primarily for unit testing. It is not meant for production use, but it can be handy for running tests.
 
+- **[Redis](https://github.com/mtabini/osmos/blob/master/docs/drivers/redis.md)** (`Osmos.drivers.Redis`) allows mapping of documents to [Redis](http://redis.io) hashes.
+
 - **[Riak](https://github.com/mtabini/osmos/blob/master/docs/drivers/riak.md)** (`Osmos.drivers.Riak`) allows interfacing with Basho's [Riak](http://basho.com/riak/) database and supports most of its functionality.
 
-- **[Redis](https://github.com/mtabini/osmos/blob/master/docs/drivers/redis.md)** (`Osmos.drivers.Redis`) allows mapping of documents to [Redis](http://redis.io) hashes.
+- **[RethinkDB](https://github.com/mtabini/osmos/blob/master/docs/drivers/rethinkdb.md)** (`Osmos.drivers.RethinkDB`) allows interfacing with a [RethinkDB](http://www.rethinkdb.com) cluster, and supports atomic updates on a field-by-field basis (ideal for compatibility with PATCH operations).
 
 All built-in drivers reside in the `Osmos.drivers` namespace.
 
