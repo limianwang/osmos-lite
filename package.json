@@ -17,7 +17,9 @@
     "node.extend": "*",
     "hiredis": "*",
     "redis": "*",
-    "mock-riak": "~0.8.9"
+    "mock-riak": "~0.8.9",
+    "rethinkdb": "~1.7.0-2",
+    "objectdiff": "~1.1.0"
   },
   "devDependencies": {
     "mocha": ">=1.9.0",
