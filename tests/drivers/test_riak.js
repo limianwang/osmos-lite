@@ -18,17 +18,20 @@ var schema = new Schema({
 describe('The Riak driver', function() {
    
     before(function(done) {
-        server = new RiakMock(8087);
-        server.start(done);
+        server = new RiakMock(8098);
+
+        server.start(function() {
+            var db = new Riak({
+                host: 'localhost',
+                port: 8098
+            });
         
-        var db = new Riak({
-            host: 'localhost',
-            port: 8087
-        });
+            Osmos.registerDriverInstance('riak', db);
         
-        Osmos.registerDriverInstance('riak', db);
-        
-        model = new Riak.Model(schema, 'users', 'riak');
+            model = new Riak.Model(schema, 'users', 'riak');
+            
+            done();
+        });        
     });
     
     it('should allow creating new Riak documents', function(done) {

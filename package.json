@@ -4,31 +4,45 @@
   "author": "Marco Tabini <marcot@tabini.ca>",
   "description": "A general purpose, strict, simple ORM for Node.js apps",
   "contributors": [],
-  "main" : "./lib/index.js",
+  "main": "./lib/index.js",
   "scripts": {
     "test": "./node_modules/mocha/bin/mocha --harmony -R dot -u tdd $(find tests -name 'test_*.js')"
   },
-  "dependencies" : {
-    "async"  :  ">=0.2.8",
-    "bunyan" : ">=0.21.1",
-    "clone" : ">=0.1.7",
-    "harmony-reflect" : "*",
-    "riak-js" : "*",
-    "node.extend" : "*",
-    "hiredis" : "*",
-    "redis" : "*"
+  "dependencies": {
+    "async": ">=0.2.8",
+    "bunyan": ">=0.21.1",
+    "clone": ">=0.1.7",
+    "harmony-reflect": "*",
+    "riak-js": "*",
+    "node.extend": "*",
+    "hiredis": "*",
+    "redis": "*",
+    "mock-riak": "~0.8.9"
   },
-  "devDependencies" : {
-    "mocha" : ">=1.9.0",
-    "chai" : ">=1.6.0",
-    "mock-riak" : "*",
-    "redis-mock" : "*"
+  "devDependencies": {
+    "mocha": ">=1.9.0",
+    "chai": ">=1.6.0",
+    "mock-riak": "*",
+    "redis-mock": "*"
   },
-  "keywords" : ["odm", "data", "nosql", "data mapping", "riak"],
+  "keywords": [
+    "odm",
+    "data",
+    "nosql",
+    "data mapping",
+    "riak"
+  ],
   "engines": {
     "node": ">=0.8.7"
   },
-  "repository" : { "type" : "git" , "url" : "http://github.com/mtabini/osmos.git" },
-  "licenses": [ { "type": "MIT", "url": "http://github.com/mtabini/osmos/raw/master/LICENSE" } ]
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/mtabini/osmos.git"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://github.com/mtabini/osmos/raw/master/LICENSE"
+    }
+  ]
 }
-
