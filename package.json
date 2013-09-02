@@ -1,38 +1,31 @@
 {
   "name": "osmos-odm",
-  "version": "0.9.4",
+  "version": "1.0.0",
   "author": "Marco Tabini <marcot@tabini.ca>",
   "description": "A general purpose, strict, simple ORM for Node.js apps",
   "contributors": [],
   "main": "./lib/index.js",
   "scripts": {
-    "test": "./node_modules/mocha/bin/mocha --harmony -R dot -u tdd $(find tests -name 'test_*.js')"
+    "test": "./node_modules/mocha/bin/mocha --use-strict --harmony -R dot -u tdd $(find tests -name 'test_*.js')"
   },
   "dependencies": {
-    "async": ">=0.2.8",
-    "bunyan": ">=0.21.1",
-    "clone": ">=0.1.7",
-    "harmony-reflect": "*",
-    "riak-js": "*",
-    "node.extend": "*",
-    "hiredis": "*",
-    "redis": "*",
-    "mock-riak": "~0.8.9",
-    "rethinkdb": "~1.7.0-2",
-    "objectdiff": "~1.1.0"
+    "async": "~0",
+    "harmony-proxy": "~0",
+    "tv4": "~1",
+    "request": "~2"
   },
   "devDependencies": {
-    "mocha": ">=1.9.0",
-    "chai": ">=1.6.0",
-    "mock-riak": "*",
-    "redis-mock": "*"
+    "mocha": "~1",
+    "chai": "~1",
+    "redis-mock": "~0"
   },
   "keywords": [
     "odm",
     "data",
     "nosql",
     "data mapping",
-    "riak"
+    "rethinkdb",
+    "redis"
   ],
   "engines": {
     "node": ">=0.8.7"
