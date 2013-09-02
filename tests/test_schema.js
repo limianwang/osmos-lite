@@ -14,6 +14,7 @@ describe('The Schema class', function() {
     var schema = new Schema(
       'schema',
       {
+        $schema: "http://json-schema.org/draft-04/schema#",
         type: 'number',
         minimum: 10
       }
@@ -27,6 +28,7 @@ describe('The Schema class', function() {
       var schema = new Schema(
         'schema',
         {
+          $schema: "http://json-schema.org/draft-04/schema#",
           type: 'shalala',
           minimum: 10
         }
@@ -38,11 +40,13 @@ describe('The Schema class', function() {
   
   it('should allow registering additional schemas', function(done) {
     Schema.registerSchema('test', {
+      $schema: "http://json-schema.org/draft-04/schema#",
       type: 'number',
       minimum: 10
     });
     
     var schema = new Schema('marco', {
+      $schema: "http://json-schema.org/draft-04/schema#",
       type: 'object',
       properties: {
         val: {
@@ -58,11 +62,13 @@ describe('The Schema class', function() {
   
   it('should allow using external schemas', function(done) {
     Schema.registerSchema('test', {
+      $schema: "http://json-schema.org/draft-04/schema#",
       type: 'number',
       minimum: 10
     });
     
     var schema = new Schema('marco', {
+      $schema: "http://json-schema.org/draft-04/schema#",
       type: 'object',
       properties: {
         val: {
@@ -76,6 +82,7 @@ describe('The Schema class', function() {
   
   it('should properly validate a valid document', function(done) {
     var schema = new Schema('marco', {
+      $schema: "http://json-schema.org/draft-04/schema#",
       type: 'object',
       required: ['val'],
       properties: {
@@ -99,6 +106,7 @@ describe('The Schema class', function() {
   
   it('should report errors when validating an invalid document', function(done) {
     var schema = new Schema('marco', {
+      $schema: "http://json-schema.org/draft-04/schema#",
       type: 'object',
       required: ['val'],
       properties: {
@@ -126,6 +134,7 @@ describe('The Schema class', function() {
   
   it('should properly support validation hooks', function(done) {
     var schema = new Schema('marco', {
+      $schema: "http://json-schema.org/draft-04/schema#",
       type: 'object',
       required: ['val'],
       properties: {
@@ -136,7 +145,7 @@ describe('The Schema class', function() {
       }
     });
     
-    schema.hook('didValidate', function(args, cb) {
+    schema.hook('didValidate', function(doc, cb) {
       cb(new Osmos.Error('Invalid reconfibulator flows detected.', 400));
     });
     
@@ -153,6 +162,30 @@ describe('The Schema class', function() {
         done();
       }
     );
+  });
+  
+  it('should support format validators', function(done) {
+    var schema = new Schema('marco', {
+      $schema: "http://json-schema.org/draft-04/schema#",
+      type: 'object',
+      required: ['email'],
+      properties: {
+        email: {
+          type: 'string',
+          format: 'email'
+        }
+      }
+    });
+    
+    schema.validateDocument({ email : 'invalid' }, function(err) {
+      expect(err).to.be.an('object');
+      expect(err).to.be.an.instanceOf(Error);
+      expect(err).to.have.property('errors');
+      expect(err.errors).to.have.length(1);
+      expect(err.errors[0].dataPath).to.equal('/email');
+      
+      done();
+    });
   });
   
 });
