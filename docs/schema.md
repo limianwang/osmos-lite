@@ -4,6 +4,10 @@ A schema represents the format of a document. It determines which fields it can 
 
 Osmos 1.x uses [JSON Schema](http://json-schema.org) as its base schema declaration. It supports referencing external schemas (including fetching them via HTTP(s) at runtime) for ease of modularization.
 
+## Primary keys
+
+Most drivers require the declaration of a primary key. You can add a primary key to a schema by using its `primaryKey` property.
+
 ## Declaring a schema
 
 To declare a schema, simply create an instance of the `Osmos.Schema` class:
