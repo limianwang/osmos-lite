@@ -88,6 +88,8 @@ describe('The Document class', function() {
     }
     
     model.instanceProperties.testProperty = 1;
+    
+    model.updateableProperties = {'name' : 1};
   });
   
   it('should exist', function() {
@@ -292,6 +294,20 @@ describe('The Document class', function() {
       
       done();
     });
+  });
+  
+  it('should support updating a document from a JSON payload', function(done) {
+    model.create(function(err, doc) {
+      expect(err).not.to.be.ok;
+      expect(doc).to.be.an('object');
+      
+      doc.update({name : 'Marco'}, function(err) {
+        expect(err).not.to.be.ok;
+        expect(doc.name).to.equal('Marco');
+        
+        done();
+      });
+    })
   });
   
 });
