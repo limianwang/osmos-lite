@@ -91,7 +91,7 @@ describe('The RethinkDB driver', function() {
       doc.email = 'marcot@tabini.ca';
             
       expect(doc.primaryKey).to.be.undefined;
-            
+      
       doc.save(function(err) {
         expect(err).to.be.null;
                 
@@ -147,8 +147,8 @@ describe('The RethinkDB driver', function() {
               expect(err).not.to.be.ok;
                             
               model.get(doc.primaryKey, function(err, doc3) {
-                expect(err).to.be.null;
-                                
+                expect(err).not.to.be.ok;
+                
                 expect(doc3).to.be.an('object');
                 expect(doc3.name).to.equal('Joe');
                 expect(doc3.email).to.equal('joe@example.org');

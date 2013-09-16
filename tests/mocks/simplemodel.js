@@ -75,6 +75,9 @@ Model.prototype = {
         return JSON.parse(JSON.stringify(this.data));
     },
     
+    toRawJSON: function toRawJSON() {
+      return JSON.parse(JSON.stringify(this.data));
+    }
 }
 
 module.exports = Model;

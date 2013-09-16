@@ -40,7 +40,34 @@ describe('The Document class', function() {
           val: {
             type: 'number',
             minimum: 1,
-            maximum: 2
+            maximum: 2,
+            transformer: {
+              get: function(value) {
+                switch(value) {
+                  case 1:
+                    return 'one';
+            
+                  case 2:
+                    return 'two';
+            
+                  default:
+                    return value;
+                }
+              },
+      
+              set: function(value) {
+                switch(value) {
+                  case 'one':
+                    return 1;
+            
+                  case 'two':
+                    return 2;
+            
+                  default:
+                    throw new Error('Invalid value `' + value + '`');
+                }
+              }
+            }
           }
         }
       }
@@ -55,34 +82,6 @@ describe('The Document class', function() {
     });
     
     model = new Model('TestModel', schema, '', 'memory');
-    
-    model.transformers['TestModel.val'] = {
-      get: function(value) {
-        switch(value) {
-          case 1:
-            return 'one';
-            
-          case 2:
-            return 'two';
-            
-          default:
-            return value;
-        }
-      },
-      
-      set: function(value) {
-        switch(value) {
-          case 'one':
-            return 1;
-            
-          case 'two':
-            return 2;
-            
-          default:
-            throw new Error('Invalid value `' + value + '`');
-        }
-      }
-    };
     
     model.instanceMethods.testFunction = function() {
       return 'ok';
@@ -120,7 +119,7 @@ describe('The Document class', function() {
         doc.invalid = 'value';
       }
           
-      expect(test).to.throw(Osmos.Error);
+      expect(test).to.throw(Error);
           
       done();
     });
@@ -155,6 +154,8 @@ describe('The Document class', function() {
     model.create(function(err, doc) {
       doc.name = 'marco';
       doc.val = 'one';
+      
+      return done();
             
       doc.save(function(err) {
         expect(err).to.equal(null);
