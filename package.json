@@ -15,7 +15,8 @@
     "request": "~2",
     "objectdiff": "~1",
     "rethinkdb": "~1",
-    "harmony-reflect": "0.0.9"
+    "harmony-reflect": "0.0.9",
+    "mongodb": "~1.3.19"
   },
   "devDependencies": {
     "mocha": "~1",
