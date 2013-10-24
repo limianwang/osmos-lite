@@ -73,6 +73,12 @@ You should be able to nest subdocuments arbitrarily, and even use them inside ar
 
 It's entirely possible for a document to have fields whose name conflicts with a method or property of the underlying `OsmosDocument` instance. In this case, Osmos _almost always_ gives document data the precedence, which means that the underlying property or method cannot be accessed directly. (The only exception to this rule is the `constructor` property, which is required to identify documents and overrides everything else.)
 
+## Exporting documents
+
+By default, document objects override the `toJSON()` method, forcing it to throw an exception. The reason for this is that Osmos is designed to be used in JSON-based service-oriented systems, where it's easy and convenient to retrieve a document and then return it to the caller in JSON format using JavaScript's own facilities.
+
+The problem with this approach is that it's all too easy to accidentally expose privileged information. For this reason, Osmos forces developers to explicitly write their JSON rendering methods in an attempt to force them to think about exactly what information they want to release in the wild.
+
 ## Extending documents
 
 Because Osmos uses proxying to strictly marshal access to documents, they cannot be extended through traditional means, like simply adding a new method to their prototype.
@@ -109,5 +115,3 @@ model.create(err, doc) {
 ## Hooks
 
 Documents do not directly expose any hooks; instead, their hooks are proxied through the respective model (as explained in the Model section).
-
-- 
