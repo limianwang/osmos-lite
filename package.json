@@ -1,12 +1,12 @@
 {
   "name": "osmos-odm",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "Marco Tabini <marcot@tabini.ca>",
   "description": "A general purpose, strict, simple ORM for Node.js apps",
   "contributors": [],
   "main": "./lib/index.js",
   "scripts": {
-    "test": "./node_modules/mocha/bin/mocha --use-strict --harmony -R dot -u tdd $(find tests -name 'test_*.js')"
+    "test": "./node_modules/mocha/bin/mocha --use-strict --harmony $(find tests -name 'test_*.js')"
   },
   "dependencies": {
     "async": "~0",
