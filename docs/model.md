@@ -102,6 +102,8 @@ model.transformers['authToken.expires'] = {
 
 Transformers are added to the `transformers` hash of a model, using the fully qualified name of the property they relate to (including the name of the model itself). The example above will apply to the `expires` property of documents created from the `authToken` model.
 
+**As of version 1.0.3,** adding transformers to a model is deprecated. Add them instead to the schema (where it makes sense from an architectural perspective).
+
 ## Document instance methods
 
 Since you do not instantiate documents directly, you must also define document instance methods and dynamic properties through the model. This is explained in the documents section of the docs.

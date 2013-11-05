@@ -92,6 +92,8 @@ Schema.registerFormat('sin', function(data, schema) {
 
 The following formats are supported by Osmos out of the box:
 
+| Name         | Description                                                                     |
+| ------------ | ------------------------------------------------------------------------------- |
 | alpha        | A string made up of letters only                                                |
 | alphanumeric | A string made up of letters and digits                                          |
 | date         | A date (e.g.: 1976-02-23)                                                       |
@@ -128,3 +130,26 @@ schema.hook('didValidate', function(doc, cb) {
   cb(new Osmos.Error('Invalid reconfibulator flows detected.', 400));
 });
 ```
+
+## Transformers
+
+A transformer modifies the raw data stored in the backing store before passing it back and forth to your JavaScript documents. For example, if your data store uses a special data format (like Mongo's `ObjectID`), you can use a transformer to render it as a string and then convert it back to its native format before committing it back to the store:
+
+A transformer consists of a pair of methods used to retrieve or set values:
+
+```javascript
+schema.transformers['expires'] = {
+  set: function(value) {
+    throw new Error('Auth token expiry dates cannot be set directly.');
+  },
+  
+  get: function(value) {
+    return new Date(value);
+  }
+};
+```
+
+Transformers are added to the `transformers` hash of a model, using the fully qualified name of the property they relate to. For example, if you want to add the transformer for the field `id` to a subdocument called `user` in the schema, you can use `user.id` as the key in the schema's transformers array.
+
+**As of version 1.0.3,** the correct way to use a transformer is by adding it to a schema; previous versions of Osmos expected transformers to be added to a model instead. While this latter method is still supported to avoid breaking BC, it is now deprecated and will be removed in the future.
+
