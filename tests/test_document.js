@@ -41,37 +41,38 @@ describe('The Document class', function() {
             type: 'number',
             minimum: 1,
             maximum: 2,
-            transformer: {
-              get: function(value) {
-                switch(value) {
-                  case 1:
-                    return 'one';
-            
-                  case 2:
-                    return 'two';
-            
-                  default:
-                    return value;
-                }
-              },
-      
-              set: function(value) {
-                switch(value) {
-                  case 'one':
-                    return 1;
-            
-                  case 'two':
-                    return 2;
-            
-                  default:
-                    throw new Error('Invalid value `' + value + '`');
-                }
-              }
-            }
           }
         }
       }
     );
+    
+    schema.transformers['val'] = {
+      get: function(value) {
+        switch(value) {
+        case 1:
+          return 'one';
+            
+        case 2:
+          return 'two';
+            
+        default:
+          return value;
+        }
+      },
+      
+      set: function(value) {
+        switch(value) {
+        case 'one':
+          return 1;
+            
+        case 'two':
+          return 2;
+            
+        default:
+          throw new Error('Invalid value `' + value + '`');
+        }
+      }
+    };
     
     schema.primaryKey = '_primaryKey';
     
