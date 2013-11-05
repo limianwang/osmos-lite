@@ -66,6 +66,8 @@ The data associated with a document is not saved to the backing store implicitly
     document.save(callback(err));
     
 When `save()` is executed, it first calls up the underlying schema's `validate()` method, and then attempts to write the data to the backing store. If the document is new and a primary key is not set, Osmos calls the `post` method of the underlying driver and makes the new primary key available. Otherwise, it calls `update()` on the driver.
+
+Note that, as of version 1.0.3, `save()` no longer requires a callback; if you don't care about finding out when the save operation is completed (or whether it reports any errors), you can just avoid passing a callback.
     
 ## Deleting a document
 
