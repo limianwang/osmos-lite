@@ -143,4 +143,5 @@ The following hooks are available:
 - `willInitialize` and `didInitialize` are called before instantiating a new document object and receive a hash with the raw data and the constructor of the underlying document class
 - `willSave` and `didSave` receive a hash with a reference to the document being saved and a `stop` parameter that can be used to prevent the save operation from completing
 - `willDelete` and `didDelete` also receive a hash with a reference to the document being saved and a `stop` parameter that can be used to prevent the save operation from completing
+- `willUpdate` and `didUpdate` receive a hash that contains a reference to the document being updated, a reference to the updates being applied, and a `stop` parameter that can be used to prevent the update operation from completing
 

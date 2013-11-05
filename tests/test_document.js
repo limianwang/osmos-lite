@@ -41,6 +41,10 @@ describe('The Document class', function() {
             type: 'number',
             minimum: 1,
             maximum: 2,
+          },
+          
+          last_update: {
+            type: 'number'
           }
         }
       }
@@ -91,7 +95,13 @@ describe('The Document class', function() {
     model.instanceProperties.testProperty = 1;
     
     model.updateableProperties = {'name' : 1};
-  });
+    
+    model.hook('didUpdate', function(payload, cb) {
+      payload.doc.last_update = new Date().getTime();
+      
+      cb();
+    });
+  });  
   
   it('should exist', function() {
     expect(Document).to.be.a('function');
@@ -308,7 +318,22 @@ describe('The Document class', function() {
         
         done();
       });
-    })
+    });
   });
+  
+  it('should support update hooks when updating a document', function(done) {
+    model.create(function(err, doc) {
+      expect(err).not.to.be.ok;
+      expect(doc).to.be.an('object');
+      
+      doc.update({name : 'Marco'}, function(err) {
+        expect(err).not.to.be.ok;
+        expect(doc.name).to.equal('Marco');
+        expect(doc.last_update).to.be.above(0);
+        
+        done();
+      });
+    });
+  })
   
 });

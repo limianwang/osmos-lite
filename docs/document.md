@@ -35,6 +35,30 @@ doc.save(function(err) {
 
 The error object augments the normal Node Error object by providing a `statusCode` property, useful when writing Web services, and an `errors` hash, which can be used to determine which errors occurred on which fields. It is generally safe to output `statusCode` and `errors` to an external, non-trusted source.
 
+## Modifying a document
+
+In addition to addressing individual properties directly, Osmos documents support (as of version 1.0.3) an `update` method that can be used to batch-modify an arbitrary number of properties in one call. The `update` method is designed as a convenient and secure way to allow external actors to modify the contents of a document using a fail-safe approach that automatically blocks sensitive properties from being updated—normally, this means that you can just grab a JSON package from a POST/PUT/PATCH HTTP operation and pass it directly to `update()`, without having to worry about its contents.
+
+To implement its fail-safe mechanism, `update()` only allows whitelisted fields to updated. You whitelist individual fields by adding them to the `updateableProperties` array of the corresponding model. For example:
+
+```javascript
+// When declaring the model:
+
+model.updateableProperties = ['id', 'name'];
+
+// Elsewhere in your app, receive a JSON hash from an external caller:
+
+doc.update(jsonData, function(err) {
+  // Handle errors here
+});
+```
+
+Regardless of what information is stored in the `jsonData` blob shown in the previous example, the document object will only allow those listed in `model.updateableProperties` to be updated.
+
+### Update hooks
+
+It's not uncommon to need to perform additional operations as part of an update. For example, if a user wants to update their password, you will most likely want to hash it before it actually gets written to the data store. In order to avoid having to overload the `update()` method, which is hard to do without introducing unwanted side effects or compromising its fail-safe nature, Osmos allows you to hook to the `willUpdate` and `didUpdate` callbacks, where you can access both the original document and the hash that is being used to update it.
+
 ## Saving a document
 
 The data associated with a document is not saved to the backing store implicitly; you need to call the document's `save` method:
