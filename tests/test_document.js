@@ -168,15 +168,23 @@ describe('The Document class', function() {
       doc.name = 'marco';
       doc.val = 'one';
       
-      return done();
-            
+      doc.save();
+      done();
+    });
+  }); 
+  
+  it('should not require a callback when saving a document', function(done) {
+    model.create(function(err, doc) {
+      doc.name = 'marco';
+      doc.val = 'one';
+      
       doc.save(function(err) {
         expect(err).to.equal(null);
                 
         done();
       });
     });
-  }); 
+  });
   
   it('should actually save a document', function(done) {
     async.waterfall(
