@@ -16,7 +16,7 @@ Osmos is a object data mapper (ODM) designed to bridge Node.js apps with any dat
 
 - **Don't replace developer knowledge.** Osmos is designed to be a generic ODM that will work well with just about any data store that supports CRUD operations. However, it is _not_ meant to be an abstraction layer; instead, it assumes that developers know best, and provides only a simple interface that can be easily extended through plugins.
 
-The current version of Osmos supports [RethinkDB](http://www.rethinkdb.com), with a MongoDB driver in the works, but it should be easy to [write drivers](https://github.com/mtabini/osmos/blob/master/docs/drivers/drivers.md) for just about any data store—and contributions are warmly welcome! The library also includes a simple, memory-based data store that can be used for testing purposes.
+The current version of Osmos supports [RethinkDB](http://www.rethinkdb.com), with a [MongoDB](http://www.mongodb.org) driver in the works, but it should be easy to [write drivers](https://github.com/mtabini/osmos/blob/master/docs/drivers/drivers.md) for just about any data store—and contributions are warmly welcome! The library also includes a simple, memory-based data store that can be used for testing purposes.
 
 ## Installation
 

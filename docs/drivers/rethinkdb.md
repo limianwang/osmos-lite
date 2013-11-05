@@ -10,11 +10,32 @@ var Model = Osmos.Model;
 var RethinkDB = Osmos.drivers.RethinkDB;
 var r = require('rethinkdb');
 
-var schema = new Schema({
-    name : String,
-    email : String,
-    id: [String, Schema.configurators.primaryKey]
-});
+var schema = new Schema('https://example.org/tokens', {
+  id: 'https://example.org/tokens',
+  $schema: 'http://json-schema.org/draft-04/schema#',
+
+  title: 'Token Object',
+  description: 'Token Object',
+
+  type: 'object',
+
+  required: ['account', ],
+
+  properties: {
+
+    _id: {
+      type: 'string',
+      description: 'Token ID',
+    },
+    name: {
+      type: 'string',
+      description: 'The Account name'
+    }
+  
+  }
+);
+
+schema.primaryKey = 'name';
 
 r.connect(
     {
@@ -24,24 +45,23 @@ r.connect(
     },
     function(err, connection) {
         var db = new RethinkDB(connection);
-        Osmos.registerDriverInstance('rethinkDB', db);
 
-        model = new Model('TestModel', schema, 'person', 'rethinkDB');
-        
-        model.create(function(err, doc) {
-            doc.name = 'Marco';
-            doc.email = 'marcot@tabini.ca';
-            
-            doc.primaryKey = 'marco';
-            
-            doc.save(function(err) {
-                expect(err).to.be.null;
-                
-                expect(doc.primaryKey).to.equal('marco');
-                
-                done();
-            });
-        });
+      Osmos.drivers.register('rethinkDB', db);
+
+      model = new Model('TestModel', schema, 'person', 'rethinkDB');
+      
+      model.create(function(err, doc) {
+          doc.name = 'Marco';
+          doc.primaryKey = 'marco';
+          
+          doc.save(function(err) {
+              expect(err).to.be.null;
+              
+              expect(doc.primaryKey).to.equal('marco');
+              
+              done();
+          });
+      });
     }
 );
 ```
@@ -56,7 +76,7 @@ You can either set a primary key explicitly (either by assigning a value to a do
 
 Updates to an existing object are performed using the [`update`](http://www.rethinkdb.com/api/#js:writing_data-update) method of the RethinkDB module in atomic mode, writing only those fields that have been modified since the last time a document was created.
 
-This means that you can perform multiple updates in parallel without having to worry about inadvertently causing a loss of data by overwriting values you didn't mean to.
+This means that you can perform multiple updates in parallel without having to worry about inadvertently causing a loss of data by overwriting values you didn't mean to. Note, however, that Osmos doesn't directly support any atomic update operations; you will need to run those against RethinkDB's own driver.
 
 ## Complex find operations
 
