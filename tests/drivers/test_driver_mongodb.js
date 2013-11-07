@@ -254,35 +254,49 @@ describe('The MongoDB driver', function() {
     });
   });
     
-    
-  it('should allow performing complex queries using a custom function', function(done) {
-    model.create(function(err, doc) {
-      doc.name = 'Marco';
-      doc.email = 'marcot@tabini.ca';
+  it('should return multiple documents when using find()', function(done) {
+    async.series(
+      [
+        function(cb) {
+          model.create(function(err, doc) {
+            expect(err).not.to.be.ok;
             
-      doc.save(function(err) {
-        model.find(
-          function(connection, table, callback) {
-            table.getAll('marcot@tabini.ca', { index : 'email' }).run(connection, function(err, cursor) {
-              if (err) return callback(err);
-                            
-              cursor.toArray(callback);
-            });
-          },
-                    
-          function(err, result) {
-            expect(err).to.be.null;
+            doc.name = 'Marco';
+            doc.email = 'marcot@tabini.ca';
+            doc.save(cb);
+          });
+        },
+        
+        function(cb) {
+          model.create(function(err, doc) {
+            expect(err).not.to.be.ok;
 
-            expect(result).to.be.an('array');
-                        
-            result.forEach(function(doc) {
-              expect(doc.email).to.equal('marcot@tabini.ca');
-            });
-
-            done();
-          }
-        );
-      });
-    });
+            doc.name = 'Marco';
+            doc.email = 'marcot@tabini.ca';
+            doc.save(cb);
+          });
+        },
+        
+        function(cb) {
+          model.find(
+            {
+              email: 'marcot@tabini.ca'
+            },
+            
+            function(err, docs) {
+              expect(err).not.to.be.ok;
+              
+              expect(docs).to.be.an('array');
+              expect(docs.length).to.be.above(1);
+              
+              cb();
+            }
+          );
+        }
+      ],
+      
+      done
+    );
   });
+        
 });
