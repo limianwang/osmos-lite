@@ -11,6 +11,8 @@ var async = require('async');
 var server;
 var model;
 
+return;
+
 var schema = new Schema(
   'rethink', 
   {
