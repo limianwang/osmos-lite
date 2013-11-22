@@ -340,6 +340,8 @@ describe('The MongoDB driver', function() {
               expect(result).to.be.an('object');
               
               expect(result.count).to.equal(10);
+              expect(result.start).to.equal(0);
+              expect(result.limit).to.equal(2);
               expect(result.docs).to.be.an('array');
               expect(result.docs.length).to.equal(2);
               
