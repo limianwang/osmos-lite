@@ -355,4 +355,61 @@ describe('The MongoDB driver', function() {
     );
   });
         
+    
+  it('should properly skip documents when using findLimit()', function(done) {
+    var email = 'marcot-' + Math.random() + '@tabini.ca';
+    
+    this.timeout(15000);
+    
+    async.series(
+      [
+        function(cb) {
+          async.each(
+            [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+
+            function(datum, cb) {
+              model.create(function(err, doc) {
+                expect(err).not.to.be.ok;
+            
+                doc.name = 'Marco';
+                doc.email = email;
+                doc.save(cb);
+              });
+            },
+
+            cb
+          );
+        },
+        
+        function(cb) {
+          model.findLimit(
+            {
+              email: email
+            },
+            
+            2,
+            
+            10,
+            
+            function(err, result) {
+              expect(err).not.to.be.ok;
+              
+              expect(result).to.be.an('object');
+              
+              expect(result.count).to.equal(10);
+              expect(result.start).to.equal(2);
+              expect(result.limit).to.equal(10);
+              expect(result.docs).to.be.an('array');
+              expect(result.docs.length).to.equal(8);
+              
+              cb();
+            }
+          );
+        }
+      ],
+      
+      done
+    );
+  });
+
 });
