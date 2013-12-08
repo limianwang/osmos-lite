@@ -4,5 +4,15 @@
   "camelcase": true,
   "indent": 2,
   "quotmark": true,
-  "strict": true
+  "strict": true,
+  "globals": [
+    "Proxy",
+    "StopIteration",
+    "describe",
+    "it",
+    "before",
+    "beforeEach",
+    "after",
+    "afterEach"
+  ]
 }

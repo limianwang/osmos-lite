@@ -1,3 +1,7 @@
+/*jshint expr:true*/
+
+'use strict';
+
 var Osmos = require('../../lib');
 var Schema = Osmos.Schema;
 var Model = Osmos.Model;
@@ -10,11 +14,10 @@ var ObjectID = require('mongodb').ObjectID;
 var expect = require('chai').expect;
 var async = require('async');
 
-var server;
 var model;
 
 var schema = new Schema(
-  'mongo', 
+  'mongo',
   {
     type: 'object',
     required: [ 'name', 'email' ],
@@ -49,7 +52,7 @@ describe('The MongoDB driver', function() {
       
       model = new Model('MongoPerson', schema, 'person', 'mongoDB');
       
-      model.transformers['_id'] = {
+      model.transformers._id = {
         get: function(value) {
           if (!value) return value;
           
@@ -77,12 +80,12 @@ describe('The MongoDB driver', function() {
       doc.name = 'Marco';
       doc.email = 'marcot@tabini.ca';
             
-      expect(doc.primaryKey).to.be.undefined;
+      expect(doc.primaryKey).to.equal(undefined);
       
       doc.save(function(err) {
-        expect(err).to.be.null;
+        expect(err).to.equal(null);
                 
-        expect(doc.primaryKey).not.to.be.undefined;
+        expect(doc.primaryKey).not.to.equal(undefined);
                 
         done();
       });
@@ -99,7 +102,7 @@ describe('The MongoDB driver', function() {
       doc.primaryKey = key;
       
       doc.save(function(err) {
-        expect(err).to.be.null;
+        expect(err).to.equal(null);
         
         expect(doc.primaryKey).to.equal(key);
                 
@@ -116,7 +119,7 @@ describe('The MongoDB driver', function() {
       doc.email = 'manu@example.org';
             
       doc.save(function(err) {
-        expect(err).to.be.null;
+        expect(err).to.equal(null);
         
         model.get(doc.primaryKey, function(err, doc2) {
           async.parallel(
@@ -162,10 +165,10 @@ describe('The MongoDB driver', function() {
       doc.primaryKey = key;
       
       doc.save(function(err) {
-        expect(err).to.be.null;
+        expect(err).to.equal(null);
         
         model.get(key, function(err, doc) {
-          expect(err).to.be.null;
+          expect(err).to.equal(null);
           
           expect(doc).to.be.an('object');
           expect(doc.constructor.name).to.equal('OsmosDocument');
@@ -185,15 +188,15 @@ describe('The MongoDB driver', function() {
       doc.email = 'marcot@tabini.ca';
             
       doc.save(function(err) {
-        expect(err).to.be.null;
+        expect(err).to.equal(null);
                 
-        expect(doc.primaryKey).not.to.be.undefined;
+        expect(doc.primaryKey).not.to.equal(undefined);
 
         doc.del(function(err) {
-          expect(err).to.be.null;
+          expect(err).to.equal(null);
                     
           model.get(doc.primaryKey, function(err, doc) {
-            expect(doc).to.be.undefined;
+            expect(doc).to.equal(undefined);
 
             done();
           });
@@ -207,16 +210,16 @@ describe('The MongoDB driver', function() {
       doc.name = 'Marco';
       doc.email = 'marcot@tabini.ca';
             
-      doc.save(function(err) {
+      doc.save(function() {
         model.findOne(
           {
             email: 'marcot@tabini.ca'
           },
                     
           function(err, result) {
-            expect(err).to.be.null;
+            expect(err).to.equal(null);
 
-            expect(result).to.be.an('object');                        
+            expect(result).to.be.an('object');
             expect(result.email).to.equal('marcot@tabini.ca');
 
             done();
@@ -231,7 +234,7 @@ describe('The MongoDB driver', function() {
       doc.name = 'Marco';
       doc.email = 'marcot@tabini.ca';
             
-      doc.save(function(err) {
+      doc.save(function() {
         model.find(
           {
             search: 'marcot@tabini.ca',
@@ -239,7 +242,7 @@ describe('The MongoDB driver', function() {
           },
                     
           function(err, result) {
-            expect(err).to.be.null;
+            expect(err).to.equal(null);
 
             expect(result).to.be.an('array');
                         

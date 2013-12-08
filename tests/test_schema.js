@@ -1,3 +1,5 @@
+'use strict';
+
 var expect = require('chai').expect;
 
 var Osmos = require('../lib');
@@ -14,7 +16,7 @@ describe('The Schema class', function() {
     var schema = new Schema(
       'schema',
       {
-        $schema: "http://json-schema.org/draft-04/schema#",
+        $schema: 'http://json-schema.org/draft-04/schema#',
         type: 'number',
         minimum: 10
       }
@@ -25,10 +27,10 @@ describe('The Schema class', function() {
   
   it('should reject invalid schemas', function() {
     function f() {
-      var schema = new Schema(
+      new Schema(
         'schema',
         {
-          $schema: "http://json-schema.org/draft-04/schema#",
+          $schema: 'http://json-schema.org/draft-04/schema#',
           type: 'shalala',
           minimum: 10
         }
@@ -40,13 +42,13 @@ describe('The Schema class', function() {
   
   it('should allow registering additional schemas', function(done) {
     Schema.registerSchema('test', {
-      $schema: "http://json-schema.org/draft-04/schema#",
+      $schema: 'http://json-schema.org/draft-04/schema#',
       type: 'number',
       minimum: 10
     });
     
     var schema = new Schema('marco', {
-      $schema: "http://json-schema.org/draft-04/schema#",
+      $schema: 'http://json-schema.org/draft-04/schema#',
       type: 'object',
       properties: {
         val: {
@@ -62,17 +64,17 @@ describe('The Schema class', function() {
   
   it('should allow using external schemas', function(done) {
     Schema.registerSchema('test', {
-      $schema: "http://json-schema.org/draft-04/schema#",
+      $schema: 'http://json-schema.org/draft-04/schema#',
       type: 'number',
       minimum: 10
     });
     
     var schema = new Schema('marco', {
-      $schema: "http://json-schema.org/draft-04/schema#",
+      $schema: 'http://json-schema.org/draft-04/schema#',
       type: 'object',
       properties: {
         val: {
-          $ref: 'https://api.tabini.ca/validate/rule/test.model'
+          $ref: 'https://raw.github.com/fge/sample-json-schemas/master/geojson/crs.json'
         }
       }
     });
@@ -82,7 +84,7 @@ describe('The Schema class', function() {
   
   it('should properly validate a valid document', function(done) {
     var schema = new Schema('marco', {
-      $schema: "http://json-schema.org/draft-04/schema#",
+      $schema: 'http://json-schema.org/draft-04/schema#',
       type: 'object',
       required: ['val'],
       properties: {
@@ -97,7 +99,7 @@ describe('The Schema class', function() {
       {val: 11},
       
       function(err) {
-        expect(err).to.be.null;
+        expect(err).to.equal(null);
 
         done();
       }
@@ -106,7 +108,7 @@ describe('The Schema class', function() {
   
   it('should report errors when validating an invalid document', function(done) {
     var schema = new Schema('marco', {
-      $schema: "http://json-schema.org/draft-04/schema#",
+      $schema: 'http://json-schema.org/draft-04/schema#',
       type: 'object',
       required: ['val'],
       properties: {
@@ -134,7 +136,7 @@ describe('The Schema class', function() {
   
   it('should properly support validation hooks', function(done) {
     var schema = new Schema('marco', {
-      $schema: "http://json-schema.org/draft-04/schema#",
+      $schema: 'http://json-schema.org/draft-04/schema#',
       type: 'object',
       required: ['val'],
       properties: {
@@ -166,7 +168,7 @@ describe('The Schema class', function() {
   
   it('should support format validators', function(done) {
     var schema = new Schema('marco', {
-      $schema: "http://json-schema.org/draft-04/schema#",
+      $schema: 'http://json-schema.org/draft-04/schema#',
       type: 'object',
       required: ['email'],
       properties: {
