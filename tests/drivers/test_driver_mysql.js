@@ -14,6 +14,7 @@ var fs = require('fs');
 var path = require('path');
 
 var driver;
+var schema;
 var model;
 
 describe('The MySQL driver', function() {
@@ -38,7 +39,7 @@ describe('The MySQL driver', function() {
           });
 
           async.each(
-            commands, 
+            commands,
             function(command, cb) {
               db.query(command, cb);
             },
@@ -52,7 +53,20 @@ describe('The MySQL driver', function() {
 
         driver = new MySQL(pool);
 
-        done();
+        Osmos.drivers.register('mysql', driver);
+
+        driver.generateSchema('sales', function(err, result) {
+          expect(err).not.to.be.ok;
+          expect(result).to.be.an('object');
+
+          schema = new Schema('mysql', result);
+
+          schema.primaryKey = 'orderId';
+
+          model = new Model('mysql', schema, 'sales', 'mysql');
+
+          done();
+        });
       }
     );
   });
@@ -69,37 +83,321 @@ describe('The MySQL driver', function() {
     });
   });
     
-  it.skip('should allow creating new documents', function(done) {
+  it('should allow creating new documents', function(done) {
+    model.create(function(err, doc) {
+      expect(err).not.to.be.ok;
+      expect(doc).to.be.an('object');
+      expect(doc.constructor.name).to.equal('OsmosDocument');
+
+      done();
+    });
   });
     
-  it.skip('should allow posting documents and reading their key', function(done) {
+  it('should allow posting documents and reading their key', function(done) {
+    model.create(function(err, doc) {
+      doc.email = 'marcot@example.com';
+      doc.total = 1000;
+
+      doc.save(function(err) {
+        expect(err).to.be.null;
+        expect(doc.primaryKey).to.be.a('number');
+        expect(doc.primaryKey).to.be.above(0);
+
+        done();
+      });
+    });
   });
     
-  it.skip('should allow putting documents and reading their key', function(done) {
+  it('should allow putting documents and reading their key', function(done) {
+    model.create(function(err, doc) {
+      doc.email = 'marcot@example.com';
+      doc.total = 1000;
+      doc.primaryKey = 10000;
+
+      doc.save(function(err) {
+        expect(err).to.be.null;
+        expect(doc.primaryKey).to.be.a('number');
+        expect(doc.primaryKey).to.equal(10000);
+
+        done();
+      });
+    });
   });
     
-  it.skip('should allow updating individual fields independently', function(done) {
+  it('should allow updating individual fields independently', function(done) {
+    model.create(function(err, doc) {
+      expect(err).not.to.be.ok;
+            
+      doc.email = 'manu@example.org';
+      doc.total = 1000;
+            
+      doc.save(function(err) {
+        expect(err).to.equal(null);
+        
+        model.get(doc.primaryKey, function(err, doc2) {
+          async.parallel(
+            [
+              function(cb) {
+                doc2.total = 10100;
+                doc2.save(cb);
+              },
+                            
+              function(cb) {
+                doc.email = 'joe@example.org';
+                doc.save(cb);
+              },
+            ],
+                        
+            function(err) {
+              expect(err).not.to.be.ok;
+                            
+              model.get(doc.primaryKey, function(err, doc3) {
+                expect(err).not.to.be.ok;
+                
+                expect(doc3).to.be.an('object');
+                expect(doc3.total).to.equal(10100);
+                expect(doc3.email).to.equal('joe@example.org');
+                            
+                done();
+              });
+            }
+          );
+                    
+        });
+      });
+    });
   });
     
-  it.skip('should allow putting and retrieving documents by their key', function(done) {
+  it('should allow putting and retrieving documents by their key', function(done) {
+    model.create(function(err, doc) {
+      doc.total = 100;
+      doc.email = 'marcot@tabini.ca';
+            
+      var key = 100000;
+      
+      doc.primaryKey = key;
+      
+      doc.save(function(err) {
+        expect(err).to.equal(null);
+        
+        model.get(key, function(err, doc) {
+          expect(err).to.equal(null);
+
+          expect(doc).to.be.an('object');
+          expect(doc.constructor.name).to.equal('OsmosDocument');
+                    
+          expect(doc.total).to.equal(100);
+          expect(doc.email).to.equal('marcot@tabini.ca');
+                    
+          done();
+        });
+      });
+    });
   });
     
-  it.skip('should allow deleting documents by their key', function(done) {
+  it('should allow deleting documents by their key', function(done) {
+    model.create(function(err, doc) {
+      doc.total = 123;
+      doc.email = 'marcot@tabini.ca';
+            
+      doc.save(function(err) {
+        expect(err).to.equal(null);
+                
+        expect(doc.primaryKey).to.be.a('number').above(0);
+
+        doc.del(function(err) {
+          expect(err).to.equal(null);
+                    
+          model.get(doc.primaryKey, function(err, doc) {
+            expect(err).to.be.null;
+            expect(doc).to.equal(undefined);
+
+            done();
+          });
+        });
+      });
+    });
   });
     
-  it.skip('should allow querying for individual documents', function(done) {
+  it('should allow querying for individual documents', function(done) {
+    model.create(function(err, doc) {
+      doc.total = 19328;
+      doc.email = 'marcot@tabini.ca';
+            
+      doc.save(function() {
+        model.findOne(
+          {
+            email: 'marcot@tabini.ca'
+          },
+                    
+          function(err, result) {
+            expect(err).to.equal(null);
+
+            expect(result).to.be.an('object');
+            expect(result.email).to.equal('marcot@tabini.ca');
+
+            done();
+          }
+        );
+      });
+    });
   });
     
-  it.skip('should allow querying for multiple documents based on secondary indices', function(done) {
+  it('should return multiple documents when using find()', function(done) {
+    async.series(
+      [
+        function(cb) {
+          model.create(function(err, doc) {
+            expect(err).not.to.be.ok;
+            
+            doc.total = 123123;
+            doc.email = 'marcot@tabini.ca';
+            doc.save(cb);
+          });
+        },
+        
+        function(cb) {
+          model.create(function(err, doc) {
+            expect(err).not.to.be.ok;
+
+            doc.total = 124124;
+            doc.email = 'marcot@tabini.ca';
+            doc.save(cb);
+          });
+        },
+        
+        function(cb) {
+          model.find(
+            {
+              email: 'marcot@tabini.ca'
+            },
+            
+            function(err, docs) {
+              expect(err).not.to.be.ok;
+              
+              expect(docs).to.be.an('array');
+              expect(docs.length).to.be.above(1);
+              
+              cb();
+            }
+          );
+        }
+      ],
+      
+      done
+    );
   });
     
-  it.skip('should return multiple documents when using find()', function(done) {
+  it('should return document metadata when using findLimit()', function(done) {
+    var email = 'marcot-' + Math.random() + '@tabini.ca';
+    
+    this.timeout(15000);
+    
+    async.series(
+      [
+        function(cb) {
+          async.each(
+            [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+
+            function(datum, cb) {
+              model.create(function(err, doc) {
+                expect(err).not.to.be.ok;
+            
+                doc.total = 123123;
+                doc.email = email;
+                doc.save(cb);
+              });
+            },
+
+            cb
+          );
+        },
+        
+        function(cb) {
+          model.findLimit(
+            {
+              email: email
+            },
+            
+            0,
+            
+            2,
+            
+            function(err, result) {
+              expect(err).not.to.be.ok;
+              
+              expect(result).to.be.an('object');
+              
+              expect(result.count).to.equal(10);
+              expect(result.start).to.equal(0);
+              expect(result.limit).to.equal(2);
+              expect(result.docs).to.be.an('array');
+              expect(result.docs.length).to.equal(2);
+              
+              cb();
+            }
+          );
+        }
+      ],
+      
+      done
+    );
   });
     
-  it.skip('should return document metadata when using findLimit()', function(done) {
-  });        
+  it('should properly skip documents when using findLimit()', function(done) {
+    var email = 'marcot-' + Math.random() + '@tabini.ca';
     
-  it.skip('should properly skip documents when using findLimit()', function(done) {
+    this.timeout(15000);
+    
+    async.series(
+      [
+        function(cb) {
+          async.each(
+            [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+
+            function(datum, cb) {
+              model.create(function(err, doc) {
+                expect(err).not.to.be.ok;
+            
+                doc.total = 12938;
+                doc.email = email;
+                doc.save(cb);
+              });
+            },
+
+            cb
+          );
+        },
+        
+        function(cb) {
+          model.findLimit(
+            {
+              email: email
+            },
+            
+            2,
+            
+            10,
+            
+            function(err, result) {
+              expect(err).not.to.be.ok;
+              
+              expect(result).to.be.an('object');
+              
+              expect(result.count).to.equal(10);
+              expect(result.start).to.equal(2);
+              expect(result.limit).to.equal(10);
+              expect(result.docs).to.be.an('array');
+              expect(result.docs.length).to.equal(8);
+              
+              cb();
+            }
+          );
+        }
+      ],
+      
+      done
+    );
   });
 
 });

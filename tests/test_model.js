@@ -14,7 +14,7 @@ describe('The Model class', function() {
   before(function() {
     var db = new Osmos.drivers.Memory();
     
-    db.post('', {}, { name : 'Marco' , toJSON : function() { return { name : 'Marco' }; } }, function() {});
+    db.post({}, { name : 'Marco' , toJSON : function() { return { name : 'Marco' }; } }, function() {});
     
     Osmos.drivers.register('memory', db);
 

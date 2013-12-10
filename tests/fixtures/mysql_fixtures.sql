@@ -56,3 +56,15 @@ create table `datatypes`(
   s set('v1','v2')
 
 );
+
+###
+
+drop table if exists `sales`;
+
+###
+
+create table `sales` (
+  orderId int not null primary key auto_increment,
+  email varchar(255) not null,
+  total int not null
+);
