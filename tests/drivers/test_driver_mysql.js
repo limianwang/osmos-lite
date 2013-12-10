@@ -6,87 +6,103 @@ var Osmos = require('../../lib');
 var Schema = Osmos.Schema;
 var Model = Osmos.Model;
 
-var MongoDB = Osmos.drivers.MongoDB;
-
-var MongoClient = require('mongodb').MongoClient;
-var ObjectID = require('mongodb').ObjectID;
+var MySQL = Osmos.drivers.MySQL;
 
 var expect = require('chai').expect;
 var async = require('async');
+var fs = require('fs');
+var path = require('path');
 
+var driver;
+var schema;
 var model;
 
-var schema = new Schema(
-  'mongo',
-  {
-    type: 'object',
-    required: [ 'name', 'email' ],
-    properties: {
-      name: {
-        type: 'string'
-      },
-      email: {
-        type: 'string',
-        format: 'email'
-      },
-      _id: {
-        type: 'string',
-        minLength: 24,
-        maxLength: 24
-      }
-    }
-  }
-);
-
-schema.primaryKey = '_id';
-
-describe('The MongoDB driver', function() {
+describe('The MySQL driver', function() {
    
   before(function(done) {
-    MongoClient.connect('mongodb://localhost:27017/osmos', function(err, db) {
+    var pool = MySQL.createPool('localhost', 'osmos', 'root', 'osmos');
+
+    async.waterfall(
+      [
+        function(cb) {
+          pool.getConnection(cb);
+        },
+        function (db, cb) {
+          expect(db).to.be.an('object');
+
+          var commands = [];
+
+          fs.readFileSync(path.join(__dirname, '../fixtures/mysql_fixtures.sql')).toString().split('###').forEach(function(command) {
+            command = command.trim();
+
+            if (command.length) commands.push(command);
+          });
+
+          async.each(
+            commands,
+            function(command, cb) {
+              db.query(command, cb);
+            },
+            cb
+          );
+        }
+      ],
+
+      function (err) {
+        expect(err).not.to.be.ok;
+
+        driver = new MySQL(pool);
+
+        Osmos.drivers.register('mysql', driver);
+
+        driver.generateSchema('sales', function(err, result) {
+          expect(err).not.to.be.ok;
+          expect(result).to.be.an('object');
+
+          schema = new Schema('mysql', result);
+
+          schema.primaryKey = 'orderId';
+
+          model = new Model('mysql', schema, 'sales', 'mysql');
+
+          done();
+        });
+      }
+    );
+  });
+
+  it('should properly render a schema from an existing table', function(done) {
+    driver.generateSchema('datatypes', function(err, schema) {
       expect(err).not.to.be.ok;
       
-      var driver = new MongoDB(db);
-      
-      Osmos.drivers.register('mongoDB', driver);
-      
-      model = new Model('MongoPerson', schema, 'person', 'mongoDB');
-      
-      model.transformers._id = {
-        get: function(value) {
-          if (!value) return value;
-          
-          return value.toHexString ? value.toHexString() : value;
-        }
-      };
+      fs.readFile(path.join(__dirname, '../fixtures/mysql_schema.json'), function(err, json) {
+        expect(schema).to.deep.equal(JSON.parse(json));
 
-      db.dropCollection('person', function() { done(); });
+        done();
+      });
     });
   });
     
   it('should allow creating new documents', function(done) {
     model.create(function(err, doc) {
       expect(err).not.to.be.ok;
-            
       expect(doc).to.be.an('object');
       expect(doc.constructor.name).to.equal('OsmosDocument');
-            
+
       done();
     });
   });
     
   it('should allow posting documents and reading their key', function(done) {
     model.create(function(err, doc) {
-      doc.name = 'Marco';
-      doc.email = 'marcot@tabini.ca';
-            
-      expect(doc.primaryKey).to.equal(undefined);
-      
+      doc.email = 'marcot@example.com';
+      doc.total = 1000;
+
       doc.save(function(err) {
-        expect(err).to.equal(null);
-                
-        expect(doc.primaryKey).not.to.equal(undefined);
-                
+        expect(err).to.be.null;
+        expect(doc.primaryKey).to.be.a('number');
+        expect(doc.primaryKey).to.be.above(0);
+
         done();
       });
     });
@@ -94,18 +110,15 @@ describe('The MongoDB driver', function() {
     
   it('should allow putting documents and reading their key', function(done) {
     model.create(function(err, doc) {
-      doc.name = 'Marco';
-      doc.email = 'marcot@tabini.ca';
-            
-      var key = new ObjectID().toHexString();
-      
-      doc.primaryKey = key;
-      
+      doc.email = 'marcot@example.com';
+      doc.total = 1000;
+      doc.primaryKey = 10000;
+
       doc.save(function(err) {
-        expect(err).to.equal(null);
-        
-        expect(doc.primaryKey).to.equal(key);
-                
+        expect(err).to.be.null;
+        expect(doc.primaryKey).to.be.a('number');
+        expect(doc.primaryKey).to.equal(10000);
+
         done();
       });
     });
@@ -115,8 +128,8 @@ describe('The MongoDB driver', function() {
     model.create(function(err, doc) {
       expect(err).not.to.be.ok;
             
-      doc.name = 'Manu';
       doc.email = 'manu@example.org';
+      doc.total = 1000;
             
       doc.save(function(err) {
         expect(err).to.equal(null);
@@ -125,7 +138,7 @@ describe('The MongoDB driver', function() {
           async.parallel(
             [
               function(cb) {
-                doc2.name = 'Joe';
+                doc2.total = 10100;
                 doc2.save(cb);
               },
                             
@@ -142,7 +155,7 @@ describe('The MongoDB driver', function() {
                 expect(err).not.to.be.ok;
                 
                 expect(doc3).to.be.an('object');
-                expect(doc3.name).to.equal('Joe');
+                expect(doc3.total).to.equal(10100);
                 expect(doc3.email).to.equal('joe@example.org');
                             
                 done();
@@ -157,10 +170,10 @@ describe('The MongoDB driver', function() {
     
   it('should allow putting and retrieving documents by their key', function(done) {
     model.create(function(err, doc) {
-      doc.name = 'Marco';
+      doc.total = 100;
       doc.email = 'marcot@tabini.ca';
             
-      var key = new ObjectID().toHexString();
+      var key = 100000;
       
       doc.primaryKey = key;
       
@@ -169,11 +182,11 @@ describe('The MongoDB driver', function() {
         
         model.get(key, function(err, doc) {
           expect(err).to.equal(null);
-          
+
           expect(doc).to.be.an('object');
           expect(doc.constructor.name).to.equal('OsmosDocument');
                     
-          expect(doc.name).to.equal('Marco');
+          expect(doc.total).to.equal(100);
           expect(doc.email).to.equal('marcot@tabini.ca');
                     
           done();
@@ -184,18 +197,19 @@ describe('The MongoDB driver', function() {
     
   it('should allow deleting documents by their key', function(done) {
     model.create(function(err, doc) {
-      doc.name = 'Marco';
+      doc.total = 123;
       doc.email = 'marcot@tabini.ca';
             
       doc.save(function(err) {
         expect(err).to.equal(null);
                 
-        expect(doc.primaryKey).not.to.equal(undefined);
+        expect(doc.primaryKey).to.be.a('number').above(0);
 
         doc.del(function(err) {
           expect(err).to.equal(null);
                     
           model.get(doc.primaryKey, function(err, doc) {
+            expect(err).to.be.null;
             expect(doc).to.equal(undefined);
 
             done();
@@ -207,7 +221,7 @@ describe('The MongoDB driver', function() {
     
   it('should allow querying for individual documents', function(done) {
     model.create(function(err, doc) {
-      doc.name = 'Marco';
+      doc.total = 19328;
       doc.email = 'marcot@tabini.ca';
             
       doc.save(function() {
@@ -229,34 +243,6 @@ describe('The MongoDB driver', function() {
     });
   });
     
-  it('should allow querying for multiple documents based on secondary indices', function(done) {
-    model.create(function(err, doc) {
-      doc.name = 'Marco';
-      doc.email = 'marcot@tabini.ca';
-            
-      doc.save(function() {
-        model.find(
-          {
-            search: 'marcot@tabini.ca',
-            index: 'email'
-          },
-                    
-          function(err, result) {
-            expect(err).to.equal(null);
-
-            expect(result).to.be.an('array');
-                        
-            result.forEach(function(doc) {
-              expect(doc.email).to.equal('marcot@tabini.ca');
-            });
-
-            done();
-          }
-        );
-      });
-    });
-  });
-    
   it('should return multiple documents when using find()', function(done) {
     async.series(
       [
@@ -264,7 +250,7 @@ describe('The MongoDB driver', function() {
           model.create(function(err, doc) {
             expect(err).not.to.be.ok;
             
-            doc.name = 'Marco';
+            doc.total = 123123;
             doc.email = 'marcot@tabini.ca';
             doc.save(cb);
           });
@@ -274,7 +260,7 @@ describe('The MongoDB driver', function() {
           model.create(function(err, doc) {
             expect(err).not.to.be.ok;
 
-            doc.name = 'Marco';
+            doc.total = 124124;
             doc.email = 'marcot@tabini.ca';
             doc.save(cb);
           });
@@ -317,7 +303,7 @@ describe('The MongoDB driver', function() {
               model.create(function(err, doc) {
                 expect(err).not.to.be.ok;
             
-                doc.name = 'Marco';
+                doc.total = 123123;
                 doc.email = email;
                 doc.save(cb);
               });
@@ -357,7 +343,6 @@ describe('The MongoDB driver', function() {
       done
     );
   });
-        
     
   it('should properly skip documents when using findLimit()', function(done) {
     var email = 'marcot-' + Math.random() + '@tabini.ca';
@@ -374,7 +359,7 @@ describe('The MongoDB driver', function() {
               model.create(function(err, doc) {
                 expect(err).not.to.be.ok;
             
-                doc.name = 'Marco';
+                doc.total = 12938;
                 doc.email = email;
                 doc.save(cb);
               });
