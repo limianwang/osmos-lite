@@ -1,3 +1,7 @@
+/*jshint expr:true*/
+
+'use strict';
+
 var async = require('async');
 
 var expect = require('chai').expect;
@@ -43,14 +47,14 @@ describe('The Document class', function() {
             maximum: 2,
           },
           
-          last_update: {
+          last_update: {                    //jshint ignore:line
             type: 'number'
           }
         }
       }
     );
     
-    schema.transformers['val'] = {
+    schema.transformers.val = {
       get: function(value) {
         switch(value) {
         case 1:
@@ -90,18 +94,18 @@ describe('The Document class', function() {
     
     model.instanceMethods.testFunction = function() {
       return 'ok';
-    }
+    };
     
     model.instanceProperties.testProperty = 1;
     
     model.updateableProperties = {'name' : 1};
     
     model.hook('didUpdate', function(payload, cb) {
-      payload.doc.last_update = new Date().getTime();
+      payload.doc.last_update = new Date().getTime(); // jshint ignore:line
       
       cb();
     });
-  });  
+  });
   
   it('should exist', function() {
     expect(Document).to.be.a('function');
@@ -113,7 +117,7 @@ describe('The Document class', function() {
       expect(doc.constructor.name).to.equal('OsmosDocument');
 
       function test() {
-          doc.name = 'marco';
+        doc.name = 'marco';
       }
     
       expect(test).not.to.throw(Osmos.Error);
@@ -171,7 +175,7 @@ describe('The Document class', function() {
       doc.save();
       done();
     });
-  }); 
+  });
   
   it('should not require a callback when saving a document', function(done) {
     model.create(function(err, doc) {
@@ -205,7 +209,7 @@ describe('The Document class', function() {
         },
               
         function(primaryKey, callback) {
-          var doc = model.get(primaryKey, function(err, doc) {
+          model.get(primaryKey, function(err, doc) {
             callback(err, doc, primaryKey);
           });
         },
@@ -337,11 +341,11 @@ describe('The Document class', function() {
       doc.update({name : 'Marco'}, function(err) {
         expect(err).not.to.be.ok;
         expect(doc.name).to.equal('Marco');
-        expect(doc.last_update).to.be.above(0);
+        expect(doc.last_update).to.be.above(0); // jshint ignore:line
         
         done();
       });
     });
-  })
+  });
   
 });

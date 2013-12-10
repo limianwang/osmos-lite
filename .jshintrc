@@ -1,0 +1,18 @@
+{
+  "node": true,
+  "esnext": true,
+  "camelcase": true,
+  "indent": 2,
+  "quotmark": true,
+  "strict": true,
+  "globals": [
+    "Proxy",
+    "StopIteration",
+    "describe",
+    "it",
+    "before",
+    "beforeEach",
+    "after",
+    "afterEach"
+  ]
+}

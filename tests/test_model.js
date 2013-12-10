@@ -1,3 +1,5 @@
+'use strict';
+
 var expect = require('chai').expect;
 
 var Osmos = require('../lib');
@@ -12,7 +14,7 @@ describe('The Model class', function() {
   before(function() {
     var db = new Osmos.drivers.Memory();
     
-    db.post('', {}, { name : 'Marco' , toJSON : function() { return { name : 'Marco' }} }, function() {});
+    db.post({}, { name : 'Marco' , toJSON : function() { return { name : 'Marco' }; } }, function() {});
     
     Osmos.drivers.register('memory', db);
 
@@ -54,7 +56,7 @@ describe('The Model class', function() {
   
   it('should allow the creation of new documents', function(done) {
     model.create(function(err, doc) {
-      expect(err).not.to.be.ok;
+      expect(err).not.to.be.ok; // jshint ignore:line
       expect(doc).to.be.an('object');
           
       done();
@@ -63,7 +65,7 @@ describe('The Model class', function() {
 
   it('should allow finding multiple documents', function(done) {
     model.find({ name : 'Marco' }, function(err, docs) {
-      expect(err).to.be.null;
+      expect(err).to.equal(null);
       expect(docs).to.be.an('array');
       expect(docs).to.have.length(1);
       done();
@@ -72,7 +74,7 @@ describe('The Model class', function() {
 
   it('should find one document', function(done) {
     model.findOne({ name : 'Marco' }, function(err, doc) {
-      expect(err).to.be.null;
+      expect(err).to.equal(null);
       expect(doc).to.be.an('object');
       expect(doc.constructor.name).to.equal('OsmosDocument');
           
