@@ -347,5 +347,17 @@ describe('The Document class', function() {
       });
     });
   });
+
+  it('should support setting a value to undefined', function(done) {
+    function test() {
+      model.create(function(err, doc) {
+        doc.name = undefined;
+
+        done();
+      });
+    }
+
+    expect(test).not.to.throw(Error);
+  });
   
 });
