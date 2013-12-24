@@ -359,5 +359,52 @@ describe('The Document class', function() {
 
     expect(test).not.to.throw(Error);
   });
+
+  it('should support referenced properties (#7)', function(done) {
+    var s1 = {
+      id: 'http://example.com/s1',
+      properties:{
+        type: {
+          type: 'string',
+          enum:['a','b']
+        }
+      },
+      required: ['type']
+    };
+
+    var s2 = {
+      id: 'http://example.com/s2',
+      properties: {
+        name: {
+          type: 'string'
+        },
+      },
+      required: ['name'],
+      allOf:[{$ref : 'http://example.com/s1' }]
+    };
+
+    Schema.registerSchema(s1.id, s1);
+
+    var localSchema = new Schema(s2.id, s2);
+
+    localSchema.primaryKey = 'type';
+
+    var localModel = new Model('LocalModel', localSchema, '', 'memory');
+
+    function test (doc) {
+      doc.type = 'a';
+      var x = doc.type;
+      x = x;
+    }
+
+    localModel.create(function(err, doc) {
+      expect(err).not.to.be.ok;
+      expect(doc).to.be.an('object');
+
+      expect(test.bind(this, doc)).not.to.throw(Error);
+
+      done();
+    });
+  });
   
 });

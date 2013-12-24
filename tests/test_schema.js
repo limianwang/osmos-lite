@@ -17,8 +17,12 @@ describe('The Schema class', function() {
       'schema',
       {
         $schema: 'http://json-schema.org/draft-04/schema#',
-        type: 'number',
-        minimum: 10
+        type: 'object',
+        properties: {
+          a: {
+            type: 'string'
+          }
+        }
       }
     );
     
@@ -188,6 +192,39 @@ describe('The Schema class', function() {
       
       done();
     });
+  });
+
+  it('should resolve referenced properties as appropriate', function(done) {
+    var s1 = {
+      id: 'http://example.com/s1',
+      properties:{
+        type: {
+          type: 'string',
+          enum:['a','b']
+        }
+      },
+      required: ['type']
+    };
+
+    var s2 = {
+      id: 'http://example.com/s2',
+      properties: {
+        name: {
+          type: 'string'
+        },
+      },
+      required: ['name'],
+      allOf:[ { $ref : 'http://example.com/s1' } ]
+    };
+
+    Schema.registerSchema(s1.id, s1);
+
+    var schema = new Schema(s2.id, s2);
+
+    expect(schema.documentProperties).to.be.an('object');
+    expect(schema.documentProperties).to.include.keys(['type', 'name']);
+
+    done();
   });
   
 });
