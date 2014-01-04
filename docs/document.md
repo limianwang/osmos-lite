@@ -21,6 +21,10 @@ The properties that are part of a document are composed of the following:
 - Dynamic or derived properties defined in the model
 - Intrinsic properties of the document itself
 
+## Deleting properties
+
+As of version 1.2.0, Osmos allows you to delete properties in a document as well—provided, of course, that those properties are actually part of the document's schema.
+
 ## Dealing with validation errors
 
 Validation occurs in two phases. As soon as you try to write a value into a field, Osmos notifies you as to whether you attempted to access a property that is not defined in the document. This is done on purpose, and the failure occurs loudly (with an exception) in keeping with Osmos' main directive of data safety.
@@ -34,6 +38,10 @@ doc.save(function(err) {
 ```
 
 The error object augments the normal Node Error object by providing a `statusCode` property, useful when writing Web services, and an `errors` hash, which can be used to determine which errors occurred on which fields. It is generally safe to output `statusCode` and `errors` to an external, non-trusted source.
+
+## Clearing a document
+
+Starting with version 1.2.0, the Document class implements a `clear` method that completely empties a document, erasing all its contents. It accepts a single Boolean parameter, which, if set to `false` or left empty, preserves the primary key in the document.
 
 ## Modifying a document
 
@@ -63,11 +71,13 @@ It's not uncommon to need to perform additional operations as part of an update.
 
 The data associated with a document is not saved to the backing store implicitly; you need to call the document's `save` method:
 
-    document.save(callback(err));
+    document.save(callback(err, document));
     
 When `save()` is executed, it first calls up the underlying schema's `validate()` method, and then attempts to write the data to the backing store. If the document is new and a primary key is not set, Osmos calls the `post` method of the underlying driver and makes the new primary key available. Otherwise, it calls `update()` on the driver.
 
 Note that, as of version 1.0.3, `save()` no longer requires a callback; if you don't care about finding out when the save operation is completed (or whether it reports any errors), you can just avoid passing a callback.
+
+As of version 1.2.0, save passes a reference to the document itself as the second argument of its callback.
     
 ## Deleting a document
 

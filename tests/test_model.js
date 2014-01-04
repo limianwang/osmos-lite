@@ -1,5 +1,6 @@
 'use strict';
 
+var async = require('async');
 var expect = require('chai').expect;
 
 var Osmos = require('../lib');
@@ -22,9 +23,8 @@ describe('The Model class', function() {
       'test',
       {
         type: 'object',
-        required: [ '_id' ],
         properties: {
-          _id: {
+          _primaryKey: {
             type: 'string',
           },
           
@@ -36,7 +36,7 @@ describe('The Model class', function() {
       }
     );
     
-    schema.primaryKey = '_id';
+    schema.primaryKey = '_primaryKey';
     
     model = new Model('TestModel', schema, '', 'memory');
   });
@@ -80,6 +80,48 @@ describe('The Model class', function() {
           
       done();
     });
+  });
+
+  it('should support get-or-create', function(done) {
+    expect(model.getOrCreate).to.be.a('function');
+
+    var primaryKey;
+
+    async.waterfall(
+      [
+        function(cb) {
+          model.create(cb);
+        },
+
+        function(doc, cb) {
+          doc.val = 'marcot@tabini.ca';
+          doc.save(cb);
+        },
+
+        function(doc, cb) {
+          primaryKey = doc.primaryKey;
+          model.getOrCreate(doc.primaryKey, cb);
+        },
+
+        function(doc, created, cb) {
+          expect(created).to.be.false;
+          expect(doc).to.be.an('object');
+          expect(doc.primaryKey).to.equal(primaryKey);
+
+          model.getOrCreate('completelyRandom', cb);
+        },
+
+        function(doc, created, cb) {
+          expect(created).to.be.true;
+          expect(doc).to.be.an('object');
+          expect(doc.primaryKey).to.equal('completelyRandom');
+
+          cb();
+        }
+      ],
+
+      done
+    );
   });
   
 });

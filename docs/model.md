@@ -55,6 +55,19 @@ To delete one or more documents, you can use the `delete` method:
     
 On a successful return, `count` should contain the number of rows affected by the deletion operation.
 
+## Get-or-create functionality
+
+Starting with version 1.2.0, the Model class provides a `getOrCreate` method that allows you to fetch an existing document or create a new one if the document with the given primary key doesn't exist:
+
+```javascript
+var doc = model.getOrCreate(function(err, doc, created) {
+  // created indicates whether the document existed and was fetched from
+  // the data store (false) or whether it was created (true).
+});
+```
+
+Note that `getOrCreate()` automatically prepopulates the primary key in a newly-created document.
+
 ## Class methods
 
 Models essentially act like class factories, and you can add class methods to a model after it has been created. For example:
