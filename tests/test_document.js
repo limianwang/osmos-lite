@@ -406,5 +406,55 @@ describe('The Document class', function() {
       done();
     });
   });
+
+  it('should support deleting a property', function(done) {
+    model.create(function(err, doc) {
+      doc.name = 'Marco';
+
+      expect(doc.name).to.equal('Marco');
+
+      delete doc.name;
+
+      expect(doc.name).to.be.undefined;
+
+      done();
+
+      function test() {
+        delete doc.unknownProperty;
+      }
+
+      expect(test).to.throw(Error);
+    });
+  });
+
+  it('should support clearing a document', function(done) {
+    model.create(function(err, doc) {
+      doc.primaryKey = 'Test';
+      doc.name = 'marco';
+      doc.age = 12;
+
+      doc.clear();
+
+      expect(doc.toRawJSON()).to.not.include.keys(['name', 'age']);
+      expect(doc.primaryKey).to.equal('Test');
+
+      done();
+    });
+  });
+
+  it('should support wiping the primary key when clearing a document', function(done) {
+    model.create(function(err, doc) {
+      doc.primaryKey = 'Test';
+      doc.name = 'marco';
+      doc.age = 12;
+
+      doc.clear(true);
+
+      expect(doc.toRawJSON()).to.not.include.keys(['name', 'age']);
+      expect(doc.primaryKey).to.be.undefined;
+
+      done();
+    });
+  });
   
 });
