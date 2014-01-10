@@ -456,5 +456,18 @@ describe('The Document class', function() {
       done();
     });
   });
+
+  it('should support setting empty values in an update (#8)', function(done) {
+    model.create(function(err, doc) {
+      doc.name = 'Marco';
+
+      doc.update({ name : undefined }, function(err) {
+        expect(err).to.be.null;
+        expect(doc.name).to.be.undefined;
+
+        done();
+      });
+    });
+  });
   
 });
