@@ -46,6 +46,10 @@ describe('The Document class', function() {
             minimum: 1,
             maximum: 2,
           },
+
+          data: {
+            type: 'string'
+          },
           
           last_update: {                    //jshint ignore:line
             type: 'number'
@@ -467,6 +471,16 @@ describe('The Document class', function() {
 
         done();
       });
+    });
+  });
+
+  it('should support a value called `data`', function(done) {
+    model.create(function(err, doc) {
+      doc.data = 'Test';
+
+      expect(doc.__raw__.data).to.equal('Test');
+
+      done();
     });
   });
   
