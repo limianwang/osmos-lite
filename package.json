@@ -1,6 +1,6 @@
 {
   "name": "osmos-odm",
-  "version": "1.2.3",
+  "version": "1.2.5",
   "author": "Marco Tabini <marcot@tabini.ca>",
   "description": "A general purpose, strict, simple ORM for Node.js apps",
   "contributors": [],
