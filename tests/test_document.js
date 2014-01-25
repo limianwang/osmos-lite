@@ -483,5 +483,21 @@ describe('The Document class', function() {
       done();
     });
   });
+
+  it('should only update values that exist in a payload without overriding existing properties that have not been set', function(done) {
+    model.create(function(err, doc) {
+      expect(err).not.to.be.ok;
+      expect(doc).to.be.an('object');
+
+      doc.name = 'Marco';
+
+      doc.update({}, function(err) {
+        expect(err).not.to.be.ok;
+        expect(doc.name).to.equal('Marco');
+
+        done();
+      });
+    });
+  });
   
 });
