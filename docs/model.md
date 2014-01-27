@@ -41,6 +41,24 @@ You can retrieve documents in three ways:
 - `findOne(spec, function callback(err, doc))` retrieves a specific element based on an arbitrary set of search specifications, the exact nature of which are dependent on the driver.
 - `find(spec, function callback(err, docs))` retrieves one or more number of elements based on an arbitrary set of search specs—again, the nature of these depends on the individual driver. The results should be returned as an array-like object.
 
+## Instantiating documents from hardcoded data
+
+It may, on occasion, be convenient to simulate a data store retrieval operation using hardcoded data—for example, when retrieving multiple documents from a collection that is encapsulate by multiple models, or for other testing purposes.
+
+Osmos supports this requirement by providing a `getFromImmediateData(data, callback(err, doc))` method that executes the same retrieval cycle as `get()` (including all hooks), but using pre-fetched data instead of reaching out to the data store:
+
+```javascript
+var data = {
+  _id: 123123,
+  name: 'Marco',
+  email: 'marco@example.org'
+};
+
+model.getFromImmediateData(data, function(err, doc) {
+  // Do something here.
+});
+```
+
 ## Creating new documents
 
 To create a new document, you can use the `create` method, which returns a completely empty document:

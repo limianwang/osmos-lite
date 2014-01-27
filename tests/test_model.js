@@ -123,5 +123,21 @@ describe('The Model class', function() {
       done
     );
   });
+
+  it('should support creation from immediate data', function(done) {
+    expect(model.getFromImmediateData).to.be.a('function');
+
+    var data = {
+      _primaryKey: '123123',
+      val: 'john@example.com'
+    };
+
+    model.getFromImmediateData(data, function(err, doc) {
+      expect(err).to.be.null;
+      expect(doc.toRawJSON()).to.deep.equal(data);
+
+      done();
+    });
+  });
   
 });
