@@ -273,4 +273,15 @@ describe('The Schema class', function() {
     });
   });
 
+  it('should support empty schemas without crashing', function(done) {
+    function test() {
+      var schema = new Schema('marco', {
+        $schema: 'http://json-schema.org/draft-04/schema#',
+      });
+    }
+
+    expect(test).not.to.throw(Error);
+    done();
+  });
+
 });
