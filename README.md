@@ -1,18 +1,10 @@
 # Osmos: a strict, store-agnostic object data mapper for Node.js
 
----
-
-**IMPORTANT:** This documentation refers to version 1.x of Osmos, which introduces a large number of differences from the 0.x branch, many of which break compatibility.
-
-If you wish to continue using the 0.x branch, you can check out the documentation [here](https://github.com/mtabini/osmos/tree/v0).
-
----
-
 Osmos is a object data mapper (ODM) designed to bridge Node.js apps with any data store that support traditional CRUD operations. It's built on three principles:
 
 - **Stay out of the way.** Osmos is intuitive and largely transparent to developers, and, most of all, doesn't attempt to be “smarter” than its human masters. It can also be easily mocked away for testing without having to write specialized code.
 
-- **Fail early, and fail loudly.** Osmos uses Harmony Proxies to trap access to a document; if attempts are made to read or write non-existent fields, an error is immediately thrown to help you and pinpoint common mistakes before they end up in production.
+- **Fail early, and fail loudly.** In debug mode, Osmos uses [Direct Proxies](http://wiki.ecmascript.org/doku.php?id=harmony:direct_proxies) to trap access to a document; if attempts are made to read or write non-existent fields, an error is immediately thrown to help you and pinpoint common mistakes before they end up in production.
 
 - **Don't replace developer knowledge.** Osmos is designed to be a generic ODM that will work well with just about any data store that supports CRUD operations. However, it is _not_ meant to be an abstraction layer; instead, it assumes that developers know best, and provides only a simple interface that can be easily extended through plugins.
 
@@ -24,7 +16,7 @@ The current version of Osmos supports [RethinkDB](http://www.rethinkdb.com), [Mo
 npm install osmos-odm
 ```
 
-Note that Osmos uses Harmony Proxies in order to work. Therefore, you must run your instance of node with the `--harmony_proxies` command-line switch.
+Note that, in debug mode (which is the default mode), Osmos uses Direct Proxies in order to work. Therefore, you must run your instance of node with the `--harmony_proxies` command-line switch. See the [docs](https://github.com/mtabini/osmos/blob/master/docs/document.md) for information on how to turn off debug mode in production for extra performance.
 
 ## Usage
 
