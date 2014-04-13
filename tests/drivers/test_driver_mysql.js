@@ -87,7 +87,7 @@ describe('The MySQL driver', function() {
     model.create(function(err, doc) {
       expect(err).not.to.be.ok;
       expect(doc).to.be.an('object');
-      expect(doc.constructor.name).to.equal('OsmosDocument');
+      expect(doc.constructor.name).to.equal('OsmosDataStoreDocument');
 
       done();
     });
@@ -150,7 +150,7 @@ describe('The MySQL driver', function() {
                         
             function(err) {
               expect(err).not.to.be.ok;
-                            
+
               model.get(doc.primaryKey, function(err, doc3) {
                 expect(err).not.to.be.ok;
                 
@@ -184,7 +184,7 @@ describe('The MySQL driver', function() {
           expect(err).to.equal(null);
 
           expect(doc).to.be.an('object');
-          expect(doc.constructor.name).to.equal('OsmosDocument');
+          expect(doc.constructor.name).to.equal('OsmosDataStoreDocument');
                     
           expect(doc.total).to.equal(100);
           expect(doc.email).to.equal('marcot@tabini.ca');

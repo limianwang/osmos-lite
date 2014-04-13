@@ -69,7 +69,7 @@ describe('The MongoDB driver', function() {
       expect(err).not.to.be.ok;
             
       expect(doc).to.be.an('object');
-      expect(doc.constructor.name).to.equal('OsmosDocument');
+      expect(doc.constructor.name).to.equal('OsmosDataStoreDocument');
             
       done();
     });
@@ -171,7 +171,7 @@ describe('The MongoDB driver', function() {
           expect(err).to.equal(null);
           
           expect(doc).to.be.an('object');
-          expect(doc.constructor.name).to.equal('OsmosDocument');
+          expect(doc.constructor.name).to.equal('OsmosDataStoreDocument');
                     
           expect(doc.name).to.equal('Marco');
           expect(doc.email).to.equal('marcot@tabini.ca');

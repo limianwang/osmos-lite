@@ -118,7 +118,7 @@ describe('The Document class', function() {
   it('should allow writing to properly declared fields', function(done) {
     model.create(function(err, doc) {
       expect(doc).to.be.an('object');
-      expect(doc.constructor.name).to.equal('OsmosDocument');
+      expect(doc.constructor.name).to.equal('OsmosDataStoreDocument');
 
       function test() {
         doc.name = 'marco';
@@ -133,7 +133,7 @@ describe('The Document class', function() {
   it('should refuse writing to a non-existing field', function(done) {
     model.create(function(err, doc) {
       expect(doc).to.be.an('object');
-      expect(doc.constructor.name).to.equal('OsmosDocument');
+      expect(doc.constructor.name).to.equal('OsmosDataStoreDocument');
           
       function test() {
         doc.name = 'marco';
@@ -220,7 +220,7 @@ describe('The Document class', function() {
               
         function(doc, primaryKey, callback) {
           expect(doc).to.be.an('object');
-          expect(doc.constructor.name).to.equal('OsmosDocument');
+          expect(doc.constructor.name).to.equal('OsmosDataStoreDocument');
                   
           expect(doc.name).to.be.a('string');
           expect(doc.name).to.equal('marco');
