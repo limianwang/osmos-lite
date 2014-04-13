@@ -159,6 +159,32 @@ describe('The Document class', function() {
         
     expect(test).not.to.throw(Osmos.Error);
   });
+
+  it('should refuse reading from an unknown field in debug mode', function(done) {
+    Osmos.Document.debug = true;
+
+    model.create(function(err, doc) {
+      expect(err).not.to.exist;
+      expect(doc).to.be.an('object');
+
+      expect(function() { doc.unknownfielddoesntexist; }).to.throw();
+
+      done();
+    });
+  });
+
+  it('should not refuse reading from an unknown field in production mode', function(done) {
+    Osmos.Document.debug = false;
+
+    model.create(function(err, doc) {
+      expect(err).not.to.exist;
+      expect(doc).to.be.an('object');
+
+      var x = doc.unknownfielddoesntexist;
+
+      done();
+    });
+  });
   
   it('should perform transformations when reading and writing data', function(done) {
     model.create(function(err, doc) {
