@@ -12,7 +12,6 @@
     "async": "~0",
     "tv4": "~1",
     "request": "~2",
-    "objectdiff": "~1",
     "rethinkdb": "~1",
     "harmony-reflect": "0.0.9",
     "mongodb": "~1",
