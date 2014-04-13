@@ -91,7 +91,7 @@ describe('The Document class', function() {
     schema.hook('didValidate', function(payload, cb) {
       if (payload.name == 'fail') return cb(new Osmos.Error('The chicken has fled the coop. I repeat, the chicken has fled the coop.'));
       
-      cb();
+      cb(null);
     });
     
     model = new Model('TestModel', schema, '', 'memory');
@@ -107,7 +107,7 @@ describe('The Document class', function() {
     model.hook('didUpdate', function(payload, cb) {
       payload.doc.last_update = new Date().getTime(); // jshint ignore:line
       
-      cb();
+      cb(null);
     });
   });
   

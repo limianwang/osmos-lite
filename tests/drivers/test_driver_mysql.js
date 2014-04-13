@@ -278,7 +278,7 @@ describe('The MySQL driver', function() {
               expect(docs).to.be.an('array');
               expect(docs.length).to.be.above(1);
               
-              cb();
+              cb(null);
             }
           );
         }
@@ -334,7 +334,7 @@ describe('The MySQL driver', function() {
               expect(result.docs).to.be.an('array');
               expect(result.docs.length).to.equal(2);
               
-              cb();
+              cb(null);
             }
           );
         }
@@ -390,7 +390,7 @@ describe('The MySQL driver', function() {
               expect(result.docs).to.be.an('array');
               expect(result.docs.length).to.equal(8);
               
-              cb();
+              cb(null);
             }
           );
         }

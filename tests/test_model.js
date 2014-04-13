@@ -116,7 +116,7 @@ describe('The Model class', function() {
           expect(doc).to.be.an('object');
           expect(doc.primaryKey).to.equal('completelyRandom');
 
-          cb();
+          cb(null);
         }
       ],
 

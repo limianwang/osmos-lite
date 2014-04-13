@@ -292,7 +292,7 @@ describe('The MongoDB driver', function() {
               expect(docs).to.be.an('array');
               expect(docs.length).to.be.above(1);
               
-              cb();
+              cb(null);
             }
           );
         }
@@ -348,7 +348,7 @@ describe('The MongoDB driver', function() {
               expect(result.docs).to.be.an('array');
               expect(result.docs.length).to.equal(2);
               
-              cb();
+              cb(null);
             }
           );
         }
@@ -404,7 +404,7 @@ describe('The MongoDB driver', function() {
               expect(result.docs).to.be.an('array');
               expect(result.docs.length).to.equal(8);
               
-              cb();
+              cb(null);
             }
           );
         }
@@ -466,7 +466,7 @@ it('should properly manage count with findLimit() when using a sort operation', 
             expect(result.docs).to.be.an('array');
             expect(result.docs.length).to.equal(8);
             
-            cb();
+            cb(null);
           }
         );
       }
