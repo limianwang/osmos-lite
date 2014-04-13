@@ -221,7 +221,7 @@ describe('The Document class', function() {
         function(doc, primaryKey, callback) {
           expect(doc).to.be.an('object');
           expect(doc.constructor.name).to.equal('OsmosDataStoreDocument');
-                  
+
           expect(doc.name).to.be.a('string');
           expect(doc.name).to.equal('marco');
                   
@@ -411,23 +411,19 @@ describe('The Document class', function() {
     });
   });
 
-  it('should support deleting a property', function(done) {
+  it('should not support deleting a property', function(done) {
     model.create(function(err, doc) {
       doc.name = 'Marco';
 
       expect(doc.name).to.equal('Marco');
 
-      delete doc.name;
-
-      expect(doc.name).to.be.undefined;
-
-      done();
-
       function test() {
-        delete doc.unknownProperty;
+        delete doc.name;
       }
 
       expect(test).to.throw(Error);
+
+      done();
     });
   });
 

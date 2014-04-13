@@ -25,6 +25,8 @@ The properties that are part of a document are composed of the following:
 
 As of version 1.2.0, Osmos allows you to delete properties in a document as well—provided, of course, that those properties are actually part of the document's schema.
 
+**Note:** this function has been removed as of version 1.3.0.
+
 ## Dealing with validation errors
 
 Validation occurs in two phases. As soon as you try to write a value into a field, Osmos notifies you as to whether you attempted to access a property that is not defined in the document. This is done on purpose, and the failure occurs loudly (with an exception) in keeping with Osmos' main directive of data safety.
