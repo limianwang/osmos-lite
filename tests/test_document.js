@@ -91,7 +91,7 @@ describe('The Document class', function() {
     schema.hook('didValidate', function(payload, cb) {
       if (payload.name == 'fail') return cb(new Osmos.Error('The chicken has fled the coop. I repeat, the chicken has fled the coop.'));
       
-      cb();
+      cb(null);
     });
     
     model = new Model('TestModel', schema, '', 'memory');
@@ -107,7 +107,7 @@ describe('The Document class', function() {
     model.hook('didUpdate', function(payload, cb) {
       payload.doc.last_update = new Date().getTime(); // jshint ignore:line
       
-      cb();
+      cb(null);
     });
   });
   
@@ -118,7 +118,7 @@ describe('The Document class', function() {
   it('should allow writing to properly declared fields', function(done) {
     model.create(function(err, doc) {
       expect(doc).to.be.an('object');
-      expect(doc.constructor.name).to.equal('OsmosDocument');
+      expect(doc.constructor.name).to.equal('OsmosDataStoreDocument');
 
       function test() {
         doc.name = 'marco';
@@ -133,7 +133,7 @@ describe('The Document class', function() {
   it('should refuse writing to a non-existing field', function(done) {
     model.create(function(err, doc) {
       expect(doc).to.be.an('object');
-      expect(doc.constructor.name).to.equal('OsmosDocument');
+      expect(doc.constructor.name).to.equal('OsmosDataStoreDocument');
           
       function test() {
         doc.name = 'marco';
@@ -158,6 +158,32 @@ describe('The Document class', function() {
     }
         
     expect(test).not.to.throw(Osmos.Error);
+  });
+
+  it('should refuse reading from an unknown field in debug mode', function(done) {
+    Osmos.Document.debug = true;
+
+    model.create(function(err, doc) {
+      expect(err).not.to.exist;
+      expect(doc).to.be.an('object');
+
+      expect(function() { doc.unknownfielddoesntexist; }).to.throw();
+
+      done();
+    });
+  });
+
+  it('should not refuse reading from an unknown field in production mode', function(done) {
+    Osmos.Document.debug = false;
+
+    model.create(function(err, doc) {
+      expect(err).not.to.exist;
+      expect(doc).to.be.an('object');
+
+      var x = doc.unknownfielddoesntexist;
+
+      done();
+    });
   });
   
   it('should perform transformations when reading and writing data', function(done) {
@@ -220,8 +246,8 @@ describe('The Document class', function() {
               
         function(doc, primaryKey, callback) {
           expect(doc).to.be.an('object');
-          expect(doc.constructor.name).to.equal('OsmosDocument');
-                  
+          expect(doc.constructor.name).to.equal('OsmosDataStoreDocument');
+
           expect(doc.name).to.be.a('string');
           expect(doc.name).to.equal('marco');
                   
@@ -411,23 +437,19 @@ describe('The Document class', function() {
     });
   });
 
-  it('should support deleting a property', function(done) {
+  it('should not support deleting a property', function(done) {
     model.create(function(err, doc) {
       doc.name = 'Marco';
 
       expect(doc.name).to.equal('Marco');
 
-      delete doc.name;
-
-      expect(doc.name).to.be.undefined;
-
-      done();
-
       function test() {
-        delete doc.unknownProperty;
+        delete doc.name;
       }
 
       expect(test).to.throw(Error);
+
+      done();
     });
   });
 

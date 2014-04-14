@@ -8,6 +8,21 @@ Underneath, however, a document enforces a few extra rules, the most important o
 
 Consider the simple scenario in which you write some new code where you mistype the name of a field in your document. Because JavaScript normally allows you to add properties to an object at runtime, that mistake may be very hard to track down—or, worse, it may go unnoticed and cause the loss of data. If you use Osmos, on the other way, the document will notify immediately—in the form of a runtime exception (which will, hopefully, be caught by your unit test coverage).
 
+## Debug vs. Production mode
+
+In debug mode (which is on by default), the Document class enforces read/write constraints by using an ECMA feature called [Direct Proxies](http://wiki.ecmascript.org/doku.php?id=harmony:direct_proxies); this allows Osmos to wrap documents around a “proxy” object that can intercept all attempts to access a property and throw an error when that property is not part of the document.
+
+The downside of this approach is that proxies slow things down and tend to make a mess of Node's memory heap. Therefore, you can turn them off in production by setting the `debug` property of the `Document` class to `false`:
+
+```javascript
+if (config.production) // `config` is an object your app defines
+  // Turn off debugging mode
+  Osmos.Document.debug = false;
+}
+```
+
+When `debug` is `false`, instead of using Direct Proxies, Osmos gives you direct access to the document objects, which, however, are sealed using `Object.seal`.
+
 ## Reading and writing properties
 
 You read and write a document properties the way you normally would, and the same applies to subdocuments and arrays:
@@ -24,6 +39,8 @@ The properties that are part of a document are composed of the following:
 ## Deleting properties
 
 As of version 1.2.0, Osmos allows you to delete properties in a document as well—provided, of course, that those properties are actually part of the document's schema.
+
+**Note:** this function has been removed as of version 1.3.0. You should, instead, set properties you want to delete to `undefined`.
 
 ## Dealing with validation errors
 

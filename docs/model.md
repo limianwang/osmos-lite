@@ -148,7 +148,7 @@ model.hook('didCreate', function(doc, cb) {
   doc.__raw__.token = crypto.createHash('sha256').update(String(new Date().getTime()) + Math.random()).digest('hex');
   doc.__raw__.expires = Number.MAX_VALUE;
   
-  cb();
+  cb(null);
 });
 ```
 
@@ -160,7 +160,7 @@ model.hook('didSave', function(args, cb) {
 
   // Do something here
 
-  cb();
+  cb(null);
 });
 ```
 

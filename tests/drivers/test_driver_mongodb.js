@@ -69,7 +69,7 @@ describe('The MongoDB driver', function() {
       expect(err).not.to.be.ok;
             
       expect(doc).to.be.an('object');
-      expect(doc.constructor.name).to.equal('OsmosDocument');
+      expect(doc.constructor.name).to.equal('OsmosDataStoreDocument');
             
       done();
     });
@@ -171,7 +171,7 @@ describe('The MongoDB driver', function() {
           expect(err).to.equal(null);
           
           expect(doc).to.be.an('object');
-          expect(doc.constructor.name).to.equal('OsmosDocument');
+          expect(doc.constructor.name).to.equal('OsmosDataStoreDocument');
                     
           expect(doc.name).to.equal('Marco');
           expect(doc.email).to.equal('marcot@tabini.ca');
@@ -292,7 +292,7 @@ describe('The MongoDB driver', function() {
               expect(docs).to.be.an('array');
               expect(docs.length).to.be.above(1);
               
-              cb();
+              cb(null);
             }
           );
         }
@@ -348,7 +348,7 @@ describe('The MongoDB driver', function() {
               expect(result.docs).to.be.an('array');
               expect(result.docs.length).to.equal(2);
               
-              cb();
+              cb(null);
             }
           );
         }
@@ -357,8 +357,7 @@ describe('The MongoDB driver', function() {
       done
     );
   });
-        
-    
+
   it('should properly skip documents when using findLimit()', function(done) {
     var email = 'marcot-' + Math.random() + '@tabini.ca';
     
@@ -405,7 +404,7 @@ describe('The MongoDB driver', function() {
               expect(result.docs).to.be.an('array');
               expect(result.docs.length).to.equal(8);
               
-              cb();
+              cb(null);
             }
           );
         }
@@ -414,5 +413,67 @@ describe('The MongoDB driver', function() {
       done
     );
   });
+
+it('should properly manage count with findLimit() when using a sort operation', function(done) {
+  var email = 'marcot-' + Math.random() + '@tabini.ca';
+  
+  this.timeout(15000);
+  
+  async.series(
+    [
+      function(cb) {
+        async.each(
+          [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+
+          function(datum, cb) {
+            model.create(function(err, doc) {
+              expect(err).not.to.be.ok;
+          
+              doc.name = 'Marco';
+              doc.email = email;
+              doc.save(cb);
+            });
+          },
+
+          cb
+        );
+      },
+      
+      function(cb) {
+        model.findLimit(
+          {
+            $query : {
+              email: email
+            },
+
+            $orderBy: {
+              _id: -1
+            }
+          },
+          
+          2,
+          
+          10,
+          
+          function(err, result) {
+            expect(err).not.to.be.ok;
+            
+            expect(result).to.be.an('object');
+            
+            expect(result.count).to.equal(10);
+            expect(result.start).to.equal(2);
+            expect(result.limit).to.equal(10);
+            expect(result.docs).to.be.an('array');
+            expect(result.docs.length).to.equal(8);
+            
+            cb(null);
+          }
+        );
+      }
+    ],
+    
+    done
+  );
+});
 
 });

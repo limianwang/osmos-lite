@@ -76,7 +76,7 @@ describe('The Model class', function() {
     model.findOne({ name : 'Marco' }, function(err, doc) {
       expect(err).to.equal(null);
       expect(doc).to.be.an('object');
-      expect(doc.constructor.name).to.equal('OsmosDocument');
+      expect(doc.constructor.name).to.equal('OsmosDataStoreDocument');
           
       done();
     });
@@ -116,7 +116,7 @@ describe('The Model class', function() {
           expect(doc).to.be.an('object');
           expect(doc.primaryKey).to.equal('completelyRandom');
 
-          cb();
+          cb(null);
         }
       ],
 
