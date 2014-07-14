@@ -213,7 +213,7 @@ describe('The Document class', function() {
       doc.val = 'one';
       
       doc.save(function(err) {
-        expect(err).to.equal(null);
+        expect(err).to.not.be.ok;
                 
         done();
       });
@@ -232,7 +232,7 @@ describe('The Document class', function() {
           doc.val = 'one';
                   
           doc.save(function(err) {
-            expect(err).to.equal(null);
+            expect(err).to.not.be.ok;
             
             callback(null, doc.primaryKey);
           });
@@ -291,7 +291,7 @@ describe('The Document class', function() {
           doc.val = 'one';
                   
           doc.save(function(err) {
-            expect(err).to.equal(null);
+            expect(err).to.not.be.ok;
                       
             callback(err, doc);
           });
@@ -305,7 +305,7 @@ describe('The Document class', function() {
               
         function(primaryKey, callback) {
           model.get(primaryKey, function(err, doc) {
-            expect(err).to.equal(null);
+            expect(err).to.not.be.ok;
             expect(doc).to.equal(undefined);
                       
             callback(null);
@@ -314,7 +314,7 @@ describe('The Document class', function() {
       ],
           
       function(err) {
-        expect(err).to.equal(null);
+        expect(err).to.not.be.ok;
               
         done();
       }
@@ -488,7 +488,7 @@ describe('The Document class', function() {
       doc.name = 'Marco';
 
       doc.update({ name : undefined }, function(err) {
-        expect(err).to.be.null;
+        expect(err).not.be.ok;
         expect(doc.name).to.be.undefined;
 
         done();

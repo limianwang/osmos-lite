@@ -46,8 +46,6 @@ describe('The RethinkDB driver', function() {
       db: 'osmos'
     },
     function(err, connection) {
-      expect(err).to.equal(null);
-
       var db = new RethinkDB(connection);
 
       Osmos.drivers.register('rethinkDB', db);
@@ -96,7 +94,7 @@ describe('The RethinkDB driver', function() {
       expect(doc.primaryKey).to.be.undefined;
       
       doc.save(function(err) {
-        expect(err).to.equal(null);
+        expect(err).to.not.be.ok;
 
         expect(doc.primaryKey).not.to.be.undefined;
 
@@ -113,7 +111,7 @@ describe('The RethinkDB driver', function() {
       doc.primaryKey = 'marco';
 
       doc.save(function(err) {
-        expect(err).to.equal(null);
+        expect(err).to.not.be.ok;
 
         expect(doc.primaryKey).to.equal('marco');
 
@@ -130,7 +128,7 @@ describe('The RethinkDB driver', function() {
       doc.email = 'manu@example.org';
 
       doc.save(function(err) {
-        expect(err).to.equal(null);
+        expect(err).to.not.be.ok;
 
         model.get(doc.primaryKey, function(err, doc2) {
           async.parallel(
@@ -174,10 +172,10 @@ describe('The RethinkDB driver', function() {
       doc.primaryKey = 'marco2';
 
       doc.save(function(err) {
-        expect(err).to.equal(null);
+        expect(err).to.not.be.ok;
 
         model.get('marco2', function(err, doc) {
-          expect(err).to.equal(null);
+          expect(err).to.not.be.ok;
 
           expect(doc).to.be.an('object');
           expect(doc.constructor.name).to.equal('OsmosDataStoreDocument');
@@ -197,12 +195,12 @@ describe('The RethinkDB driver', function() {
       doc.email = 'marcot@tabini.ca';
 
       doc.save(function(err) {
-        expect(err).to.equal(null);
+        expect(err).to.not.be.ok;
 
         expect(doc.primaryKey).not.to.be.undefined;
 
         doc.del(function(err) {
-          expect(err).to.equal(null);
+          expect(err).to.not.be.ok;
 
           model.get(doc.primaryKey, function(err, doc) {
             expect(doc).to.be.undefined;
@@ -227,7 +225,7 @@ describe('The RethinkDB driver', function() {
         },
 
         function(err, result) {
-          expect(err).to.equal(null);
+          expect(err).to.not.be.ok;
 
           expect(result).to.be.an('object');
           expect(result.email).to.equal('marcot@tabini.ca');
@@ -252,7 +250,7 @@ describe('The RethinkDB driver', function() {
         },
 
         function(err, result) {
-          expect(err).to.equal(null);
+          expect(err).to.not.be.ok;
 
           expect(result).to.be.an('array');
 
@@ -284,7 +282,7 @@ describe('The RethinkDB driver', function() {
           },
 
           function(err, result) {
-            expect(err).to.equal(null);
+            expect(err).to.not.be.ok;
 
             expect(result).to.be.an('array');
 

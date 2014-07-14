@@ -99,7 +99,7 @@ describe('The MySQL driver', function() {
       doc.total = 1000;
 
       doc.save(function(err) {
-        expect(err).to.be.null;
+        expect(err).not.be.ok;
         expect(doc.primaryKey).to.be.a('number');
         expect(doc.primaryKey).to.be.above(0);
 
@@ -115,7 +115,7 @@ describe('The MySQL driver', function() {
       doc.primaryKey = 10000;
 
       doc.save(function(err) {
-        expect(err).to.be.null;
+        expect(err).not.be.ok;
         expect(doc.primaryKey).to.be.a('number');
         expect(doc.primaryKey).to.equal(10000);
 
@@ -132,7 +132,7 @@ describe('The MySQL driver', function() {
       doc.total = 1000;
             
       doc.save(function(err) {
-        expect(err).to.equal(null);
+        expect(err).to.not.be.ok;
         
         model.get(doc.primaryKey, function(err, doc2) {
           async.parallel(
@@ -178,10 +178,10 @@ describe('The MySQL driver', function() {
       doc.primaryKey = key;
       
       doc.save(function(err) {
-        expect(err).to.equal(null);
+        expect(err).to.not.be.ok;
         
         model.get(key, function(err, doc) {
-          expect(err).to.equal(null);
+          expect(err).to.not.be.ok;
 
           expect(doc).to.be.an('object');
           expect(doc.constructor.name).to.equal('OsmosDataStoreDocument');
@@ -201,15 +201,15 @@ describe('The MySQL driver', function() {
       doc.email = 'marcot@tabini.ca';
             
       doc.save(function(err) {
-        expect(err).to.equal(null);
+        expect(err).to.not.be.ok;
                 
         expect(doc.primaryKey).to.be.a('number').above(0);
 
         doc.del(function(err) {
-          expect(err).to.equal(null);
+          expect(err).to.not.be.ok;
                     
           model.get(doc.primaryKey, function(err, doc) {
-            expect(err).to.be.null;
+            expect(err).not.be.ok;
             expect(doc).to.equal(undefined);
 
             done();
@@ -231,7 +231,7 @@ describe('The MySQL driver', function() {
           },
                     
           function(err, result) {
-            expect(err).to.equal(null);
+            expect(err).to.not.be.ok;
 
             expect(result).to.be.an('object');
             expect(result.email).to.equal('marcot@tabini.ca');

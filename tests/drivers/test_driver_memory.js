@@ -19,7 +19,7 @@ describe('The memory driver', function() {
     expect(obj.datum).to.equal(123);
 
     obj.save(function(err) {
-      expect(err).to.equal(null);
+      expect(err).to.not.be.ok;
       expect(obj.primaryKey).to.be.a('string');
 
       done();
@@ -34,13 +34,13 @@ describe('The memory driver', function() {
     expect(obj.datum).to.equal(123);
 
     obj.save(function(err) {
-      expect(err).to.equal(null);
+      expect(err).to.not.be.ok;
       expect(obj.primaryKey).to.be.a('string');
 
       var key = obj.primaryKey;
 
       Model.get(key, function(err, result) {
-        expect(err).to.equal(null);
+        expect(err).to.not.be.ok;
         expect(result).to.be.an('object');
         expect(result.primaryKey).to.be.a('string');
         expect(result.primaryKey).to.equal(key);
@@ -58,17 +58,17 @@ describe('The memory driver', function() {
     expect(obj.datum).to.equal(123);
 
     obj.save(function(err) {
-      expect(err).to.equal(null);
+      expect(err).to.not.be.ok;
       expect(obj.primaryKey).to.be.a('string');
 
       var key = obj.primaryKey;
 
       Model.driver.del('', { _primaryKey : key }, function(err) {
-        expect(err).to.equal(null);
+        expect(err).to.not.be.ok;
 
         Model.get(key, function(err, result) {
-          expect(err).to.equal(null);
-          expect(result).to.equal(null);
+          expect(err).to.not.be.ok;
+          expect(result).to.not.be.ok;
 
           done();
         });
@@ -84,7 +84,7 @@ describe('The memory driver', function() {
     expect(obj.datum).to.equal(123);
 
     obj.save(function(err) {
-      expect(err).to.equal(null);
+      expect(err).to.not.be.ok;
       expect(obj.primaryKey).to.be.a('string');
 
       var key = obj.primaryKey;
@@ -92,10 +92,10 @@ describe('The memory driver', function() {
       obj.datum = 124;
 
       obj.save(function(err) {
-        expect(err).to.equal(null);
+        expect(err).to.not.be.ok;
 
         Model.get(key, function(err, result) {
-          expect(err).to.equal(null);
+          expect(err).to.not.be.ok;
           expect(result.datum).to.equal(124);
 
           done();
@@ -112,11 +112,11 @@ describe('The memory driver', function() {
     expect(obj.datum).to.equal(153);
 
     obj.save(function(err) {
-      expect(err).to.equal(null);
+      expect(err).to.not.be.ok;
       expect(obj.primaryKey).to.be.a('string');
 
       Model.findOne({ datum : 153 }, function(err, match) {
-        expect(err).to.equal(null);
+        expect(err).to.not.be.ok;
         expect(match).to.be.an('object');
         expect(match.primaryKey).to.equal(obj.primaryKey);
         expect(match.datum).to.equal(153);
@@ -159,7 +159,7 @@ describe('The memory driver', function() {
 
       function() {
         Model.find({ datum : /test./i }, function(err, results) {
-          expect(err).to.equal(null);
+          expect(err).to.not.be.ok;
           expect(results).to.be.an('array');
           expect(results.length).to.equal(3);
           expect(results[0]).to.be.an('object');

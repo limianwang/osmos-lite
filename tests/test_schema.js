@@ -103,7 +103,7 @@ describe('The Schema class', function() {
       {val: 11},
       
       function(err) {
-        expect(err).to.equal(null);
+        expect(err).to.not.be.ok;
 
         done();
       }

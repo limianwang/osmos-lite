@@ -83,7 +83,7 @@ describe('The MongoDB driver', function() {
       expect(doc.primaryKey).to.equal(undefined);
       
       doc.save(function(err) {
-        expect(err).to.equal(null);
+        expect(err).to.be.undefined;
                 
         expect(doc.primaryKey).not.to.equal(undefined);
                 
@@ -102,7 +102,7 @@ describe('The MongoDB driver', function() {
       doc.primaryKey = key;
       
       doc.save(function(err) {
-        expect(err).to.equal(null);
+        expect(err).to.not.be.ok;
         
         expect(doc.primaryKey).to.equal(key);
                 
@@ -119,7 +119,7 @@ describe('The MongoDB driver', function() {
       doc.email = 'manu@example.org';
             
       doc.save(function(err) {
-        expect(err).to.equal(null);
+        expect(err).to.not.be.ok;
         
         model.get(doc.primaryKey, function(err, doc2) {
           async.parallel(
@@ -165,10 +165,10 @@ describe('The MongoDB driver', function() {
       doc.primaryKey = key;
       
       doc.save(function(err) {
-        expect(err).to.equal(null);
+        expect(err).to.not.be.ok;
         
         model.get(key, function(err, doc) {
-          expect(err).to.equal(null);
+          expect(err).to.not.be.ok;
           
           expect(doc).to.be.an('object');
           expect(doc.constructor.name).to.equal('OsmosDataStoreDocument');
@@ -188,12 +188,12 @@ describe('The MongoDB driver', function() {
       doc.email = 'marcot@tabini.ca';
             
       doc.save(function(err) {
-        expect(err).to.equal(null);
+        expect(err).to.not.be.ok;
                 
         expect(doc.primaryKey).not.to.equal(undefined);
 
         doc.del(function(err) {
-          expect(err).to.equal(null);
+          expect(err).to.not.be.ok;
                     
           model.get(doc.primaryKey, function(err, doc) {
             expect(doc).to.equal(undefined);
@@ -217,7 +217,7 @@ describe('The MongoDB driver', function() {
           },
                     
           function(err, result) {
-            expect(err).to.equal(null);
+            expect(err).to.not.be.ok;
 
             expect(result).to.be.an('object');
             expect(result.email).to.equal('marcot@tabini.ca');
@@ -242,7 +242,7 @@ describe('The MongoDB driver', function() {
           },
                     
           function(err, result) {
-            expect(err).to.equal(null);
+            expect(err).to.not.be.ok;
 
             expect(result).to.be.an('array');
                         

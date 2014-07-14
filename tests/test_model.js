@@ -65,7 +65,7 @@ describe('The Model class', function() {
 
   it('should allow finding multiple documents', function(done) {
     model.find({ name : 'Marco' }, function(err, docs) {
-      expect(err).to.equal(null);
+      expect(err).to.not.be.ok;
       expect(docs).to.be.an('array');
       expect(docs).to.have.length(1);
       done();
@@ -74,7 +74,7 @@ describe('The Model class', function() {
 
   it('should find one document', function(done) {
     model.findOne({ name : 'Marco' }, function(err, doc) {
-      expect(err).to.equal(null);
+      expect(err).to.not.be.ok;
       expect(doc).to.be.an('object');
       expect(doc.constructor.name).to.equal('OsmosDataStoreDocument');
           
@@ -133,7 +133,7 @@ describe('The Model class', function() {
     };
 
     model.getFromImmediateData(data, function(err, doc) {
-      expect(err).to.be.null;
+      expect(err).not.be.ok;
       expect(doc.toRawJSON()).to.deep.equal(data);
 
       done();
