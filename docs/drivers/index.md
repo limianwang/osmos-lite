@@ -4,10 +4,11 @@ Drivers allow Osmos to interface with a specific data store. Because Osmos is st
 
 Currently, Osmos 1.x supports the following data stores:
 
-- [RethinkDB](./rethinkdb.md)
-- [MongoDB](./mongodb.md)
+- [ElasticSearch](./elasticsearch.md)
 - [Memory](./memory.md), a memory-based driver useful for testing purposes only.
+- [MongoDB](./mongodb.md)
 - [MySQL](./mysql.md)
+- [RethinkDB](./rethinkdb.md)
 
 ## CRUD operations
 
