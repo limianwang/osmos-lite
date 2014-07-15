@@ -13,7 +13,7 @@
     "tv4": "~1",
     "request": "~2",
     "rethinkdb": "~1",
-    "harmony-reflect": "0.0.9",
+    "harmony-reflect": "~1",
     "mongodb": "~1",
     "mysql": "~2",
     "elasticsearch": "~2"
