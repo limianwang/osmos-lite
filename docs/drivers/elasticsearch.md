@@ -1,6 +1,6 @@
 # Using the ElasticSearch driver
 
-Osmos's ElasticSearch driver, available starting with version 1.4, supports both basic crud and query operations.
+Osmos's ElasticSearch driver, available starting with version 1.4.0, supports both basic crud and query operations.
 
 ## Instantiation
 
