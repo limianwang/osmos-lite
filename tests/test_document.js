@@ -53,6 +53,10 @@ describe('The Document class', function() {
           
           last_update: {                    //jshint ignore:line
             type: 'number'
+          },
+
+          arr: {
+            type: 'array'
           }
         }
       }
@@ -102,7 +106,7 @@ describe('The Document class', function() {
     
     model.instanceProperties.testProperty = 1;
     
-    model.updateableProperties = {'name' : 1};
+    model.updateableProperties = ['name', 'arr'];
     
     model.hook('didUpdate', function(payload, cb) {
       payload.doc.last_update = new Date().getTime(); // jshint ignore:line
@@ -521,5 +525,37 @@ describe('The Document class', function() {
       });
     });
   });
-  
+
+  it('should properly support updates to arrays', function(done) {
+     model.create(function(err, doc) {
+      expect(err).not.to.be.ok;
+      expect(doc).to.be.an('object');
+
+      // This test verifies that the data stored in an array inside the document
+      // is actually cloned when toRawJSON() is called if you modify the array
+      // and then feed that same array to the update() method.
+      // 
+      // If this is not the case, calling save() will fail if the driver
+      // uses an object diff between the original contents of the object and
+      // the new object, because the array will be the same in both objects.
+      // 
+      // Yeah, it's complicated. That's why it took me two hours to figure
+      // out where the problem was and write a working test case for it. —Mt.
+
+      doc.update({arr : ['test']});
+
+      var originalRaw = doc.toRawJSON();
+
+      expect(originalRaw.arr).to.have.length(1);
+
+      doc.arr.push('toast');
+
+      doc.update({arr : doc.arr});
+
+      expect(originalRaw.arr).to.have.length(1);
+
+      done();
+     });
+  });  
+
 });
