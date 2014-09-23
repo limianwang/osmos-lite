@@ -20,8 +20,8 @@ var model;
 describe('The MySQL driver', function() {
 
   before(function(done) {
-    var pool = MySQL.createPool('localhost', 'osmos', 'root', '');
-console.log(pool);
+    var pool = MySQL.createPool('localhost', 'osmos', 'root', 'osmos');
+
     async.waterfall(
       [
         function(cb) {
