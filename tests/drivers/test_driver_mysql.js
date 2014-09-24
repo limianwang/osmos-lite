@@ -361,7 +361,8 @@ describe('The MySQL driver', function() {
         function(cb) {
           model.findLimit(
             {
-              email: email
+              email: email,
+              total: 123123
             },
 
             0,
