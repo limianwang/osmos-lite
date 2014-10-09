@@ -361,6 +361,22 @@ describe('The Document class', function() {
     });
   });
 
+  it('should fail when required field is missing during updates', function(done) {
+    model.create(function(err, doc) {
+      expect(err).to.not.exist;
+
+      doc.name = 'tester';
+
+      doc.update({ name : '' }, function(err) {
+        expect(err).to.not.exist;
+        doc.save(function(err) {
+          expect(err).to.be.an('object').to.be.an.instanceof(Osmos.Error);
+          done();
+        });
+      });
+    });
+  });
+
   it('should support updating a document then changing to empty value', function(done) {
     async.waterfall([
       function(next) {
@@ -384,14 +400,13 @@ describe('The Document class', function() {
       function(next) {
         model.findOne({ name : 'tester' }, function(err, doc) {
           expect(err).to.not.exist;
-          doc.update({ name : '', email: '' }, function(err) {
+          doc.update({ email: '' }, function(err) {
             expect(err).to.not.exist;
 
             doc.save(function(err, doc) {
               expect(err).to.not.exist;
 
-              expect(doc).to.have.property('name').to.be.empty;
-              expect(doc).to.have.property('email').to.be.empty;
+              expect(doc).to.not.have.property('email');
               next();
             });
           });
