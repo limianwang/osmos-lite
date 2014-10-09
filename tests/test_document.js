@@ -15,10 +15,11 @@ var Document = Osmos.Document;
 var schema, model;
 
 describe('The Document class', function() {
-  
+  require('chai').Assertion.includeStack = true;
+
   before(function() {
     var db = new Osmos.drivers.Memory();
-    
+
     Osmos.drivers.register('memory', db);
 
     schema = new Schema(
@@ -30,17 +31,22 @@ describe('The Document class', function() {
           _primaryKey: {
             type: 'string',
           },
-          
+
           name: {
             type: 'string'
           },
-          
+
+          email: {
+            type: 'string',
+            format: 'email'
+          },
+
           age: {
             type: 'number',
             minimum: 0,
             maximum: 99
           },
-          
+
           val: {
             type: 'number',
             minimum: 1,
@@ -50,7 +56,7 @@ describe('The Document class', function() {
           data: {
             type: 'string'
           },
-          
+
           last_update: {                    //jshint ignore:line
             type: 'number'
           },
@@ -61,60 +67,60 @@ describe('The Document class', function() {
         }
       }
     );
-    
+
     schema.transformers.val = {
       get: function(value) {
         switch(value) {
         case 1:
           return 'one';
-            
+
         case 2:
           return 'two';
-            
+
         default:
           return value;
         }
       },
-      
+
       set: function(value) {
         switch(value) {
         case 'one':
           return 1;
-            
+
         case 'two':
           return 2;
-            
+
         default:
           throw new Error('Invalid value `' + value + '`');
         }
       }
     };
-    
+
     schema.primaryKey = '_primaryKey';
-    
+
     schema.hook('didValidate', function(payload, cb) {
       if (payload.name == 'fail') return cb(new Osmos.Error('The chicken has fled the coop. I repeat, the chicken has fled the coop.'));
-      
+
       cb(null);
     });
-    
+
     model = new Model('TestModel', schema, '', 'memory');
-    
+
     model.instanceMethods.testFunction = function() {
       return 'ok';
     };
-    
+
     model.instanceProperties.testProperty = 1;
-    
-    model.updateableProperties = ['name', 'arr'];
-    
+
+    model.updateableProperties = ['name', 'arr', 'email'];
+
     model.hook('didUpdate', function(payload, cb) {
       payload.doc.last_update = new Date().getTime(); // jshint ignore:line
-      
+
       cb(null);
     });
   });
-  
+
   it('should exist', function() {
     expect(Document).to.be.a('function');
   });
@@ -127,9 +133,9 @@ describe('The Document class', function() {
       function test() {
         doc.name = 'marco';
       }
-    
+
       expect(test).not.to.throw(Osmos.Error);
-    
+
       done();
     });
   });
@@ -138,29 +144,29 @@ describe('The Document class', function() {
     model.create(function(err, doc) {
       expect(doc).to.be.an('object');
       expect(doc.constructor.name).to.equal('OsmosDataStoreDocument');
-          
+
       function test() {
         doc.name = 'marco';
         doc.invalid = 'value';
       }
-          
+
       expect(test).to.throw(Error);
-          
+
       done();
     });
   });
-  
+
   it('should allow reading from a declared field', function(done) {
     function test() {
       model.create(function(err, doc) {
         doc.name = 'marco';
-            
+
         expect(doc.name).to.equal('marco');
-                
+
         done();
       });
     }
-        
+
     expect(test).not.to.throw(Osmos.Error);
   });
 
@@ -189,194 +195,252 @@ describe('The Document class', function() {
       done();
     });
   });
-  
+
   it('should perform transformations when reading and writing data', function(done) {
     model.create(function(err, doc) {
       doc.val = 'one';
-          
+
       expect(doc.__raw__.val).to.equal(1);
-          
+
       expect(doc.val).to.equal('one');
       done();
     });
   });
-  
+
   it('should allow saving a document', function(done) {
     model.create(function(err, doc) {
       doc.name = 'marco';
       doc.val = 'one';
-      
-      doc.save();
-      done();
-    });
-  });
-  
-  it('should not require a callback when saving a document', function(done) {
-    model.create(function(err, doc) {
-      doc.name = 'marco';
-      doc.val = 'one';
-      
-      doc.save(function(err) {
-        expect(err).to.not.be.ok;
-                
+
+      doc.save(function(err, doc) {
+        expect(err).to.not.exist;
         done();
       });
     });
   });
-  
+
+  it('should not require a callback when saving a document', function(done) {
+    model.create(function(err, doc) {
+      doc.name = 'marco';
+      doc.val = 'one';
+
+      doc.save(function(err) {
+        expect(err).to.not.be.ok;
+
+        done();
+      });
+    });
+  });
+
   it('should actually save a document', function(done) {
     async.waterfall(
       [
         function(callback) {
           model.create(callback);
         },
-              
+
         function(doc, callback) {
           doc.name = 'marco';
           doc.val = 'one';
-                  
+
           doc.save(function(err) {
             expect(err).to.not.be.ok;
-            
+
             callback(null, doc.primaryKey);
           });
         },
-              
+
         function(primaryKey, callback) {
           model.get(primaryKey, function(err, doc) {
             callback(err, doc, primaryKey);
           });
         },
-              
+
         function(doc, primaryKey, callback) {
           expect(doc).to.be.an('object');
           expect(doc.constructor.name).to.equal('OsmosDataStoreDocument');
 
           expect(doc.name).to.be.a('string');
           expect(doc.name).to.equal('marco');
-                  
+
           expect(doc.val).to.be.a('string');
           expect(doc.val).to.equal('one');
-                  
+
           expect(doc.primaryKey).to.be.a('string');
           expect(doc.primaryKey).to.equal(primaryKey);
-                  
+
           callback(null);
         }
       ],
-          
+
       done
     );
   });
-  
+
   it('should call the global validator before saving', function(done) {
     model.create(function(err, doc) {
       doc.name = 'fail';
       doc.val = 'one';
-          
+
       doc.save(function(err) {
         expect(err).to.be.an('object');
         expect(err).to.be.an.instanceOf(Osmos.Error);
-              
+
         done();
       });
     });
   });
-  
+
   it('should properly delete a document', function(done) {
     async.waterfall(
       [
         function(callback) {
           model.create(callback);
         },
-              
+
         function(doc, callback) {
           doc.name = 'marco';
           doc.val = 'one';
-                  
+
           doc.save(function(err) {
             expect(err).to.not.be.ok;
-                      
+
             callback(err, doc);
           });
         },
-              
+
         function(doc, callback) {
           doc.del(function(err) {
             callback(err, doc.primaryKey);
           });
         },
-              
+
         function(primaryKey, callback) {
           model.get(primaryKey, function(err, doc) {
             expect(err).to.not.be.ok;
             expect(doc).to.equal(undefined);
-                      
+
             callback(null);
           });
         }
       ],
-          
+
       function(err) {
         expect(err).to.not.be.ok;
-              
+
         done();
       }
     );
   });
-  
+
   it('should support extension through the instanceMethods property', function(done) {
     model.create(function(err, doc) {
       expect(err).not.to.be.ok;
       expect(doc).to.be.an('object');
-      
+
       expect(doc.testFunction).to.be.a('function');
       expect(doc.testFunction()).to.equal('ok');
-      
+
       done();
     });
   });
-  
+
   it('should support extension through the instanceProperties property', function(done) {
     model.create(function(err, doc) {
       expect(err).not.to.be.ok;
       expect(doc).to.be.an('object');
-      
+
       function f() {
         doc.testProperty = 123;
         expect(doc.testProperty).to.equal(123);
       }
-      
+
       expect(f).not.to.throw(Osmos.Error);
-      
+
       done();
     });
   });
-  
+
+  it('should fail when required field is missing during updates', function(done) {
+    model.create(function(err, doc) {
+      expect(err).to.not.exist;
+
+      doc.name = 'tester';
+
+      doc.update({ name : '' }, function(err) {
+        expect(err).to.not.exist;
+        doc.save(function(err) {
+          expect(err).to.be.an('object').to.be.an.instanceof(Osmos.Error);
+          done();
+        });
+      });
+    });
+  });
+
+  it('should support updating a document then changing to empty value', function(done) {
+    async.waterfall([
+      function(next) {
+        model.create(function(err, doc) {
+          expect(err).to.not.exist;
+          expect(doc).to.be.an('object');
+          next(null, doc);
+        });
+      },
+      function(doc, next) {
+        doc.name = 'tester';
+        doc.val = 'one';
+        doc.email = 'test@test.ca';
+
+        doc.save(function(err, doc) {
+          expect(err).to.not.exist;
+          expect(doc).to.be.an('object').to.have.property('name').to.be.equal('tester');
+          next();
+        });
+      },
+      function(next) {
+        model.findOne({ name : 'tester' }, function(err, doc) {
+          expect(err).to.not.exist;
+          doc.update({ email: '' }, function(err) {
+            expect(err).to.not.exist;
+
+            doc.save(function(err, doc) {
+              expect(err).to.not.exist;
+
+              expect(doc).to.not.have.property('email');
+              next();
+            });
+          });
+        });
+      }
+    ], function() {
+      done();
+    });
+  });
+
   it('should support updating a document from a JSON payload', function(done) {
     model.create(function(err, doc) {
       expect(err).not.to.be.ok;
       expect(doc).to.be.an('object');
-      
+
       doc.update({name : 'Marco'}, function(err) {
         expect(err).not.to.be.ok;
         expect(doc.name).to.equal('Marco');
-        
+
         done();
       });
     });
   });
-  
+
   it('should support update hooks when updating a document', function(done) {
     model.create(function(err, doc) {
       expect(err).not.to.be.ok;
       expect(doc).to.be.an('object');
-      
+
       doc.update({name : 'Marco'}, function(err) {
         expect(err).not.to.be.ok;
         expect(doc.name).to.equal('Marco');
         expect(doc.last_update).to.be.above(0); // jshint ignore:line
-        
+
         done();
       });
     });
@@ -534,11 +598,11 @@ describe('The Document class', function() {
       // This test verifies that the data stored in an array inside the document
       // is actually cloned when toRawJSON() is called if you modify the array
       // and then feed that same array to the update() method.
-      // 
+      //
       // If this is not the case, calling save() will fail if the driver
       // uses an object diff between the original contents of the object and
       // the new object, because the array will be the same in both objects.
-      // 
+      //
       // Yeah, it's complicated. That's why it took me two hours to figure
       // out where the problem was and write a working test case for it. —Mt.
 
@@ -556,6 +620,6 @@ describe('The Document class', function() {
 
       done();
      });
-  });  
+  });
 
 });
