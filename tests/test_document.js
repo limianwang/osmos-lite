@@ -36,6 +36,11 @@ describe('The Document class', function() {
             type: 'string'
           },
 
+          email: {
+            type: 'string',
+            format: 'email'
+          },
+
           age: {
             type: 'number',
             minimum: 0,
@@ -107,7 +112,7 @@ describe('The Document class', function() {
 
     model.instanceProperties.testProperty = 1;
 
-    model.updateableProperties = ['name', 'arr'];
+    model.updateableProperties = ['name', 'arr', 'email'];
 
     model.hook('didUpdate', function(payload, cb) {
       payload.doc.last_update = new Date().getTime(); // jshint ignore:line
@@ -368,6 +373,7 @@ describe('The Document class', function() {
       function(doc, next) {
         doc.name = 'tester';
         doc.val = 'one';
+        doc.email = 'test@test.ca';
 
         doc.save(function(err, doc) {
           expect(err).to.not.exist;
@@ -378,12 +384,14 @@ describe('The Document class', function() {
       function(next) {
         model.findOne({ name : 'tester' }, function(err, doc) {
           expect(err).to.not.exist;
-          doc.update({ name : '' }, function(err) {
+          doc.update({ name : '', email: '' }, function(err) {
             expect(err).to.not.exist;
 
             doc.save(function(err, doc) {
               expect(err).to.not.exist;
+
               expect(doc).to.have.property('name').to.be.empty;
+              expect(doc).to.have.property('email').to.be.empty;
               next();
             });
           });
