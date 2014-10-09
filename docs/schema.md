@@ -84,7 +84,7 @@ Osmos comes with a wide range of format validators; you can also add your own (a
 
 ```javascript
 Schema.registerFormat('sin', function(data, schema) {
-  if (typeof data !== string || !/\d{3}\-\d{3}\-\d{3}\/.test(data)) {
+  if (typeof data !== 'string' || !/\d{3}\-\d{3}\-\d{3}\/.test(data)) {
     return 'Invalid SIN number';
   }
 });
