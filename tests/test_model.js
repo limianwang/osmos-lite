@@ -11,12 +11,12 @@ var Model = Osmos.Model;
 var schema, model;
 
 describe('The Model class', function() {
-  
+
   before(function() {
     var db = new Osmos.drivers.Memory();
-    
+
     db.post({}, { name : 'Marco' , toJSON : function() { return { name : 'Marco' }; } }, function() {});
-    
+
     Osmos.drivers.register('memory', db);
 
     schema = new Schema(
@@ -27,38 +27,43 @@ describe('The Model class', function() {
           _primaryKey: {
             type: 'string',
           },
-          
+
           val: {
             type: 'string',
             format: 'email'
+          },
+
+          is_valid: {
+            type: 'boolean',
+            default: false
           }
         }
       }
     );
-    
+
     schema.primaryKey = '_primaryKey';
-    
+
     model = new Model('TestModel', schema, '', 'memory');
   });
-  
+
   it('should exist', function() {
     expect(Model).to.be.a('function');
   });
-  
+
   it('should support both direct and named drivers', function() {
     function f() {
       new Model('TestModel', schema, '', 'memory');
       new Model('TestModel', schema, '', new Osmos.drivers.Memory());
     }
-    
+
     expect(f).not.to.throw(Error);
   });
-  
+
   it('should allow the creation of new documents', function(done) {
     model.create(function(err, doc) {
       expect(err).not.to.be.ok; // jshint ignore:line
       expect(doc).to.be.an('object');
-          
+
       done();
     });
   });
@@ -77,7 +82,7 @@ describe('The Model class', function() {
       expect(err).to.not.be.ok;
       expect(doc).to.be.an('object');
       expect(doc.constructor.name).to.equal('OsmosDataStoreDocument');
-          
+
       done();
     });
   });
@@ -115,6 +120,7 @@ describe('The Model class', function() {
           expect(created).to.be.true;
           expect(doc).to.be.an('object');
           expect(doc.primaryKey).to.equal('completelyRandom');
+          expect(doc).to.have.property('is_valid').to.be.equal(false);
 
           cb(null);
         }
@@ -129,15 +135,17 @@ describe('The Model class', function() {
 
     var data = {
       _primaryKey: '123123',
-      val: 'john@example.com'
+      val: 'john@example.com',
+      is_valid: true
     };
 
     model.getFromImmediateData(data, function(err, doc) {
       expect(err).not.be.ok;
+      expect(doc).to.have.property('is_valid').to.be.equal(true);
       expect(doc.toRawJSON()).to.deep.equal(data);
 
       done();
     });
   });
-  
+
 });
