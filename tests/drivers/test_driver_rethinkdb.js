@@ -92,7 +92,7 @@ describe('The RethinkDB driver', function() {
       doc.email = 'marcot@tabini.ca';
 
       expect(doc.primaryKey).to.be.undefined;
-      
+
       doc.save(function(err) {
         expect(err).to.not.be.ok;
 
@@ -149,7 +149,7 @@ describe('The RethinkDB driver', function() {
 
               model.get(doc.primaryKey, function(err, doc3) {
                 expect(err).not.to.be.ok;
-                
+
                 expect(doc3).to.be.an('object');
                 expect(doc3.name).to.equal('Joe');
                 expect(doc3.email).to.equal('joe@example.org');
@@ -261,6 +261,22 @@ describe('The RethinkDB driver', function() {
           done();
         }
         );
+      });
+    });
+  });
+
+  it('should allow finding number of documents matching spec', function(done) {
+    model.create(function(err, doc) {
+      doc.name = 'Tester';
+      doc.email = 'Osmos@osmos.com';
+
+      doc.save(function() {
+        model.count({ name : 'Tester' }, function(err, count) {
+          expect(err).to.not.exist;
+          expect(count).to.be.equal(1);
+
+          done();
+        });
       });
     });
   });
