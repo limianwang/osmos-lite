@@ -148,4 +148,14 @@ describe('The Model class', function() {
     });
   });
 
+  it('should support counting the number of occurrences', function(done) {
+    expect(model).to.respondTo('count');
+
+    model.count({ name: 'Marco' }, function(err, count) {
+      expect(err).to.not.exist;
+      expect(count).to.be.equal(1);
+      done();
+    });
+
+  });
 });

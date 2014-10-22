@@ -446,4 +446,32 @@ describe('The MySQL driver', function() {
     );
   });
 
+  it('should be able to count the number of elements in the database', function(done) {
+    async.series([
+      function(next) {
+        model.create(function(err, doc) {
+          expect(err).to.not.exist;
+
+          doc.total = 100;
+          doc.email = 'test@osmos.com';
+
+          doc.save(function(err) {
+            expect(err).to.not.exist;
+            next();
+          });
+        });
+      },
+      function(next) {
+        model.count({ email: 'test@osmos.com' }, function(err, count) {
+          expect(err).to.not.exist;
+          expect(count).to.be.equal(1);
+
+          next();
+        });
+      }
+    ], function() {
+      done();
+    });
+  });
+
 });
