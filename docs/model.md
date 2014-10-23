@@ -6,25 +6,25 @@ A schema represents the blueprint for a document. It brings together a schema, w
 
     var Osmos = require('osmos');
     var Schema = Osmos.Schema;
-    
+
     Osmos.registerDriverInstance('db', new Osmos.drivers.memory());
 
     var schema = new Schema({
       // Define your schema here
     });
-    
+
     var model = new Model('UserName', schema, 'users', 'db');
-    
+
     function callback(err, document) {
         // Do something with the document
     }
-    
+
     model.get('123123', callback); // By primary key
     model.findOne({ name : 'marco' }, callback); // Find one document
     model.find({ name : /^m.+/ }, callback); // Find all documents that match
-    
+
     model.create(callback); // Create a new document
-    
+
 ## Creating a model
 
 To create a model, you must provide four components: a name, a schema, a bucket, and a data connection.
@@ -70,7 +70,7 @@ To create a new document, you can use the `create` method, which returns a compl
 To delete one or more documents, you can use the `delete` method:
 
     Model.delete(spec, function callback(err, count));
-    
+
 On a successful return, `count` should contain the number of rows affected by the deletion operation.
 
 ## Get-or-create functionality
@@ -85,6 +85,12 @@ var doc = model.getOrCreate(function(err, doc, created) {
 ```
 
 Note that `getOrCreate()` automatically prepopulates the primary key in a newly-created document.
+
+## Counting number of documents
+
+To get a count of documents, you can use the `count` method:
+
+    Model.count(spec, function(err, count) {});
 
 ## Class methods
 
@@ -124,7 +130,7 @@ model.transformers['authToken.expires'] = {
   set: function(value) {
     throw new Error('Auth token expiry dates cannot be set directly.');
   },
-  
+
   get: function(value) {
     return new Date(value);
   }
@@ -147,7 +153,7 @@ Models expose a number of hooks, which can be used to intercept certain operatio
 model.hook('didCreate', function(doc, cb) {
   doc.__raw__.token = crypto.createHash('sha256').update(String(new Date().getTime()) + Math.random()).digest('hex');
   doc.__raw__.expires = Number.MAX_VALUE;
-  
+
   cb(null);
 });
 ```
