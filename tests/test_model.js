@@ -33,6 +33,11 @@ describe('The Model class', function() {
             format: 'email'
           },
 
+          meta: {
+            type: 'object',
+            default: {}
+          },
+
           is_valid: {
             type: 'boolean',
             default: false
@@ -120,6 +125,7 @@ describe('The Model class', function() {
           expect(created).to.be.true;
           expect(doc).to.be.an('object');
           expect(doc.primaryKey).to.equal('completelyRandom');
+          expect(doc).to.have.property('meta').to.deep.equal({});
           expect(doc).to.have.property('is_valid').to.be.equal(false);
 
           cb(null);

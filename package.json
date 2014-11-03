@@ -10,13 +10,14 @@
   },
   "dependencies": {
     "async": "~0",
-    "tv4": "~1",
-    "request": "~2",
-    "rethinkdb": "~1",
+    "deepmerge": "^0.2.7",
+    "elasticsearch": "~2",
     "harmony-reflect": "~1",
     "mongodb": "~1",
     "mysql": "~2",
-    "elasticsearch": "~2"
+    "request": "~2",
+    "rethinkdb": "~1",
+    "tv4": "~1"
   },
   "devDependencies": {
     "mocha": "~1",

@@ -53,6 +53,11 @@ describe('The Document class', function() {
             maximum: 2,
           },
 
+          complex: {
+            type: 'object',
+            default: {}
+          },
+
           data: {
             type: 'string'
           },
@@ -211,9 +216,13 @@ describe('The Document class', function() {
     model.create(function(err, doc) {
       doc.name = 'marco';
       doc.val = 'one';
+      expect(doc.complex).to.be.an('object').to.deep.equal({});
+
+      doc.complex.val = 'test';
 
       doc.save(function(err, doc) {
         expect(err).to.not.exist;
+        expect(doc.complex).to.be.an('object').to.deep.equal({ val : 'test'});
         done();
       });
     });
@@ -224,8 +233,9 @@ describe('The Document class', function() {
       doc.name = 'marco';
       doc.val = 'one';
 
-      doc.save(function(err) {
+      doc.save(function(err, doc) {
         expect(err).to.not.be.ok;
+        expect(doc).to.have.property('complex').to.deep.equal({});
 
         done();
       });
