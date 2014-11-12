@@ -12,28 +12,51 @@ var expect = require('chai').expect;
 var async = require('async');
 
 var model;
+var schemaData = {
+  type: 'object',
+  required: [ 'name', 'email' ],
+  properties: {
+    name: {
+      type: 'string',
+      strict: true
+    },
+    email: {
+      type: 'string',
+      format: 'email',
+      strict: true
+    },
+    id: {
+      type: 'string'
+    }
+  }
+};
 
 var schema = new Schema(
   'elasticsearch',
-  {
-    type: 'object',
-    required: [ 'name', 'email' ],
-    properties: {
-      name: {
-        type: 'string'
-      },
-      email: {
-        type: 'string',
-        format: 'email'
-      },
-      id: {
-        type: 'string'
-      }
-    }
-  }
+  schemaData
 );
 
 schema.primaryKey = 'id';
+
+function createIndices(schema, callback) {
+  /*
+    TODO: Need to perhaps encapsulate that within driver too
+   */
+  var data = {
+    properties: {}
+  }
+
+  Object.keys(schema.properties).forEach(function(key) {
+    data.properties[key] = {
+      type: schema.properties[key].type
+    }
+    if(schema.properties[key].strict) {
+      data.properties[key].index = 'not_analyzed';
+    }
+  });
+
+  return data;
+}
 
 describe('The ElasticSearch driver', function() {
 
@@ -66,7 +89,12 @@ describe('The ElasticSearch driver', function() {
           }
         };
 
-        done();
+        var mapping = createIndices(schemaData);
+
+        driver.createIndices(model, mapping, function(err) {
+          done();
+        });
+
       }
     );
   });
@@ -90,7 +118,7 @@ describe('The ElasticSearch driver', function() {
       expect(doc.primaryKey).to.equal(undefined);
 
       doc.save(function(err) {
-        expect(err).to.be.undefined;
+        expect(err).to.not.exist;
 
         expect(doc.primaryKey).not.to.equal(undefined);
 
@@ -220,7 +248,7 @@ describe('The ElasticSearch driver', function() {
       doc.save(function() {
         model.findOne(
           {
-            q: 'email:"marcot@tabini.ca"'
+              email: 'marcot@tabini.ca'
           },
 
           function(err, result) {
@@ -232,6 +260,29 @@ describe('The ElasticSearch driver', function() {
             done();
           }
         );
+      });
+    });
+  });
+
+  it('should be able to find with multiple key/value pair', function(done) {
+    model.create(function(err, doc) {
+      expect(err).to.not.be.ok;
+
+      doc.name = 'Osmos';
+      doc.email = 'osmos@odm.com';
+
+      doc.save(function(err, doc) {
+        model.findOne({
+          name: 'Osmos',
+          email: 'osmos@odm.com'
+        }, function(err, doc) {
+          expect(err).to.not.exist;
+          expect(doc).to.be.an('object').to.include.keys(['name', 'email']);
+          expect(doc.name).to.be.equal('Osmos');
+
+          done();
+        });
+
       });
     });
   });
@@ -260,10 +311,12 @@ describe('The ElasticSearch driver', function() {
         },
 
         function(cb) {
-          model.count({ name: 'Marco' }, function(err, count) {
+          model.count({
+            name: 'Marco'
+          }, function(err, count) {
             expect(err).to.not.exist;
 
-            expect(count).to.be.equal(1);
+            expect(count).to.be.above(1);
 
             cb();
           });
@@ -272,9 +325,8 @@ describe('The ElasticSearch driver', function() {
         function(cb) {
           model.find(
             {
-              q: 'email:"marcot@tabini.ca"'
+              email: 'marcot@tabini.ca'
             },
-
             function(err, docs) {
               expect(err).not.to.be.ok;
 
@@ -319,7 +371,7 @@ describe('The ElasticSearch driver', function() {
         function(cb) {
           model.findLimit(
             {
-              q: 'email:"' + email + '"'
+              email: email
             },
 
             0,
@@ -375,7 +427,7 @@ describe('The ElasticSearch driver', function() {
         function(cb) {
           model.findLimit(
             {
-              q: 'email:"' + email + '"'
+              email: email
             },
 
             2,
@@ -403,60 +455,60 @@ describe('The ElasticSearch driver', function() {
     );
   });
 
-it('should properly manage count with findLimit() when using a sort operation', function(done) {
-  var email = 'marcot-' + Math.random() + '@tabini.ca';
+  it('should properly manage count with findLimit() when using a sort operation', function(done) {
+    var email = 'marcot-' + Math.random() + '@tabini.ca';
 
-  this.timeout(15000);
+    this.timeout(15000);
 
-  async.series(
-    [
-      function(cb) {
-        async.each(
-          [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+    async.series(
+      [
+        function(cb) {
+          async.each(
+            [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
 
-          function(datum, cb) {
-            model.create(function(err, doc) {
+            function(datum, cb) {
+              model.create(function(err, doc) {
+                expect(err).not.to.be.ok;
+
+                doc.name = 'Marco';
+                doc.email = email;
+                doc.save(cb);
+              });
+            },
+
+            cb
+          );
+        },
+
+        function(cb) {
+          model.findLimit(
+            {
+              email: email
+            },
+
+            2,
+
+            10,
+
+            function(err, result) {
               expect(err).not.to.be.ok;
 
-              doc.name = 'Marco';
-              doc.email = email;
-              doc.save(cb);
-            });
-          },
+              expect(result).to.be.an('object');
 
-          cb
-        );
-      },
+              expect(result.count).to.equal(10);
+              expect(result.start).to.equal(2);
+              expect(result.limit).to.equal(10);
+              expect(result.docs).to.be.an('array');
+              expect(result.docs.length).to.equal(8);
 
-      function(cb) {
-        model.findLimit(
-          {
-            q: 'email:"' + email + '"'
-          },
+              cb(null);
+            }
+          );
+        }
+      ],
 
-          2,
-
-          10,
-
-          function(err, result) {
-            expect(err).not.to.be.ok;
-
-            expect(result).to.be.an('object');
-
-            expect(result.count).to.equal(10);
-            expect(result.start).to.equal(2);
-            expect(result.limit).to.equal(10);
-            expect(result.docs).to.be.an('array');
-            expect(result.docs.length).to.equal(8);
-
-            cb(null);
-          }
-        );
-      }
-    ],
-
-    done
-  );
-});
+      done
+    );
+  });
 
 });

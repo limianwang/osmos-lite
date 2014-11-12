@@ -41,6 +41,11 @@ describe('The Model class', function() {
           is_valid: {
             type: 'boolean',
             default: false
+          },
+
+          environment: {
+            enum: ['a', null],
+            default: null
           }
         }
       }
