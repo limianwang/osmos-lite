@@ -25,24 +25,24 @@ The driver supports a full complement of search functions (`findOne()`, `find()`
 ```javascript
 model.findLimit(
   {
-    q: 'email:"' + email + '"'
+    email: email
   },
-  
+
   2,
-  
+
   10,
-  
+
   function(err, result) {
     expect(err).not.to.be.ok;
-    
+
     expect(result).to.be.an('object');
-    
+
     expect(result.count).to.equal(10);
     expect(result.start).to.equal(2);
     expect(result.limit).to.equal(10);
     expect(result.docs).to.be.an('array');
     expect(result.docs.length).to.equal(8);
-    
+
     cb(null);
   }
 );
