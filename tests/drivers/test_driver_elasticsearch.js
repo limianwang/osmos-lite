@@ -263,7 +263,7 @@ describe('The ElasticSearch driver', function() {
           model.count({ name: 'Marco' }, function(err, count) {
             expect(err).to.not.exist;
 
-            expect(count).to.be.equal(1);
+            expect(count).to.be.above(1);
 
             cb();
           });
@@ -403,60 +403,60 @@ describe('The ElasticSearch driver', function() {
     );
   });
 
-it('should properly manage count with findLimit() when using a sort operation', function(done) {
-  var email = 'marcot-' + Math.random() + '@tabini.ca';
+  it('should properly manage count with findLimit() when using a sort operation', function(done) {
+    var email = 'marcot-' + Math.random() + '@tabini.ca';
 
-  this.timeout(15000);
+    this.timeout(15000);
 
-  async.series(
-    [
-      function(cb) {
-        async.each(
-          [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+    async.series(
+      [
+        function(cb) {
+          async.each(
+            [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
 
-          function(datum, cb) {
-            model.create(function(err, doc) {
+            function(datum, cb) {
+              model.create(function(err, doc) {
+                expect(err).not.to.be.ok;
+
+                doc.name = 'Marco';
+                doc.email = email;
+                doc.save(cb);
+              });
+            },
+
+            cb
+          );
+        },
+
+        function(cb) {
+          model.findLimit(
+            {
+              q: 'email:"' + email + '"'
+            },
+
+            2,
+
+            10,
+
+            function(err, result) {
               expect(err).not.to.be.ok;
 
-              doc.name = 'Marco';
-              doc.email = email;
-              doc.save(cb);
-            });
-          },
+              expect(result).to.be.an('object');
 
-          cb
-        );
-      },
+              expect(result.count).to.equal(10);
+              expect(result.start).to.equal(2);
+              expect(result.limit).to.equal(10);
+              expect(result.docs).to.be.an('array');
+              expect(result.docs.length).to.equal(8);
 
-      function(cb) {
-        model.findLimit(
-          {
-            q: 'email:"' + email + '"'
-          },
+              cb(null);
+            }
+          );
+        }
+      ],
 
-          2,
-
-          10,
-
-          function(err, result) {
-            expect(err).not.to.be.ok;
-
-            expect(result).to.be.an('object');
-
-            expect(result.count).to.equal(10);
-            expect(result.start).to.equal(2);
-            expect(result.limit).to.equal(10);
-            expect(result.docs).to.be.an('array');
-            expect(result.docs.length).to.equal(8);
-
-            cb(null);
-          }
-        );
-      }
-    ],
-
-    done
-  );
-});
+      done
+    );
+  });
 
 });
