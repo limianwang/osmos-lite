@@ -38,32 +38,21 @@ var schema = new Schema(
 
 schema.primaryKey = 'id';
 
-function setupMapping(index, type, schema, callback) {
-  var body = {
-    mappings: {}
-  };
-  body.mappings[type] = {
+function createIndices(schema, callback) {
+  var data = {
     properties: {}
-  };
+  }
 
   Object.keys(schema.properties).forEach(function(key) {
-    body.mappings[type].properties[key] = {
+    data.properties[key] = {
       type: schema.properties[key].type
     }
     if(schema.properties[key].strict) {
-      body.mappings[type].properties[key].index = 'not_analyzed';
+      data.properties[key].index = 'not_analyzed';
     }
   });
 
-  var indices = {
-    index: index,
-    type: type,
-    body: body
-  };
-
-  this.indices.create(indices, function(err) {
-    callback(err);
-  });
+  return data;
 }
 
 describe('The ElasticSearch driver', function() {
@@ -97,7 +86,9 @@ describe('The ElasticSearch driver', function() {
           }
         };
 
-        setupMapping.call(driver.client, 'osmostest', 'person', schemaData, function(err) {
+        var mapping = createIndices(schemaData);
+
+        driver.createIndices(model, mapping, function(err) {
           done();
         });
 
