@@ -39,6 +39,9 @@ var schema = new Schema(
 schema.primaryKey = 'id';
 
 function createIndices(schema, callback) {
+  /*
+    TODO: Need to perhaps encapsulate that within driver too
+   */
   var data = {
     properties: {}
   }
@@ -60,7 +63,7 @@ describe('The ElasticSearch driver', function() {
   before(function(done) {
     var driver = new ElasticSearch(
       {
-        host: '192.168.1.13:9200'
+        host: 'localhost:9200'
       },
 
       'osmostest'
