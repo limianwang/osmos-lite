@@ -12,28 +12,59 @@ var expect = require('chai').expect;
 var async = require('async');
 
 var model;
+var schemaData = {
+  type: 'object',
+  required: [ 'name', 'email' ],
+  properties: {
+    name: {
+      type: 'string',
+      strict: true
+    },
+    email: {
+      type: 'string',
+      format: 'email',
+      strict: true
+    },
+    id: {
+      type: 'string'
+    }
+  }
+};
 
 var schema = new Schema(
   'elasticsearch',
-  {
-    type: 'object',
-    required: [ 'name', 'email' ],
-    properties: {
-      name: {
-        type: 'string'
-      },
-      email: {
-        type: 'string',
-        format: 'email'
-      },
-      id: {
-        type: 'string'
-      }
-    }
-  }
+  schemaData
 );
 
 schema.primaryKey = 'id';
+
+function setupMapping(index, type, schema, callback) {
+  var body = {
+    mappings: {}
+  };
+  body.mappings[type] = {
+    properties: {}
+  };
+
+  Object.keys(schema.properties).forEach(function(key) {
+    body.mappings[type].properties[key] = {
+      type: schema.properties[key].type
+    }
+    if(schema.properties[key].strict) {
+      body.mappings[type].properties[key].index = 'not_analyzed';
+    }
+  });
+
+  var indices = {
+    index: index,
+    type: type,
+    body: body
+  };
+
+  this.indices.create(indices, function(err) {
+    callback(err);
+  });
+}
 
 describe('The ElasticSearch driver', function() {
 
@@ -66,7 +97,10 @@ describe('The ElasticSearch driver', function() {
           }
         };
 
-        done();
+        setupMapping.call(driver.client, 'osmostest', 'person', schemaData, function(err) {
+          done();
+        });
+
       }
     );
   });
@@ -220,7 +254,9 @@ describe('The ElasticSearch driver', function() {
       doc.save(function() {
         model.findOne(
           {
-            q: 'email:"marcot@tabini.ca"'
+            match: {
+              email: 'marcot@tabini.ca'
+            }
           },
 
           function(err, result) {
@@ -260,7 +296,11 @@ describe('The ElasticSearch driver', function() {
         },
 
         function(cb) {
-          model.count({ name: 'Marco' }, function(err, count) {
+          model.count({
+            match: {
+              name: 'Marco'
+            }
+          }, function(err, count) {
             expect(err).to.not.exist;
 
             expect(count).to.be.above(1);
@@ -272,7 +312,9 @@ describe('The ElasticSearch driver', function() {
         function(cb) {
           model.find(
             {
-              q: 'email:"marcot@tabini.ca"'
+              match: {
+                email: 'marcot@tabini.ca'
+              }
             },
 
             function(err, docs) {
@@ -319,7 +361,9 @@ describe('The ElasticSearch driver', function() {
         function(cb) {
           model.findLimit(
             {
-              q: 'email:"' + email + '"'
+              match: {
+                email: email
+              }
             },
 
             0,
@@ -375,7 +419,9 @@ describe('The ElasticSearch driver', function() {
         function(cb) {
           model.findLimit(
             {
-              q: 'email:"' + email + '"'
+              match: {
+                email: email
+              }
             },
 
             2,
@@ -431,7 +477,9 @@ describe('The ElasticSearch driver', function() {
         function(cb) {
           model.findLimit(
             {
-              q: 'email:"' + email + '"'
+              match: {
+                email: email
+              }
             },
 
             2,
