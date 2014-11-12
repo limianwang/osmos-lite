@@ -60,7 +60,7 @@ describe('The ElasticSearch driver', function() {
   before(function(done) {
     var driver = new ElasticSearch(
       {
-        host: 'localhost:9200'
+        host: '192.168.1.13:9200'
       },
 
       'osmostest'
@@ -115,7 +115,7 @@ describe('The ElasticSearch driver', function() {
       expect(doc.primaryKey).to.equal(undefined);
 
       doc.save(function(err) {
-        expect(err).to.be.undefined;
+        expect(err).to.not.exist;
 
         expect(doc.primaryKey).not.to.equal(undefined);
 
@@ -245,9 +245,7 @@ describe('The ElasticSearch driver', function() {
       doc.save(function() {
         model.findOne(
           {
-            match: {
               email: 'marcot@tabini.ca'
-            }
           },
 
           function(err, result) {
@@ -259,6 +257,29 @@ describe('The ElasticSearch driver', function() {
             done();
           }
         );
+      });
+    });
+  });
+
+  it('should be able to find with multiple key/value pair', function(done) {
+    model.create(function(err, doc) {
+      expect(err).to.not.be.ok;
+
+      doc.name = 'Osmos';
+      doc.email = 'osmos@odm.com';
+
+      doc.save(function(err, doc) {
+        model.findOne({
+          name: 'Osmos',
+          email: 'osmos@odm.com'
+        }, function(err, doc) {
+          expect(err).to.not.exist;
+          expect(doc).to.be.an('object').to.include.keys(['name', 'email']);
+          expect(doc.name).to.be.equal('Osmos');
+
+          done();
+        });
+
       });
     });
   });
@@ -288,9 +309,7 @@ describe('The ElasticSearch driver', function() {
 
         function(cb) {
           model.count({
-            match: {
-              name: 'Marco'
-            }
+            name: 'Marco'
           }, function(err, count) {
             expect(err).to.not.exist;
 
@@ -303,11 +322,8 @@ describe('The ElasticSearch driver', function() {
         function(cb) {
           model.find(
             {
-              match: {
-                email: 'marcot@tabini.ca'
-              }
+              email: 'marcot@tabini.ca'
             },
-
             function(err, docs) {
               expect(err).not.to.be.ok;
 
@@ -352,9 +368,7 @@ describe('The ElasticSearch driver', function() {
         function(cb) {
           model.findLimit(
             {
-              match: {
-                email: email
-              }
+              email: email
             },
 
             0,
@@ -410,9 +424,7 @@ describe('The ElasticSearch driver', function() {
         function(cb) {
           model.findLimit(
             {
-              match: {
-                email: email
-              }
+              email: email
             },
 
             2,
@@ -468,9 +480,7 @@ describe('The ElasticSearch driver', function() {
         function(cb) {
           model.findLimit(
             {
-              match: {
-                email: email
-              }
+              email: email
             },
 
             2,
