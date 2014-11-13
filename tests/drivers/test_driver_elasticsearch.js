@@ -248,7 +248,9 @@ describe('The ElasticSearch driver', function() {
       doc.save(function() {
         model.findOne(
           {
+            match: {
               email: 'marcot@tabini.ca'
+            }
           },
 
           function(err, result) {
@@ -273,8 +275,20 @@ describe('The ElasticSearch driver', function() {
 
       doc.save(function(err, doc) {
         model.findOne({
-          name: 'Osmos',
-          email: 'osmos@odm.com'
+          bool: {
+            must: [
+              {
+                term: {
+                  name: 'Osmos'
+                }
+              },
+              {
+                term: {
+                  email: 'osmos@odm.com'
+                }
+              }
+            ]
+          }
         }, function(err, doc) {
           expect(err).to.not.exist;
           expect(doc).to.be.an('object').to.include.keys(['name', 'email']);
@@ -312,7 +326,9 @@ describe('The ElasticSearch driver', function() {
 
         function(cb) {
           model.count({
-            name: 'Marco'
+            match: {
+              name: 'Marco'
+            }
           }, function(err, count) {
             expect(err).to.not.exist;
 
@@ -325,7 +341,9 @@ describe('The ElasticSearch driver', function() {
         function(cb) {
           model.find(
             {
-              email: 'marcot@tabini.ca'
+              match: {
+                email: 'marcot@tabini.ca'
+              }
             },
             function(err, docs) {
               expect(err).not.to.be.ok;
@@ -371,7 +389,9 @@ describe('The ElasticSearch driver', function() {
         function(cb) {
           model.findLimit(
             {
-              email: email
+              match: {
+                email: email
+              }
             },
 
             0,
@@ -427,7 +447,9 @@ describe('The ElasticSearch driver', function() {
         function(cb) {
           model.findLimit(
             {
-              email: email
+              match: {
+                email: email
+              }
             },
 
             2,
@@ -483,7 +505,9 @@ describe('The ElasticSearch driver', function() {
         function(cb) {
           model.findLimit(
             {
-              email: email
+              match: {
+                email: email
+              }
             },
 
             2,
