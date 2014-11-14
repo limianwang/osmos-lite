@@ -8,8 +8,11 @@ var Model = Osmos.Model;
 
 var ElasticSearch = Osmos.drivers.ElasticSearch;
 
-var expect = require('chai').expect;
+var chai = require('chai');
+var expect = chai.expect;
 var async = require('async');
+
+chai.config.includeStack = true;
 
 var model;
 var schemaData = {
@@ -535,4 +538,74 @@ describe('The ElasticSearch driver', function() {
     );
   });
 
+  it('should be able to create a document and delete it', function(done) {
+    var self = this;
+    async.waterfall([
+      function(next) {
+        model.create(function(err, doc) {
+          expect(err).to.not.be.ok;
+
+          doc.name = 'osmos-es';
+          doc.email = 'es@osmos.com';
+
+          doc.save(function(err, doc) {
+            expect(err).to.not.exist;
+            expect(doc).to.have.property('id');
+
+            next(null, doc);
+          });
+        });
+      },
+      function(doc, next) {
+        model.get(doc.id, function(err, result) {
+          expect(err).to.not.exist;
+
+          ['id','name','email'].forEach(function(field) {
+            expect(result).to.have.property(field).to.be.equal(doc[field]);
+          });
+          next(null, result);
+        });
+      },
+      function(doc, next) {
+        doc.del(function(err) {
+          expect(err).to.not.be.ok;
+
+          next(null, doc);
+        });
+      },
+      function(doc, next) {
+        model.get(doc.id, function(err, result) {
+          expect(err).to.have.property('message').to.equal('Not Found');
+          expect(result).to.not.exist;
+
+          next(null, doc);
+        });
+      },
+      function(doc, next) {
+        model.find({
+          bool: {
+            must: [
+              {
+                term: {
+                  name: 'osmos-es'
+                }
+              },
+              {
+                term: {
+                  email: 'es@osmos.com'
+                }
+              }
+            ]
+          }
+        }, function(err, docs) {
+          expect(err).to.not.be.ok;
+          expect(docs).to.be.empty;
+
+          next();
+        });
+      }
+    ], function() {
+      done();
+    });
+  });
 });
