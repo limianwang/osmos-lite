@@ -25,7 +25,9 @@ The driver supports a full complement of search functions (`findOne()`, `find()`
 ```javascript
 model.findLimit(
   {
-    email: email
+    match: {
+      email: email
+    }
   },
 
   2,

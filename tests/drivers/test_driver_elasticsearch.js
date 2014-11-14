@@ -30,6 +30,9 @@ var schemaData = {
     },
     id: {
       type: 'string'
+    },
+    description: {
+      type: 'string'
     }
   }
 };
@@ -600,6 +603,63 @@ describe('The ElasticSearch driver', function() {
         }, function(err, docs) {
           expect(err).to.not.be.ok;
           expect(docs).to.be.empty;
+
+          next();
+        });
+      }
+    ], function() {
+      done();
+    });
+  });
+
+  it('should be able to search `free text`', function(done) {
+    async.series([
+      function(next) {
+        model.create(function(err, doc) {
+          doc.name = 'test1';
+          doc.email = 'test1@osmos.com';
+          doc.description = 'This is the description for test1';
+
+          doc.save(function(err, doc) {
+            expect(err).to.not.exist;
+
+            next(null);
+          });
+        });
+      },
+      function(next) {
+        model.create(function(err, doc) {
+          doc.name = 'test2';
+          doc.email = 'test2@osmos.com';
+          doc.description = 'This is description for test 2';
+
+          doc.save(function(err, doc) {
+            expect(err).to.not.exist;
+
+            next(null);
+          });
+        });
+      },
+      function(next) {
+        model.find({
+          match: {
+            description: 'description'
+          }
+        }, function(err, docs) {
+          expect(err).to.not.be.ok;
+          expect(docs).to.have.length(2);
+
+          next();
+        });
+      },
+      function(next) {
+        model.find({
+          match: {
+            email: 'test2@osmos.com'
+          }
+        }, function(err, docs) {
+          expect(err).to.not.be.ok;
+          expect(docs).to.have.length(1);
 
           next();
         });
