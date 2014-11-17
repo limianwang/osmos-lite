@@ -8,8 +8,11 @@ var Model = Osmos.Model;
 
 var ElasticSearch = Osmos.drivers.ElasticSearch;
 
-var expect = require('chai').expect;
+var chai = require('chai');
+var expect = chai.expect;
 var async = require('async');
+
+chai.config.includeStack = true;
 
 var model;
 var schemaData = {
@@ -26,6 +29,9 @@ var schemaData = {
       strict: true
     },
     id: {
+      type: 'string'
+    },
+    description: {
       type: 'string'
     }
   }
@@ -248,7 +254,9 @@ describe('The ElasticSearch driver', function() {
       doc.save(function() {
         model.findOne(
           {
+            match: {
               email: 'marcot@tabini.ca'
+            }
           },
 
           function(err, result) {
@@ -273,8 +281,20 @@ describe('The ElasticSearch driver', function() {
 
       doc.save(function(err, doc) {
         model.findOne({
-          name: 'Osmos',
-          email: 'osmos@odm.com'
+          bool: {
+            must: [
+              {
+                term: {
+                  name: 'Osmos'
+                }
+              },
+              {
+                term: {
+                  email: 'osmos@odm.com'
+                }
+              }
+            ]
+          }
         }, function(err, doc) {
           expect(err).to.not.exist;
           expect(doc).to.be.an('object').to.include.keys(['name', 'email']);
@@ -312,7 +332,9 @@ describe('The ElasticSearch driver', function() {
 
         function(cb) {
           model.count({
-            name: 'Marco'
+            match: {
+              name: 'Marco'
+            }
           }, function(err, count) {
             expect(err).to.not.exist;
 
@@ -325,7 +347,9 @@ describe('The ElasticSearch driver', function() {
         function(cb) {
           model.find(
             {
-              email: 'marcot@tabini.ca'
+              match: {
+                email: 'marcot@tabini.ca'
+              }
             },
             function(err, docs) {
               expect(err).not.to.be.ok;
@@ -371,7 +395,9 @@ describe('The ElasticSearch driver', function() {
         function(cb) {
           model.findLimit(
             {
-              email: email
+              match: {
+                email: email
+              }
             },
 
             0,
@@ -427,7 +453,9 @@ describe('The ElasticSearch driver', function() {
         function(cb) {
           model.findLimit(
             {
-              email: email
+              match: {
+                email: email
+              }
             },
 
             2,
@@ -483,7 +511,9 @@ describe('The ElasticSearch driver', function() {
         function(cb) {
           model.findLimit(
             {
-              email: email
+              match: {
+                email: email
+              }
             },
 
             2,
@@ -511,4 +541,131 @@ describe('The ElasticSearch driver', function() {
     );
   });
 
+  it('should be able to create a document and delete it', function(done) {
+    var self = this;
+    async.waterfall([
+      function(next) {
+        model.create(function(err, doc) {
+          expect(err).to.not.be.ok;
+
+          doc.name = 'osmos-es';
+          doc.email = 'es@osmos.com';
+
+          doc.save(function(err, doc) {
+            expect(err).to.not.exist;
+            expect(doc).to.have.property('id');
+
+            next(null, doc);
+          });
+        });
+      },
+      function(doc, next) {
+        model.get(doc.id, function(err, result) {
+          expect(err).to.not.exist;
+
+          ['id','name','email'].forEach(function(field) {
+            expect(result).to.have.property(field).to.be.equal(doc[field]);
+          });
+          next(null, result);
+        });
+      },
+      function(doc, next) {
+        doc.del(function(err) {
+          expect(err).to.not.be.ok;
+
+          next(null, doc);
+        });
+      },
+      function(doc, next) {
+        model.get(doc.id, function(err, result) {
+          expect(err).to.have.property('message').to.equal('Not Found');
+          expect(result).to.not.exist;
+
+          next(null, doc);
+        });
+      },
+      function(doc, next) {
+        model.find({
+          bool: {
+            must: [
+              {
+                term: {
+                  name: 'osmos-es'
+                }
+              },
+              {
+                term: {
+                  email: 'es@osmos.com'
+                }
+              }
+            ]
+          }
+        }, function(err, docs) {
+          expect(err).to.not.be.ok;
+          expect(docs).to.be.empty;
+
+          next();
+        });
+      }
+    ], function() {
+      done();
+    });
+  });
+
+  it('should be able to search `free text`', function(done) {
+    async.series([
+      function(next) {
+        model.create(function(err, doc) {
+          doc.name = 'test1';
+          doc.email = 'test1@osmos.com';
+          doc.description = 'This is the description for test1';
+
+          doc.save(function(err, doc) {
+            expect(err).to.not.exist;
+
+            next(null);
+          });
+        });
+      },
+      function(next) {
+        model.create(function(err, doc) {
+          doc.name = 'test2';
+          doc.email = 'test2@osmos.com';
+          doc.description = 'This is description for test 2';
+
+          doc.save(function(err, doc) {
+            expect(err).to.not.exist;
+
+            next(null);
+          });
+        });
+      },
+      function(next) {
+        model.find({
+          match: {
+            description: 'description'
+          }
+        }, function(err, docs) {
+          expect(err).to.not.be.ok;
+          expect(docs).to.have.length(2);
+
+          next();
+        });
+      },
+      function(next) {
+        model.find({
+          match: {
+            email: 'test2@osmos.com'
+          }
+        }, function(err, docs) {
+          expect(err).to.not.be.ok;
+          expect(docs).to.have.length(1);
+
+          next();
+        });
+      }
+    ], function() {
+      done();
+    });
+  });
 });
