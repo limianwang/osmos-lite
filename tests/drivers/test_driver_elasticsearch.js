@@ -66,8 +66,9 @@ function createIndices(schema, callback) {
 
 describe('The ElasticSearch driver', function() {
 
+  var driver;
   before(function(done) {
-    var driver = new ElasticSearch(
+    driver = new ElasticSearch(
       {
         host: 'localhost:9200'
       },
@@ -95,7 +96,13 @@ describe('The ElasticSearch driver', function() {
           }
         };
 
-        var mapping = createIndices(schemaData);
+        var mapping = {
+          body: {
+            mappings: {
+              person: createIndices(schemaData)
+            }
+          }
+        };
 
         driver.createIndices(model, mapping, function(err) {
           done();
@@ -103,6 +110,40 @@ describe('The ElasticSearch driver', function() {
 
       }
     );
+  });
+
+  it('should return correctly created indices', function(done) {
+    driver.client.indices.getMapping({ index: model.index }, function(err, mapping) {
+      expect(err).to.not.be.ok;
+
+      expect(mapping).to.be.an('object').to.have.property('osmostest');
+
+      expect(mapping.osmostest)
+        .to.deep.equal({
+          mappings: {
+            person: {
+              properties: {
+                description: {
+                  type: 'string'
+                },
+                email: {
+                  type: 'string',
+                  index: 'not_analyzed'
+                },
+                id: {
+                  type: 'string'
+                },
+                name: {
+                  type: 'string',
+                  index: 'not_analyzed'
+                }
+              }
+            }
+          }
+         });
+
+      done();
+    });
   });
 
   it('should allow creating new documents', function(done) {
