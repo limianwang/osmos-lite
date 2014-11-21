@@ -113,12 +113,14 @@ describe('The ElasticSearch driver', function() {
   });
 
   it('should return correctly created indices', function(done) {
-    driver.client.indices.getMapping({ index: model.index }, function(err, mapping) {
+    var index = 'osmostest';
+
+    driver.client.indices.getMapping({ index: index }, function(err, mapping) {
       expect(err).to.not.be.ok;
 
-      expect(mapping).to.be.an('object').to.have.property('osmostest');
+      expect(mapping).to.be.an('object').to.have.property(index);
 
-      expect(mapping.osmostest)
+      expect(mapping[index])
         .to.deep.equal({
           mappings: {
             person: {
