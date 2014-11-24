@@ -7,28 +7,31 @@ var Osmos = require('../lib');
 var Schema = Osmos.Schema;
 
 describe('The Schema class', function() {
-  
+
   it('should exist', function() {
     expect(Schema).to.be.a('function');
   });
-  
+
   it('should support JSON-Schema schemas', function() {
-    var schema = new Schema(
-      'schema',
-      {
-        $schema: 'http://json-schema.org/draft-04/schema#',
-        type: 'object',
-        properties: {
-          a: {
-            type: 'string'
-          }
+    var schemaData = {
+      $schema: 'http://json-schema.org/draft-04/schema#',
+      type: 'object',
+      properties: {
+        a: {
+          type: 'string'
         }
       }
+    };
+
+    var schema = new Schema(
+      'schema',
+      schemaData
     );
-    
+
     expect(schema).to.be.an('object');
+    expect(schema.toJSON()).to.deep.equal(schemaData);
   });
-  
+
   it('should reject invalid schemas', function() {
     function f() {
       new Schema(
@@ -40,17 +43,17 @@ describe('The Schema class', function() {
         }
       );
     }
-    
+
     expect(f).to.throw(Error);
   });
-  
+
   it('should allow registering additional schemas', function(done) {
     Schema.registerSchema('test', {
       $schema: 'http://json-schema.org/draft-04/schema#',
       type: 'number',
       minimum: 10
     });
-    
+
     var schema = new Schema('marco', {
       $schema: 'http://json-schema.org/draft-04/schema#',
       type: 'object',
@@ -60,19 +63,19 @@ describe('The Schema class', function() {
         }
       }
     });
-    
+
     if (schema.loaded) {
       done();
     }
   });
-  
+
   it('should allow using external schemas', function(done) {
     Schema.registerSchema('test', {
       $schema: 'http://json-schema.org/draft-04/schema#',
       type: 'number',
       minimum: 10
     });
-    
+
     var schema = new Schema('marco', {
       $schema: 'http://json-schema.org/draft-04/schema#',
       type: 'object',
@@ -85,7 +88,7 @@ describe('The Schema class', function() {
 
     schema.on('loaded', done);
   });
-  
+
   it('should properly validate a valid document', function(done) {
     var schema = new Schema('marco', {
       $schema: 'http://json-schema.org/draft-04/schema#',
@@ -98,10 +101,10 @@ describe('The Schema class', function() {
         }
       }
     });
-    
+
     schema.validateDocument(
       {val: 11},
-      
+
       function(err) {
         expect(err).to.not.be.ok;
 
@@ -109,7 +112,7 @@ describe('The Schema class', function() {
       }
     );
   });
-  
+
   it('should report errors when validating an invalid document', function(done) {
     var schema = new Schema('marco', {
       $schema: 'http://json-schema.org/draft-04/schema#',
@@ -122,22 +125,22 @@ describe('The Schema class', function() {
         }
       }
     });
-    
+
     schema.validateDocument(
       {val: 9},
-      
+
       function(err) {
         expect(err).to.be.an('object');
         expect(err).to.be.an.instanceOf(Error);
         expect(err).to.have.property('errors');
         expect(err.errors).to.be.an('array');
         expect(err.errors.length).to.equal(1);
-        
+
         done();
       }
     );
   });
-  
+
   it('should properly support validation hooks', function(done) {
     var schema = new Schema('marco', {
       $schema: 'http://json-schema.org/draft-04/schema#',
@@ -150,26 +153,26 @@ describe('The Schema class', function() {
         }
       }
     });
-    
+
     schema.hook('didValidate', function(doc, cb) {
       cb(new Osmos.Error('Invalid reconfibulator flows detected.', 400));
     });
-    
+
     schema.validateDocument(
       {val: 11},
-      
+
       function(err) {
         expect(err).to.be.an('object');
         expect(err).to.be.an.instanceOf(Error);
         expect(err).to.have.property('errors');
         expect(err.errors).to.be.an('array');
         expect(err.errors.length).to.equal(0);
-        
+
         done();
       }
     );
   });
-  
+
   it('should support format validators', function(done) {
     var schema = new Schema('marco', {
       $schema: 'http://json-schema.org/draft-04/schema#',
@@ -182,14 +185,14 @@ describe('The Schema class', function() {
         }
       }
     });
-    
+
     schema.validateDocument({ email : 'invalid' }, function(err) {
       expect(err).to.be.an('object');
       expect(err).to.be.an.instanceOf(Error);
       expect(err).to.have.property('errors');
       expect(err.errors).to.have.length(1);
       expect(err.errors[0].dataPath).to.equal('/email');
-      
+
       done();
     });
   });
