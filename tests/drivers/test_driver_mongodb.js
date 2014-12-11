@@ -83,7 +83,7 @@ describe('The MongoDB driver', function() {
       expect(doc.primaryKey).to.equal(undefined);
 
       doc.save(function(err) {
-        expect(err).to.be.undefined;
+        expect(err).to.not.exist;
 
         expect(doc.primaryKey).not.to.equal(undefined);
 

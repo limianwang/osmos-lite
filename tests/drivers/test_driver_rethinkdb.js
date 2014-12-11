@@ -37,7 +37,8 @@ var schema = new Schema(
 schema.primaryKey = 'id';
 
 describe('The RethinkDB driver', function() {
-
+  require('chai').config.includeStack = true;
+  var _conn;
   before(function(done) {
     r.connect(
     {
@@ -46,6 +47,7 @@ describe('The RethinkDB driver', function() {
       db: 'osmos'
     },
     function(err, connection) {
+      _conn = connection;
       var db = new RethinkDB(connection);
 
       Osmos.drivers.register('rethinkDB', db);
@@ -55,13 +57,24 @@ describe('The RethinkDB driver', function() {
       async.series(
         [
           function(callback) {
-            r.tableDrop('person').run(connection, callback);
+            r.dbCreate('osmos').run(connection, function() {
+              callback();
+            });
           },
           function(callback) {
-            r.tableCreate('person').run(connection, callback);
+            r.tableDrop('person').run(connection, function() {
+              callback();
+            });
           },
           function(callback) {
-            r.table('person').indexCreate('email').run(connection, callback);
+            r.tableCreate('person').run(connection, function() {
+              callback();
+            });
+          },
+          function(callback) {
+            r.table('person').indexCreate('email').run(connection, function() {
+              callback();
+            });
           }
         ],
 
@@ -73,6 +86,12 @@ describe('The RethinkDB driver', function() {
       );
     }
     );
+  });
+
+  after(function(done) {
+    r.dbDrop('osmos').run(_conn, function() {
+      done();
+    });
   });
 
   it('should allow creating new documents', function(done) {
@@ -271,7 +290,7 @@ describe('The RethinkDB driver', function() {
       doc.email = 'Osmos@osmos.com';
 
       doc.save(function() {
-        model.count({ name : 'Tester' }, function(err, count) {
+        model.count({ search: 'Osmos@osmos.com', index: 'email' }, function(err, count) {
           expect(err).to.not.exist;
           expect(count).to.be.equal(1);
 

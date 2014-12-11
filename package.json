@@ -6,7 +6,7 @@
   "contributors": [],
   "main": "./lib/index.js",
   "scripts": {
-    "test": "./node_modules/mocha/bin/mocha --use-strict -t 2000 -R spec -u bdd --harmony $(find tests -name 'test_*.js')"
+    "test": "./node_modules/mocha/bin/mocha --use-strict -t 20000 -R spec -u bdd --harmony $(find tests -name 'test_*.js')"
   },
   "dependencies": {
     "async": "~0",

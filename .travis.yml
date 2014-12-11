@@ -7,7 +7,7 @@ before_install:
   - sudo apt-get install rethinkdb -y  --force-yes
 before_script:
   - mysql -e 'create database osmos'
-  - sudo rethinkdb --io-threads 2048 --daemon
+  - sudo rethinkdb --daemon
 services:
   - mongodb
   - elasticsearch
