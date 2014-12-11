@@ -8,6 +8,10 @@ before_install:
 before_script:
   - mysql -e 'create database osmos'
   - sudo rethinkdb --daemon
+  - ulimit -S -n 2048
+  - sleep 10
 services:
   - mongodb
   - elasticsearch
+after_script:
+  - killall rethinkdb

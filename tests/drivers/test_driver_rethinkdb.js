@@ -36,7 +36,7 @@ var schema = new Schema(
 
 schema.primaryKey = 'id';
 
-xdescribe('The RethinkDB driver', function() {
+describe('The RethinkDB driver', function() {
   require('chai').config.includeStack = true;
   var _conn;
   before(function(done) {
