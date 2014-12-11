@@ -220,9 +220,6 @@ describe('The ElasticSearch driver', function() {
             ],
 
             function(err) {
-              if(err) {
-                console.log(err.stack);
-              }
               expect(err).not.to.be.ok;
 
               model.get(doc.primaryKey, function(err, doc3) {
