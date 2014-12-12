@@ -15,7 +15,7 @@ var Document = Osmos.Document;
 var schema, model;
 
 describe('The Document class', function() {
-  require('chai').Assertion.includeStack = true;
+  require('chai').config.includeStack = true;
 
   before(function() {
     var db = new Osmos.drivers.Memory();

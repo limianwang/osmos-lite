@@ -195,7 +195,7 @@ describe('The ElasticSearch driver', function() {
     });
   });
 
-  it('should allow updating individual fields independently', function(done) {
+  it.skip('should allow updating individual fields independently', function(done) {
     model.create(function(err, doc) {
       expect(err).not.to.be.ok;
 
