@@ -297,8 +297,10 @@ describe('The ElasticSearch driver', function() {
       doc.save(function() {
         model.findOne(
           {
-            match: {
-              email: 'marcot@tabini.ca'
+            query: {
+              match: {
+                email: 'marcot@tabini.ca'
+              }
             }
           },
 
@@ -324,9 +326,9 @@ describe('The ElasticSearch driver', function() {
 
       doc.save(function(err, doc) {
         model.findOne({
-          bool: {
-            must: [
-              {
+          query: {
+            bool: {
+              must: [{
                 term: {
                   name: 'Osmos'
                 }
@@ -335,8 +337,8 @@ describe('The ElasticSearch driver', function() {
                 term: {
                   email: 'osmos@odm.com'
                 }
-              }
-            ]
+              }]
+            }
           }
         }, function(err, doc) {
           expect(err).to.not.exist;
@@ -375,8 +377,10 @@ describe('The ElasticSearch driver', function() {
 
         function(cb) {
           model.count({
-            match: {
-              name: 'Marco'
+            query: {
+              match: {
+                name: 'Marco'
+              }
             }
           }, function(err, count) {
             expect(err).to.not.exist;
@@ -388,21 +392,21 @@ describe('The ElasticSearch driver', function() {
         },
 
         function(cb) {
-          model.find(
-            {
+          model.find({
+            query: {
               match: {
                 email: 'marcot@tabini.ca'
               }
-            },
-            function(err, docs) {
-              expect(err).not.to.be.ok;
-
-              expect(docs).to.be.an('array');
-              expect(docs.length).to.be.above(1);
-
-              cb(null);
             }
-          );
+          },
+          function(err, docs) {
+            expect(err).not.to.be.ok;
+
+            expect(docs).to.be.an('array');
+            expect(docs.length).to.be.above(1);
+
+            cb(null);
+          });
         }
       ],
 
@@ -436,31 +440,31 @@ describe('The ElasticSearch driver', function() {
         },
 
         function(cb) {
-          model.findLimit(
-            {
+          model.findLimit({
+            query: {
               match: {
                 email: email
               }
-            },
-
-            0,
-
-            2,
-
-            function(err, result) {
-              expect(err).not.to.be.ok;
-
-              expect(result).to.be.an('object');
-
-              expect(result.count).to.equal(10);
-              expect(result.start).to.equal(0);
-              expect(result.limit).to.equal(2);
-              expect(result.docs).to.be.an('array');
-              expect(result.docs.length).to.equal(2);
-
-              cb(null);
             }
-          );
+          },
+
+          0,
+
+          2,
+
+          function(err, result) {
+            expect(err).not.to.be.ok;
+
+            expect(result).to.be.an('object');
+
+            expect(result.count).to.equal(10);
+            expect(result.start).to.equal(0);
+            expect(result.limit).to.equal(2);
+            expect(result.docs).to.be.an('array');
+            expect(result.docs.length).to.equal(2);
+
+            cb(null);
+          });
         }
       ],
 
@@ -494,31 +498,31 @@ describe('The ElasticSearch driver', function() {
         },
 
         function(cb) {
-          model.findLimit(
-            {
+          model.findLimit({
+            query: {
               match: {
                 email: email
               }
-            },
-
-            2,
-
-            10,
-
-            function(err, result) {
-              expect(err).not.to.be.ok;
-
-              expect(result).to.be.an('object');
-
-              expect(result.count).to.equal(10);
-              expect(result.start).to.equal(2);
-              expect(result.limit).to.equal(10);
-              expect(result.docs).to.be.an('array');
-              expect(result.docs.length).to.equal(8);
-
-              cb(null);
             }
-          );
+          },
+
+          2,
+
+          10,
+
+          function(err, result) {
+            expect(err).not.to.be.ok;
+
+            expect(result).to.be.an('object');
+
+            expect(result.count).to.equal(10);
+            expect(result.start).to.equal(2);
+            expect(result.limit).to.equal(10);
+            expect(result.docs).to.be.an('array');
+            expect(result.docs.length).to.equal(8);
+
+            cb(null);
+          });
         }
       ],
 
@@ -552,31 +556,31 @@ describe('The ElasticSearch driver', function() {
         },
 
         function(cb) {
-          model.findLimit(
-            {
+          model.findLimit({
+            query: {
               match: {
                 email: email
               }
-            },
-
-            2,
-
-            10,
-
-            function(err, result) {
-              expect(err).not.to.be.ok;
-
-              expect(result).to.be.an('object');
-
-              expect(result.count).to.equal(10);
-              expect(result.start).to.equal(2);
-              expect(result.limit).to.equal(10);
-              expect(result.docs).to.be.an('array');
-              expect(result.docs.length).to.equal(8);
-
-              cb(null);
             }
-          );
+          },
+
+          2,
+
+          10,
+
+          function(err, result) {
+            expect(err).not.to.be.ok;
+
+            expect(result).to.be.an('object');
+
+            expect(result.count).to.equal(10);
+            expect(result.start).to.equal(2);
+            expect(result.limit).to.equal(10);
+            expect(result.docs).to.be.an('array');
+            expect(result.docs.length).to.equal(8);
+
+            cb(null);
+          });
         }
       ],
 
@@ -629,19 +633,21 @@ describe('The ElasticSearch driver', function() {
       },
       function(doc, next) {
         model.find({
-          bool: {
-            must: [
-              {
-                term: {
-                  name: 'osmos-es'
+          query: {
+            bool: {
+              must: [
+                {
+                  term: {
+                    name: 'osmos-es'
+                  }
+                },
+                {
+                  term: {
+                    email: 'es@osmos.com'
+                  }
                 }
-              },
-              {
-                term: {
-                  email: 'es@osmos.com'
-                }
-              }
-            ]
+              ]
+            }
           }
         }, function(err, docs) {
           expect(err).to.not.be.ok;
@@ -685,8 +691,10 @@ describe('The ElasticSearch driver', function() {
       },
       function(next) {
         model.find({
-          match: {
-            description: 'description'
+          query: {
+            match: {
+              description: 'description'
+            }
           }
         }, function(err, docs) {
           expect(err).to.not.be.ok;
@@ -697,8 +705,10 @@ describe('The ElasticSearch driver', function() {
       },
       function(next) {
         model.find({
-          match: {
-            email: 'test2@osmos.com'
+          query: {
+            match: {
+              email: 'test2@osmos.com'
+            }
           }
         }, function(err, docs) {
           expect(err).to.not.be.ok;
