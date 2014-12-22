@@ -23,29 +23,66 @@ Note that all writes are automatically executed using `quorum` consistency and `
 The driver supports a full complement of search functions (`findOne()`, `find()`, and `findLimit()`). The `spec` parameter passed to the model methods should conform to the [query specifications of the API](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl.html). For example:
 
 ```javascript
-model.findLimit(
-  {
+model.findLimit({
+  query: {
     match: {
       email: email
     }
   },
+  sort: [
+    {
+      <key>: {
+        order: 'desc'
+      }
+    }
+  ]
+},
 
-  2,
+2,
 
-  10,
+10,
 
-  function(err, result) {
-    expect(err).not.to.be.ok;
+function(err, result) {
+  expect(err).not.to.be.ok;
 
-    expect(result).to.be.an('object');
+  expect(result).to.be.an('object');
 
-    expect(result.count).to.equal(10);
-    expect(result.start).to.equal(2);
-    expect(result.limit).to.equal(10);
-    expect(result.docs).to.be.an('array');
-    expect(result.docs.length).to.equal(8);
+  expect(result.count).to.equal(10);
+  expect(result.start).to.equal(2);
+  expect(result.limit).to.equal(10);
+  expect(result.docs).to.be.an('array');
+  expect(result.docs.length).to.equal(8);
 
-    cb(null);
+  cb(null);
+});
+```
+
+## Version < 1.6
+
+Prior to version 1.6.0, the Elastic search driver does not offer much flexibility to the developer. The following example would be able to query all docs related to `email` but does not provide the flexibility of being sorted as in version 1.6.
+
+```javascript
+model.findLimit({
+  match: {
+    email: email
   }
-);
+},
+
+2,
+
+10,
+
+function(err, result) {
+  expect(err).not.to.be.ok;
+
+  expect(result).to.be.an('object');
+
+  expect(result.count).to.equal(10);
+  expect(result.start).to.equal(2);
+  expect(result.limit).to.equal(10);
+  expect(result.docs).to.be.an('array');
+  expect(result.docs.length).to.equal(8);
+
+  cb(null);
+});
 ```

@@ -39,12 +39,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "http://github.com/mtabini/osmos.git"
+    "url": "http://github.com/telemetryapp/osmos.git"
   },
   "licenses": [
     {
       "type": "MIT",
-      "url": "http://github.com/mtabini/osmos/raw/master/LICENSE"
+      "url": "http://github.com/telemetryapp/osmos/raw/master/LICENSE"
     }
   ]
 }
