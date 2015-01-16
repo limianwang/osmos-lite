@@ -13,5 +13,7 @@ before_script:
 services:
   - mongodb
   - elasticsearch
+script: make test-cov
 after_script:
+  - npm install coveralls && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
   - killall rethinkdb

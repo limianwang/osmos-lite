@@ -20,8 +20,9 @@
     "tv4": "~1"
   },
   "devDependencies": {
-    "mocha": "~1",
     "chai": "~1",
+    "istanbul": "^0.3.5",
+    "mocha": "~1",
     "redis-mock": "~0"
   },
   "keywords": [
