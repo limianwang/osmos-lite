@@ -1,6 +1,7 @@
 # Osmos: a strict, store-agnostic object data mapper for Node.js
 
 [![Build Status](https://travis-ci.org/telemetryapp/osmos.svg?branch=master)](https://travis-ci.org/telemetryapp/osmos)
+[![Coverage Status](https://coveralls.io/repos/telemetryapp/osmos/badge.svg)](https://coveralls.io/r/telemetryapp/osmos)
 
 Osmos is a object data mapper (ODM) designed to bridge Node.js apps with any data store that support traditional CRUD operations. It's built on three principles:
 
