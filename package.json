@@ -13,16 +13,16 @@
     "deepmerge": "^0.2.7",
     "elasticsearch": "~2",
     "harmony-reflect": "~1",
-    "mongodb": "^1.4.28",
+    "mongodb": "~1",
     "mysql": "~2",
     "request": "~2",
-    "rethinkdb": "^1.15.0",
+    "rethinkdb": "~1.12",
     "tv4": "~1"
   },
   "devDependencies": {
     "chai": "~1",
     "istanbul": "^0.3.5",
-    "mocha": "^2.1.0",
+    "mocha": "~1",
     "redis-mock": "~0"
   },
   "keywords": [
