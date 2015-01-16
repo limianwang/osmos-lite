@@ -5,6 +5,7 @@ TESTS = $(shell find tests -name 'test_*.js')
 clean:
 	rm -f npm-debug.log
 	rm -rf node_modules
+	rm -rf coverage
 
 .PHONY: install
 install:
