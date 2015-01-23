@@ -68,6 +68,14 @@ describe('The Document class', function() {
 
           arr: {
             type: 'array'
+          },
+
+          nullable: {
+            anyOf: [{
+              type: 'string'
+            }, {
+              type: 'null'
+            }]
           }
         }
       }
@@ -117,7 +125,7 @@ describe('The Document class', function() {
 
     model.instanceProperties.testProperty = 1;
 
-    model.updateableProperties = ['name', 'arr', 'email'];
+    model.updateableProperties = ['name', 'arr', 'email', 'nullable'];
 
     model.hook('didUpdate', function(payload, cb) {
       payload.doc.last_update = new Date().getTime(); // jshint ignore:line
@@ -594,6 +602,22 @@ describe('The Document class', function() {
       doc.update({}, function(err) {
         expect(err).not.to.be.ok;
         expect(doc.name).to.equal('Marco');
+
+        done();
+      });
+    });
+  });
+
+  it('should be able to set to null after being defined', function(done) {
+    model.create(function(err, doc) {
+      expect(err).to.not.be.ok;
+      expect(doc).to.be.an('object');
+      doc.nullable = 'some_test';
+      doc.name = 'Marco';
+
+      doc.update({ nullable: null }, function(err) {
+        expect(err).to.not.exist;
+        expect(doc).to.have.property('nullable').to.be.null;
 
         done();
       });
