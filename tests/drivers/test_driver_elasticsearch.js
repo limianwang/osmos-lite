@@ -588,8 +588,7 @@ describe('The ElasticSearch driver', function() {
     );
   });
 
-  it('should be able to create a document and delete it', function(done) {
-    var self = this;
+  it('should be able to create, update and delete a document', function(done) {
     async.waterfall([
       function(next) {
         model.create(function(err, doc) {
@@ -597,10 +596,12 @@ describe('The ElasticSearch driver', function() {
 
           doc.name = 'osmos-es';
           doc.email = 'es@osmos.com';
+          doc.description = 'osmos-es description';
 
           doc.save(function(err, doc) {
             expect(err).to.not.exist;
             expect(doc).to.have.property('id');
+            expect(doc).to.have.property('description').to.be.equal(doc.description);
 
             next(null, doc);
           });
@@ -614,6 +615,16 @@ describe('The ElasticSearch driver', function() {
             expect(result).to.have.property(field).to.be.equal(doc[field]);
           });
           next(null, result);
+        });
+      },
+      function(doc, next) {
+        doc.description = undefined;
+
+        doc.save(function(err, doc) {
+          expect(err).to.be.null;
+          expect(doc).to.not.have.property('description');
+
+          next(null, doc);
         });
       },
       function(doc, next) {
