@@ -2,6 +2,8 @@
 
 [![Build Status](https://travis-ci.org/telemetryapp/osmos.svg?branch=master)](https://travis-ci.org/telemetryapp/osmos)
 [![Coverage Status](https://coveralls.io/repos/telemetryapp/osmos/badge.svg?branch=master)](https://coveralls.io/r/telemetryapp/osmos?branch=master)
+[![npm](https://img.shields.io/npm/v/osmos-odm.svg?style=flat-square)](https://www.npmjs.com/package/osmos-odm)
+[![npm](https://img.shields.io/npm/dm/osmos-odm.svg?style=flat-square)](https://www.npmjs.com/package/osmos-odm)
 
 Osmos is a object data mapper (ODM) designed to bridge Node.js apps with any data store that support traditional CRUD operations. It's built on three principles:
 
