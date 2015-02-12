@@ -125,7 +125,7 @@ describe('The Document class', function() {
 
     model.instanceProperties.testProperty = 1;
 
-    model.updateableProperties = ['name', 'arr', 'email', 'nullable'];
+    model.updateableProperties = ['name', 'arr', 'email', 'age', 'nullable'];
 
     model.hook('didUpdate', function(payload, cb) {
       payload.doc.last_update = new Date().getTime(); // jshint ignore:line
@@ -418,7 +418,7 @@ describe('The Document class', function() {
       function(next) {
         model.findOne({ name : 'tester' }, function(err, doc) {
           expect(err).to.not.exist;
-          doc.update({ email: '' }, function(err) {
+          doc.update({ email: undefined }, function(err) {
             expect(err).to.not.exist;
 
             doc.save(function(err, doc) {
@@ -445,6 +445,24 @@ describe('The Document class', function() {
       doc.update({ nullable: null }, function(err) {
         expect(err).to.not.exist;
         expect(doc).to.have.property('nullable').to.be.null;
+
+        done();
+      });
+    });
+  });
+
+  it('should be able to set to 0' , function(done) {
+    model.create(function(err, doc) {
+      expect(err).to.not.be.ok;
+
+      expect(doc).to.be.an('object');
+      doc.age = 10;
+      doc.name = 'Marco';
+
+      doc.update({ age: 0 }, function(err) {
+        expect(err).to.not.exist;
+
+        expect(doc).to.have.property('age').to.be.equal(0);
 
         done();
       });
