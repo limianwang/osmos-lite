@@ -28,6 +28,9 @@ var schemaData = {
       format: 'email',
       strict: true
     },
+    age: {
+      type: 'integer'
+    },
     id: {
       type: 'string'
     },
@@ -131,6 +134,9 @@ describe('The ElasticSearch driver', function() {
                 email: {
                   type: 'string',
                   index: 'not_analyzed'
+                },
+                age: {
+                  type: 'integer'
                 },
                 id: {
                   type: 'string'
@@ -615,6 +621,19 @@ describe('The ElasticSearch driver', function() {
             expect(result).to.have.property(field).to.be.equal(doc[field]);
           });
           next(null, result);
+        });
+      },
+      function(doc, next) {
+        doc.name = '';
+        doc.age = 0;
+
+        doc.save(function(err, doc) {
+          expect(err).to.not.exist;
+
+          expect(doc).to.have.property('name').to.be.empty;
+          expect(doc).to.have.property('age').to.be.equal(0);
+
+          next(null, doc);
         });
       },
       function(doc, next) {
