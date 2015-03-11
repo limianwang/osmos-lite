@@ -1,6 +1,6 @@
 
 TESTS = $(shell find tests -name 'test_*.js')
-FLAGS = --harmony-proxies
+FLAGS = --harmony --harmony-proxies
 
 .PHONY: clean
 clean:
