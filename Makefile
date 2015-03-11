@@ -1,5 +1,6 @@
 
 TESTS = $(shell find tests -name 'test_*.js')
+FLAGS = --harmony-proxies
 
 .PHONY: clean
 clean:
@@ -13,8 +14,9 @@ install:
 
 .PHONY: test
 test:
-	./node_modules/mocha/bin/mocha --use-strict -t 20000 -R spec -u bdd --harmony $(TESTS)
+	./node_modules/.bin/mocha --use-strict -t 20000 -R spec -u bdd $(FLAGS) $(TESTS)
 
+.PHONY: test-cov
 test-cov:
-	node --harmony ./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- -t 20000 $(TESTS)
+	node --harmony-proxies ./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha -- -t 20000 $(TESTS)
 

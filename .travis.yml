@@ -1,13 +1,10 @@
 language: node_js
 node_js:
   - "0.10"
-before_install:
-  - sudo add-apt-repository ppa:rethinkdb/ppa -y
-  - sudo apt-get update -qq
-  - sudo apt-get install rethinkdb -y  --force-yes
+  - "0.12"
+  - "iojs"
 before_script:
   - mysql -e 'create database osmos'
-  - sudo rethinkdb --daemon
   - ulimit -S -n 2048
   - sleep 10
 services:
@@ -16,4 +13,3 @@ services:
 script: make test-cov
 after_script:
   - npm install coveralls && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
-  - killall rethinkdb
