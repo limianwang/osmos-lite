@@ -18,5 +18,5 @@ test:
 
 .PHONY: test-cov
 test-cov:
-	node --harmony-proxies ./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha -- -t 20000 $(TESTS)
+	node $(FLAGS) ./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha -- -t 20000 $(TESTS)
 
