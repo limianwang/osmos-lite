@@ -8,7 +8,6 @@ Currently, Osmos 1.x supports the following data stores:
 - [Memory](./memory.md), a memory-based driver useful for testing purposes only.
 - [MongoDB](./mongodb.md)
 - [MySQL](./mysql.md)
-- [RethinkDB](./rethinkdb.md)
 
 ## CRUD operations
 

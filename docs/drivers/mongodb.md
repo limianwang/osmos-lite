@@ -40,11 +40,11 @@ schema.primaryKey = '_id';
 mongo.MongoClient.connect(url, options || {}, function(err, db) {
   if (err) cb(err);
   
-  var db = new RethinkDB(connection);
+  var db = new MongoDB(connection);
 
-  Osmos.drivers.register('rethinkDB', db);
+  Osmos.drivers.register('mongoDB', db);
 
-  model = new Model('TestModel', schema, 'person', 'rethinkDB');
+  model = new Model('TestModel', schema, 'person', 'mongoDB');
   
   model.create(function(err, doc) {
       doc.name = 'Marco';
