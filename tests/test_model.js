@@ -60,6 +60,19 @@ describe('The Model class', function() {
     expect(Model).to.be.a('function');
   });
 
+  it('should throw error when no primaryKey specified', function() {
+    var primaryKey = schema.primaryKey;
+    schema.primaryKey = null;
+
+    function wrap() {
+      return new Model('fake', schema, '', 'memory');
+    }
+
+    expect(wrap).to.throw(Error);
+
+    schema.primaryKey = primaryKey;
+  });
+
   it('should support both direct and named drivers', function() {
     function f() {
       new Model('TestModel', schema, '', 'memory');
