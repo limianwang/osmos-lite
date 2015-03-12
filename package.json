@@ -1,6 +1,6 @@
 {
-  "name": "osmos-odm",
-  "version": "1.6.1",
+  "name": "osmos-lite",
+  "version": "2.0.0",
   "description": "A general purpose, strict, simple ORM for Node.js apps",
   "main": "./lib/index.js",
   "scripts": {
@@ -17,7 +17,7 @@
     "tv4": "~1"
   },
   "devDependencies": {
-    "chai": "^2.1.1",
+    "chai": "^1.10.0",
     "istanbul": "^0.3.5",
     "mocha": "^2.2.1"
   },
@@ -27,20 +27,19 @@
     "nosql",
     "data mapping",
     "mongodb",
-    "elasticsearch",
-    "redis"
+    "elasticsearch"
   ],
   "engines": {
     "node": ">=0.10.0"
   },
   "repository": {
     "type": "git",
-    "url": "http://github.com/telemetryapp/osmos.git"
+    "url": "http://github.com/limianwang/osmos-lite.git"
   },
   "bugs": {
-    "url": "https://github.com/telemetryapp/osmos/issues"
+    "url": "https://github.com/limianwang/osmos-lite/issues"
   },
-  "homepage": "https://github.com/telemetryapp/osmos",
+  "homepage": "https://github.com/limianwang/osmos-lite",
   "directories": {
     "doc": "docs",
     "test": "tests"
