@@ -1,9 +1,7 @@
 {
   "name": "osmos-odm",
   "version": "1.6.1",
-  "author": "Marco Tabini <marcot@tabini.ca>",
   "description": "A general purpose, strict, simple ORM for Node.js apps",
-  "contributors": [],
   "main": "./lib/index.js",
   "scripts": {
     "test": "./node_modules/mocha/bin/mocha --use-strict -t 20000 -R spec -u bdd --harmony $(find tests -name 'test_*.js')"
@@ -11,7 +9,7 @@
   "dependencies": {
     "async": "~0",
     "deepmerge": "^0.2.7",
-    "elasticsearch": "~2",
+    "elasticsearch": "^3.1.3",
     "harmony-reflect": "~1",
     "mongodb": "~1",
     "mysql": "~2",
@@ -19,10 +17,9 @@
     "tv4": "~1"
   },
   "devDependencies": {
-    "chai": "~1",
+    "chai": "^2.1.1",
     "istanbul": "^0.3.5",
-    "mocha": "~1",
-    "redis-mock": "~0"
+    "mocha": "^2.2.1"
   },
   "keywords": [
     "odm",
@@ -40,10 +37,13 @@
     "type": "git",
     "url": "http://github.com/telemetryapp/osmos.git"
   },
-  "licenses": [
-    {
-      "type": "MIT",
-      "url": "http://github.com/telemetryapp/osmos/raw/master/LICENSE"
-    }
-  ]
+  "bugs": {
+    "url": "https://github.com/telemetryapp/osmos/issues"
+  },
+  "homepage": "https://github.com/telemetryapp/osmos",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "license": "MIT"
 }
