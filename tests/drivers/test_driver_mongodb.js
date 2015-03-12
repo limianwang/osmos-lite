@@ -1,5 +1,3 @@
-/*jshint expr:true*/
-
 'use strict';
 
 var Osmos = require('../../lib');
