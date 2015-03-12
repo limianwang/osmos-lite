@@ -15,7 +15,7 @@ Osmos is a object data mapper (ODM) designed to bridge Node.js apps with any dat
 
 - **Don't replace developer knowledge.** Osmos is designed to be a generic ODM that will work well with just about any data store that supports CRUD operations. However, it is _not_ meant to be an abstraction layer; instead, it assumes that developers know best, and provides only a simple interface that can be easily extended through plugins.
 
-The current version of Osmos supports [MongoDB](http://www.mongodb.org), [MySQL](http://mysql.org) and [ElasticSearch](http://www.elasticsearch.org), but it should be easy to [write drivers](https://github.com/telemetryapp/osmos/blob/master/docs/drivers/index.md) for just about any data store—and contributions are warmly welcome! The library also includes a simple, memory-based data store that can be used for testing purposes.
+The current version of Osmos supports [MongoDB](http://www.mongodb.org), [MySQL](http://mysql.org) and [ElasticSearch](http://www.elasticsearch.org), but it should be easy to [write drivers](docs/drivers/index.md) for just about any data store—and contributions are warmly welcome! The library also includes a simple, memory-based data store that can be used for testing purposes.
 
 ## Installation
 
@@ -23,27 +23,27 @@ The current version of Osmos supports [MongoDB](http://www.mongodb.org), [MySQL]
 npm install osmos-lite
 ```
 
-Note that, in debug mode (which is the default mode), Osmos uses Direct Proxies in order to work. Therefore, you must run your instance of node with the `--harmony_proxies` command-line switch. See the [docs](https://github.com/telemetryapp/osmos/blob/master/docs/document.md) for information on how to turn off debug mode in production for extra performance.
+Note that, in debug mode (which is the default mode), Osmos uses Direct Proxies in order to work. Therefore, you must run your instance of node with the `--harmony-proxies` command-line switch. See the [docs](docs/document.md) for information on how to turn off debug mode in production for extra performance.
 
 ## Usage
 
 Using Osmos requires the following steps:
 
-1. **Create a driver instance.** A driver instance connects Osmos to a data store. [Learn more about drivers](https://github.com/telemetryapp/osmos/blob/master/docs/drivers/index.md).
+1. **Create a driver instance.** A driver instance connects Osmos to a data store. [Learn more about drivers](docs/drivers/index.md).
 
-1. **Install and invoke zero or more plugins.** Plugins allow you to extend the functionality provided by Osmos. They are, of course, optional. [Learn more about plugins](https://github.com/telemetryapp/osmos/blob/master/docs/plugins.md)
+1. **Install and invoke zero or more plugins.** Plugins allow you to extend the functionality provided by Osmos. They are, of course, optional. [Learn more about plugins](docs/plugins.md)
 
-1. **Define your schemas.** A schema describes the structure of a document, and defines how its data is transformed and validated. [Learn more about schemas](https://github.com/telemetryapp/osmos/blob/master/docs/schema.md)
+1. **Define your schemas.** A schema describes the structure of a document, and defines how its data is transformed and validated. [Learn more about schemas](docs/schema.md)
 
-1. **Define your models.** A model applies a schema to data that is extracted from a data store's specific bucket. [Learn more about models](https://github.com/telemetryapp/osmos/blob/master/docs/model.md)
+1. **Define your models.** A model applies a schema to data that is extracted from a data store's specific bucket. [Learn more about models](docs/model.md)
 
-1. **CRUD.** Models can be used to create, read, update and delete existing document. Two find methods are also supplied. [Learn more about documents](https://github.com/telemetryapp/osmos/blob/master/docs/document.md).
+1. **CRUD.** Models can be used to create, read, update and delete existing document. Two find methods are also supplied. [Learn more about documents](docs/document.md).
 
 1. **Additional functionality** can be also added to Osmos by a plugin or by a driver—for example, to provide access to features of a data store that are not part of the basic CRUD quartet.
 
 ## Contributing
 
-Contributions in the form of patches and pull requests are welcome, provided that you also commit to writing covering unit tests. [Learn more about contributing](https://github.com/telemetryapp/osmos/blob/master/docs/contributing.md).
+Contributions in the form of patches and pull requests are welcome, provided that you also commit to writing covering unit tests. [Learn more about contributing](docs/contributing.md).
 
 ## Contributors
 
