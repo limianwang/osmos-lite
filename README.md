@@ -1,7 +1,7 @@
 # Osmos: a strict, store-agnostic object data mapper for Node.js
 
-[![Build Status](https://travis-ci.org/telemetryapp/osmos.svg?branch=master)](https://travis-ci.org/telemetryapp/osmos)
-[![Coverage Status](https://coveralls.io/repos/telemetryapp/osmos/badge.svg?branch=master)](https://coveralls.io/r/telemetryapp/osmos?branch=master)
+[![Build Status](https://travis-ci.org/limianwang/osmos-lite.svg?branch=master)](https://travis-ci.org/limianwang/osmos-lite)
+[![Coverage Status](https://coveralls.io/repos/limianwang/osmos-lite/badge.svg?branch=master)](https://coveralls.io/r/limianwang/osmos-lite?branch=master)
 [![npm](https://img.shields.io/npm/v/osmos-odm.svg?style=flat-square)](https://www.npmjs.com/package/osmos-odm)
 [![npm](https://img.shields.io/npm/dm/osmos-odm.svg?style=flat-square)](https://www.npmjs.com/package/osmos-odm)
 
