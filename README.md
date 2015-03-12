@@ -2,8 +2,8 @@
 
 [![Build Status](https://travis-ci.org/limianwang/osmos-lite.svg?branch=master)](https://travis-ci.org/limianwang/osmos-lite)
 [![Coverage Status](https://coveralls.io/repos/limianwang/osmos-lite/badge.svg?branch=master)](https://coveralls.io/r/limianwang/osmos-lite?branch=master)
-[![npm](https://img.shields.io/npm/v/osmos-odm.svg?style=flat-square)](https://www.npmjs.com/package/osmos-odm)
-[![npm](https://img.shields.io/npm/dm/osmos-odm.svg?style=flat-square)](https://www.npmjs.com/package/osmos-odm)
+[![npm](https://img.shields.io/npm/v/osmos-lite.svg?style=flat-square)](https://www.npmjs.com/package/osmos-lite)
+[![npm](https://img.shields.io/npm/dm/osmos-lite.svg?style=flat-square)](https://www.npmjs.com/package/osmos-lite)
 
 Osmos is a object data mapper (ODM) designed to bridge Node.js apps with any data store that support traditional CRUD operations. It's built on three principles:
 
@@ -18,7 +18,7 @@ The current version of Osmos supports [MongoDB](http://www.mongodb.org), [MySQL]
 ## Installation
 
 ```
-npm install osmos-odm
+npm install osmos-lite
 ```
 
 Note that, in debug mode (which is the default mode), Osmos uses Direct Proxies in order to work. Therefore, you must run your instance of node with the `--harmony_proxies` command-line switch. See the [docs](https://github.com/telemetryapp/osmos/blob/master/docs/document.md) for information on how to turn off debug mode in production for extra performance.
