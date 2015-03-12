@@ -4,6 +4,8 @@
 [![Coverage Status](https://coveralls.io/repos/limianwang/osmos-lite/badge.svg?branch=master)](https://coveralls.io/r/limianwang/osmos-lite?branch=master)
 [![npm](https://img.shields.io/npm/v/osmos-lite.svg?style=flat-square)](https://www.npmjs.com/package/osmos-lite)
 [![npm](https://img.shields.io/npm/dm/osmos-lite.svg?style=flat-square)](https://www.npmjs.com/package/osmos-lite)
+[![Dependency Status](https://david-dm.org/limianwang/osmos-lite.svg?style=flat-square)](https://david-dm.org/limianwang/osmos-lite)
+[![devDependency Status](https://david-dm.org/limianwang/osmos-lite/dev-status.svg?style=flat-square)](https://david-dm.org/limianwang/osmos-lite#info=devDependencies)
 
 Osmos is a object data mapper (ODM) designed to bridge Node.js apps with any data store that support traditional CRUD operations. It's built on three principles:
 
