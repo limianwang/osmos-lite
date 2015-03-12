@@ -9,6 +9,10 @@
 
 Osmos is a object data mapper (ODM) designed to bridge Node.js apps with any data store that support traditional CRUD operations. It's built on three principles:
 
+**NOTE**
+
+> `osmos-lite` is a forked version of [Osmos-odm](https://github.com/telemetryapp/osmos) aiming to provide support for iojs, node > 0.10. One of the major reasons for forking is to be able to iterate fast, and break things earlier without having too much of an impact.
+
 - **Stay out of the way.** Osmos is intuitive and largely transparent to developers, and, most of all, doesn't attempt to be “smarter” than its human masters. It can also be easily mocked away for testing without having to write specialized code.
 
 - **Fail early, and fail loudly.** In debug mode, Osmos uses [Direct Proxies](http://wiki.ecmascript.org/doku.php?id=harmony:direct_proxies) to trap access to a document; if attempts are made to read or write non-existent fields, an error is immediately thrown to help you and pinpoint common mistakes before they end up in production.
@@ -31,8 +35,6 @@ Using Osmos requires the following steps:
 
 1. **Create a driver instance.** A driver instance connects Osmos to a data store. [Learn more about drivers](docs/drivers/index.md).
 
-1. **Install and invoke zero or more plugins.** Plugins allow you to extend the functionality provided by Osmos. They are, of course, optional. [Learn more about plugins](docs/plugins.md)
-
 1. **Define your schemas.** A schema describes the structure of a document, and defines how its data is transformed and validated. [Learn more about schemas](docs/schema.md)
 
 1. **Define your models.** A model applies a schema to data that is extracted from a data store's specific bucket. [Learn more about models](docs/model.md)
@@ -41,26 +43,26 @@ Using Osmos requires the following steps:
 
 1. **Additional functionality** can be also added to Osmos by a plugin or by a driver—for example, to provide access to features of a data store that are not part of the basic CRUD quartet.
 
+## Roadmap
+
+Version 1.x of the project aims at greatly simplifying its structure by using standard validation based on [JSON Schema](http://json-schema.org) and applying many of the lessons learned through its use in production.
+
 ## Contributing
 
-Contributions in the form of patches and pull requests are welcome, provided that you also commit to writing covering unit tests. [Learn more about contributing](docs/contributing.md).
+Contributions are always welcomed via pull requests, and they should always have associated tests. TravisCI will need to pass prior to merging. 
 
 ## Contributors
 
 ```
- project  : osmos
+ project  : osmos-lite
  repo age : 1 year, 10 months
- active   : 100 days
- commits  : 291
- files    : 46
+ active   : 101 days
+ commits  : 296
+ files    : 45
  authors  :
-   182	Marco Tabini          62.5%
-   105	Limian Wang           36.1%
-     3	Yehezkiel Syamsuhadi  1.0%
-     1	Daniel Prata          0.3%
+   182  Marco Tabini          61.5%
+   110  Limian Wang           37.2%
+     3  Yehezkiel Syamsuhadi  1.0%
+     1  Daniel Prata          0.3%
 ```
-
-## Roadmap
-
-Version 1.x of the project aims at greatly simplifying its structure by using standard validation based on [JSON Schema](http://json-schema.org) and applying many of the lessons learned through its use in production.
 
