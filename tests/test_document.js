@@ -3,8 +3,8 @@
 'use strict';
 
 var async = require('async');
-
-var expect = require('chai').expect;
+var chai = require('chai');
+var expect = chai.expect;
 
 var Osmos = require('../lib');
 
@@ -14,9 +14,9 @@ var Document = Osmos.Document;
 
 var schema, model;
 
-describe('The Document class', function() {
-  require('chai').config.includeStack = true;
+chai.config.includeStack = true;
 
+describe('The Document class', function() {
   before(function() {
     var db = new Osmos.drivers.Memory();
 
@@ -424,7 +424,7 @@ describe('The Document class', function() {
             doc.save(function(err, doc) {
               expect(err).to.not.exist;
 
-              expect(doc).to.not.have.property('email');
+              expect(doc.email).to.be.undefined;
               next();
             });
           });

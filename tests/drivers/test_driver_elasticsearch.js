@@ -641,7 +641,7 @@ describe('The ElasticSearch driver', function() {
 
         doc.save(function(err, doc) {
           expect(err).to.be.null;
-          expect(doc).to.not.have.property('description');
+          expect(doc.description).to.be.undefined;
 
           next(null, doc);
         });
