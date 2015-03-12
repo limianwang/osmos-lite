@@ -45,6 +45,5 @@ Contributions in the form of patches and pull requests are welcome, provided tha
 
 ## Roadmap
 
-Version 1.x of the project aims at greatly simplifying its structure by using standard validation based on [JSON Schema](http://json-schema.org) and applying many of the lessons learned through its use in production. However, it introduces a significant number of backwards-breaking compatibilities; version 0.x is still available in the corresponding branch.
+Version 1.x of the project aims at greatly simplifying its structure by using standard validation based on [JSON Schema](http://json-schema.org) and applying many of the lessons learned through its use in production.
 
-Osmos is still a fairly new project, and bug fixing is the priority, as well as the addition of support for more drivers.
