@@ -43,6 +43,21 @@ Using Osmos requires the following steps:
 
 Contributions in the form of patches and pull requests are welcome, provided that you also commit to writing covering unit tests. [Learn more about contributing](https://github.com/telemetryapp/osmos/blob/master/docs/contributing.md).
 
+## Contributors
+
+```
+ project  : osmos
+ repo age : 1 year, 10 months
+ active   : 100 days
+ commits  : 291
+ files    : 46
+ authors  :
+   182	Marco Tabini          62.5%
+   105	Limian Wang           36.1%
+     3	Yehezkiel Syamsuhadi  1.0%
+     1	Daniel Prata          0.3%
+```
+
 ## Roadmap
 
 Version 1.x of the project aims at greatly simplifying its structure by using standard validation based on [JSON Schema](http://json-schema.org) and applying many of the lessons learned through its use in production.
