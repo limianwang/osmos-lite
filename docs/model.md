@@ -4,7 +4,7 @@ A schema represents the blueprint for a document. It brings together a schema, w
 
 ## Model basics
 
-    var Osmos = require('osmos');
+    var Osmos = require('osmos-lite');
     var Schema = Osmos.Schema;
 
     Osmos.registerDriverInstance('db', new Osmos.drivers.memory());
@@ -97,7 +97,7 @@ To get a count of documents, you can use the `count` method:
 Models essentially act like class factories, and you can add class methods to a model after it has been created. For example:
 
 ```javascript
-var Osmos = require('osmos-odm');
+var Osmos = require('osmos-lite');
 
 var schema = new Osmos.Schema(
 // Define your schema here

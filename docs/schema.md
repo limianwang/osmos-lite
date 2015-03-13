@@ -13,7 +13,7 @@ Most drivers require the declaration of a primary key. You can add a primary key
 To declare a schema, simply create an instance of the `Osmos.Schema` class:
 
 ```javascript
-var Osmos = require('osmos-odm');
+var Osmos = require('osmos-lite');
 var Schema = Osmos.Schema;
 
 var schema = new Schema(
