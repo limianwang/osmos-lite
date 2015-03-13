@@ -1,1 +1,7 @@
 tests/
+
+.jshintrc
+.npmignore
+.gitignore
+.travis.yaml
+Makefile
