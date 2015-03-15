@@ -658,19 +658,19 @@ describe('The Document class', function() {
       // Yeah, it's complicated. That's why it took me two hours to figure
       // out where the problem was and write a working test case for it. —Mt.
 
-      doc.update({arr : ['test']});
+      doc.update({arr : ['test']}, function() {
+        var originalRaw = doc.toRawJSON();
 
-      var originalRaw = doc.toRawJSON();
+        expect(originalRaw.arr).to.have.length(1);
 
-      expect(originalRaw.arr).to.have.length(1);
+        doc.arr.push('toast');
 
-      doc.arr.push('toast');
+        doc.update({arr : doc.arr}, function() {
+          expect(originalRaw.arr).to.have.length(1);
 
-      doc.update({arr : doc.arr});
-
-      expect(originalRaw.arr).to.have.length(1);
-
-      done();
+          done();
+        });
+      });
      });
   });
 
