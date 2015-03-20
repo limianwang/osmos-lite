@@ -351,6 +351,31 @@ describe('The Document class', function() {
     );
   });
 
+  it('should throw error when no toJSON specified', function(done) {
+    model.create(function(err, doc) {
+      expect(err).to.not.exist;
+
+      function wrap() {
+        return doc.toJSON();
+      }
+
+      expect(wrap).to.throw(Error);
+      done();
+    });
+  });
+
+  it('should be able to inspect', function(done) {
+    model.create(function(err, doc) {
+      expect(err).to.not.exist;
+
+      var result = doc.inspect();
+
+      expect(result).to.exist;
+
+      done();
+    });
+  });
+
   it('should support extension through the instanceMethods property', function(done) {
     model.create(function(err, doc) {
       expect(err).not.to.be.ok;
