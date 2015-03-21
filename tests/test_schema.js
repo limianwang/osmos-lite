@@ -12,6 +12,14 @@ describe('The Schema class', function() {
     expect(Schema).to.be.a('function');
   });
 
+  it('should throw error when no schema supplied to validate', function() {
+    function wrap() {
+      Schema.validateSchema(null);
+    }
+
+    expect(wrap).to.throw(Osmos.Error);
+  });
+
   it('should support JSON-Schema schemas', function() {
     var schemaData = {
       $schema: 'http://json-schema.org/draft-04/schema#',
