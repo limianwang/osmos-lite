@@ -5,3 +5,4 @@ tests/
 .gitignore
 .travis.yaml
 Makefile
+History.md
