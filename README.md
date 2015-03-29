@@ -45,7 +45,7 @@ Using Osmos requires the following steps:
 
 ## Roadmap
 
-Version 1.x of the project aims at greatly simplifying its structure by using standard validation based on [JSON Schema](http://json-schema.org) and applying many of the lessons learned through its use in production.
+Next iteration of updates will focus heavily on the fixes and enhancement for `osmos-lite`, and increase the test coverage.
 
 ## Contributing
 
@@ -54,15 +54,14 @@ Contributions are always welcomed via pull requests, and they should always have
 ## Contributors
 
 ```
- project  : osmos-lite
+ project  : osmos
  repo age : 1 year, 10 months
- active   : 101 days
- commits  : 296
- files    : 45
+ active   : 109 days
+ commits  : 316
+ files    : 47
  authors  :
-   182  Marco Tabini          61.5%
-   110  Limian Wang           37.2%
-     3  Yehezkiel Syamsuhadi  1.0%
-     1  Daniel Prata          0.3%
+   182	Marco Tabini          57.6%
+   130	Limian Wang           41.1%
+     3	Yehezkiel Syamsuhadi  0.9%
+     1	Daniel Prata          0.3%
 ```
-
