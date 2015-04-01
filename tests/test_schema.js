@@ -72,9 +72,9 @@ describe('The Schema class', function() {
       }
     });
 
-    if (schema.loaded) {
+    schema.on('loaded', function() {
       done();
-    }
+    });
   });
 
   it('should allow using external schemas', function(done) {
@@ -232,10 +232,12 @@ describe('The Schema class', function() {
 
     var schema = new Schema(s2.id, s2);
 
-    expect(schema.documentProperties).to.be.an('object');
-    expect(schema.documentProperties).to.include.keys(['type', 'name']);
+    schema.on('loaded', function() {
+      expect(schema.documentProperties).to.be.an('object');
+      expect(schema.documentProperties).to.include.keys(['type', 'name']);
 
-    done();
+      done();
+    });
   });
 
   it('should allow registering additional formats', function (done) {
