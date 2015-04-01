@@ -8,7 +8,7 @@ var Hookable = require('../lib/util/hookable');
 chai.config.includeStack = true;
 
 describe('hookable', function() {
-  it('should be able to create a hookable child', function() {
+  it('should throw error on create without hooks', function() {
     function shouldThrowError() {
       var hook = new Hookable();
     }
