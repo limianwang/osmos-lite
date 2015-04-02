@@ -138,7 +138,7 @@ describe('The Document class', function() {
     expect(Document).to.be.a('function');
   });
 
-  it('should', function(done) {
+  it('should catch error when attempting to update without updateableProperties', function(done) {
     var model = new Model('TestModel', schema, '', 'memory');
     model.create(function(err, doc) {
       doc.update({ a: 'b' }, function(err) {
