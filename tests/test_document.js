@@ -142,7 +142,7 @@ describe('The Document class', function() {
     var model = new Model('TestModel', schema, '', 'memory');
     model.create(function(err, doc) {
       doc.update({ a: 'b' }, function(err) {
-        expect(err).to.not.exist;
+        expect(err).to.exist;
 
         done();
       });
