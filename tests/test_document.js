@@ -138,6 +138,17 @@ describe('The Document class', function() {
     expect(Document).to.be.a('function');
   });
 
+  it('should', function(done) {
+    var model = new Model('TestModel', schema, '', 'memory');
+    model.create(function(err, doc) {
+      doc.update({ a: 'b' }, function(err) {
+        expect(err).to.not.exist;
+
+        done();
+      });
+    });
+  });
+
   it('should allow writing to properly declared fields', function(done) {
     model.create(function(err, doc) {
       expect(doc).to.be.an('object');
