@@ -24,7 +24,7 @@ The current version of Osmos supports [MongoDB](http://www.mongodb.org), [MySQL]
 ## Installation
 
 ```
-npm install osmos-lite
+npm install osmos-lite --save
 ```
 
 Note that, in debug mode (which is the default mode), Osmos uses Direct Proxies in order to work. Therefore, you must run your instance of node with the `--harmony-proxies` command-line switch. See the [docs](docs/document.md) for information on how to turn off debug mode in production for extra performance.
@@ -45,11 +45,11 @@ Using Osmos requires the following steps:
 
 ## Roadmap
 
-Next iteration of updates will focus heavily on the fixes and enhancement for `osmos-lite`, and increase the test coverage.
+Next iteration of updates will focus heavily on the fixes and enhancement for `osmos-lite`, use Promises, and increase the test coverage.
 
 ## Contributing
 
-Contributions are always welcomed via pull requests, and they should always have associated tests. TravisCI will need to pass prior to merging. 
+Contributions are always welcomed via pull requests, and they should always have associated tests. TravisCI will need to pass prior to merging.
 
 ## Contributors
 
