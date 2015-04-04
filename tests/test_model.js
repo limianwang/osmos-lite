@@ -100,6 +100,16 @@ describe('The Model class', function() {
     });
   });
 
+  it('should not be able to delete without primaryKey', function(done) {
+    var doc = {};
+
+    expect(doc).to.not.have.property('primaryKey');
+    model._delete(doc, function(err) {
+      expect(err).to.exist;
+      done();
+    });
+  });
+
   it('should find one document', function(done) {
     model.findOne({ name : 'Marco' }, function(err, doc) {
       expect(err).to.not.be.ok;
