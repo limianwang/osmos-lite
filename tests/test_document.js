@@ -1,5 +1,3 @@
-/*jshint expr:true*/
-
 'use strict';
 
 var async = require('async');
@@ -195,7 +193,9 @@ describe('The Document class', function() {
   });
 
   it('should refuse reading from an unknown field in debug mode', function(done) {
-    Osmos.Document.debug = true;
+    var original = Document.debug;
+
+    Document.debug = true;
 
     model.create(function(err, doc) {
       expect(err).not.to.exist;
@@ -203,12 +203,16 @@ describe('The Document class', function() {
 
       expect(function() { doc.unknownfielddoesntexist; }).to.throw();
 
+      Document.debug = original;
+
       done();
     });
   });
 
   it('should not refuse reading from an unknown field in production mode', function(done) {
-    Osmos.Document.debug = false;
+    var original = Document.debug;
+
+    Document.debug = false;
 
     model.create(function(err, doc) {
       expect(err).not.to.exist;
@@ -216,6 +220,7 @@ describe('The Document class', function() {
 
       var x = doc.unknownfielddoesntexist;
 
+      Document.debug = original;
       done();
     });
   });
@@ -593,7 +598,10 @@ describe('The Document class', function() {
     });
   });
 
-  it('should not support deleting a property', function(done) {
+  it('should not support deleting a property when no debug mode', function(done) {
+    var original = Document.debug;
+    Document.debug = false;
+
     model.create(function(err, doc) {
       doc.name = 'Marco';
 
@@ -604,6 +612,8 @@ describe('The Document class', function() {
       }
 
       expect(test).to.throw(Error);
+
+      Document.debug = original;
 
       done();
     });
