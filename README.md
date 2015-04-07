@@ -55,13 +55,13 @@ Contributions are always welcomed via pull requests, and they should always have
 
 ```
  project  : osmos
- repo age : 1 year, 10 months
- active   : 109 days
- commits  : 316
- files    : 47
+ repo age : 1 year, 11 months
+ active   : 117 days
+ commits  : 336
+ files    : 48
  authors  :
-   182	Marco Tabini          57.6%
-   130	Limian Wang           41.1%
+   182	Marco Tabini          54.2%
+   150	Limian Wang           44.6%
      3	Yehezkiel Syamsuhadi  0.9%
      1	Daniel Prata          0.3%
 ```
