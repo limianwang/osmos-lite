@@ -67,7 +67,8 @@ Model.prototype = {
 
   save: function save(callback) {
     if (this.id !== undefined) {
-      this.driver.put(this, this.toJSON(), callback);
+      console.log(this);
+      this.driver.put(this, this.toJSON(), {}, callback);
     } else {
       this.driver.post(this, this.toJSON(), callback);
     }

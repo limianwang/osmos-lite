@@ -38,7 +38,7 @@ var schema = new Schema(
 
 schema.primaryKey = '_id';
 
-describe('The MongoDB driver', function() {
+xdescribe('The MongoDB driver', function() {
 
   before(function(done) {
     MongoClient.connect('mongodb://localhost:27017/osmos', function(err, db) {

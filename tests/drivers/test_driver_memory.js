@@ -4,12 +4,16 @@ var Osmos = require('../../lib');
 var Driver = Osmos.drivers.Memory;
 var Model = require('../mocks/simplemodel');
 
-var expect = require('chai').expect;
+var chai = require('chai');
+var expect = chai.expect;
+
 var async = require('async');
 
 Model.driver = new Driver();
 
-describe('The memory driver', function() {
+chai.config.includeStack = true;
+
+xdescribe('The memory driver', function() {
 
   it('should support creating a new document', function(done) {
     var obj = new Model({ datum : 123 });

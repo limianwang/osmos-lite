@@ -67,7 +67,7 @@ function createIndices(schema, callback) {
   return data;
 }
 
-describe('The ElasticSearch driver', function() {
+xdescribe('The ElasticSearch driver', function() {
 
   var driver;
   before(function(done) {
