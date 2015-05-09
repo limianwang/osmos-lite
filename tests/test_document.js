@@ -138,17 +138,19 @@ describe('The Document class', function() {
 
   it('should catch error when attempting to update without updateableProperties', function(done) {
     var model = new Model('TestModel', schema, '', 'memory');
-    model.create(function(err, doc) {
+    model.create().then(function(doc) {
       doc.update({ a: 'b' }, function(err) {
         expect(err).to.exist;
 
         done();
       });
+    }).catch(function(err) {
+      done(err);
     });
   });
 
   it('should allow writing to properly declared fields', function(done) {
-    model.create(function(err, doc) {
+    model.create().then(function(doc) {
       expect(doc).to.be.an('object');
       expect(doc.constructor.name).to.equal('OsmosDataStoreDocument');
 
@@ -163,7 +165,7 @@ describe('The Document class', function() {
   });
 
   it('should refuse writing to a non-existing field', function(done) {
-    model.create(function(err, doc) {
+    model.create().then(function(doc) {
       expect(doc).to.be.an('object');
       expect(doc.constructor.name).to.equal('OsmosDataStoreDocument');
 
@@ -180,7 +182,7 @@ describe('The Document class', function() {
 
   it('should allow reading from a declared field', function(done) {
     function test() {
-      model.create(function(err, doc) {
+      model.create().then(function(doc) {
         doc.name = 'marco';
 
         expect(doc.name).to.equal('marco');
@@ -192,41 +194,8 @@ describe('The Document class', function() {
     expect(test).not.to.throw(Osmos.Error);
   });
 
-  it('should refuse reading from an unknown field in debug mode', function(done) {
-    var original = Document.debug;
-
-    Document.debug = true;
-
-    model.create(function(err, doc) {
-      expect(err).not.to.exist;
-      expect(doc).to.be.an('object');
-
-      expect(function() { doc.unknownfielddoesntexist; }).to.throw();
-
-      Document.debug = original;
-
-      done();
-    });
-  });
-
-  it('should not refuse reading from an unknown field in production mode', function(done) {
-    var original = Document.debug;
-
-    Document.debug = false;
-
-    model.create(function(err, doc) {
-      expect(err).not.to.exist;
-      expect(doc).to.be.an('object');
-
-      var x = doc.unknownfielddoesntexist;
-
-      Document.debug = original;
-      done();
-    });
-  });
-
   it('should perform transformations when reading and writing data', function(done) {
-    model.create(function(err, doc) {
+    model.create().then(function(doc) {
       doc.val = 'one';
 
       expect(doc.__raw__.val).to.equal(1);
@@ -237,7 +206,7 @@ describe('The Document class', function() {
   });
 
   it('should allow saving a document', function(done) {
-    model.create(function(err, doc) {
+    model.create().then(function(doc) {
       doc.name = 'marco';
       doc.val = 'one';
       expect(doc.complex).to.be.an('object').to.deep.equal({});
@@ -253,7 +222,7 @@ describe('The Document class', function() {
   });
 
   it('should not require a callback when saving a document', function(done) {
-    model.create(function(err, doc) {
+    model.create().then(function(doc) {
       doc.name = 'marco';
       doc.val = 'one';
 
@@ -270,17 +239,17 @@ describe('The Document class', function() {
     async.waterfall(
       [
         function(callback) {
-          model.create(callback);
-        },
+          model.create().then(function(doc) {
+            doc.name = 'marco';
+            doc.val = 'one';
 
-        function(doc, callback) {
-          doc.name = 'marco';
-          doc.val = 'one';
+            doc.save(function(err) {
+              expect(err).to.not.be.ok;
 
-          doc.save(function(err) {
-            expect(err).to.not.be.ok;
-
-            callback(null, doc.primaryKey);
+              callback(null, doc.primaryKey);
+            });
+          }).catch(function(err) {
+            callback(err);
           });
         },
 
@@ -312,7 +281,7 @@ describe('The Document class', function() {
   });
 
   it('should call the global validator before saving', function(done) {
-    model.create(function(err, doc) {
+    model.create().then(function(doc) {
       doc.name = 'fail';
       doc.val = 'one';
 
@@ -329,17 +298,15 @@ describe('The Document class', function() {
     async.waterfall(
       [
         function(callback) {
-          model.create(callback);
-        },
+          model.create().then(function(doc) {
+            doc.name = 'marco';
+            doc.val = 'one';
 
-        function(doc, callback) {
-          doc.name = 'marco';
-          doc.val = 'one';
+            doc.save(function(err) {
+              expect(err).to.not.be.ok;
 
-          doc.save(function(err) {
-            expect(err).to.not.be.ok;
-
-            callback(err, doc);
+              callback(err, doc);
+            });
           });
         },
 
@@ -368,9 +335,7 @@ describe('The Document class', function() {
   });
 
   it('should throw error when no toJSON specified', function(done) {
-    model.create(function(err, doc) {
-      expect(err).to.not.exist;
-
+    model.create().then(function(doc) {
       function wrap() {
         return doc.toJSON();
       }
@@ -381,9 +346,7 @@ describe('The Document class', function() {
   });
 
   it('should be able to inspect', function(done) {
-    model.create(function(err, doc) {
-      expect(err).to.not.exist;
-
+    model.create().then(function(doc) {
       var result = doc.inspect();
 
       expect(result).to.exist;
@@ -393,8 +356,7 @@ describe('The Document class', function() {
   });
 
   it('should support extension through the instanceMethods property', function(done) {
-    model.create(function(err, doc) {
-      expect(err).not.to.be.ok;
+    model.create().then(function(doc) {
       expect(doc).to.be.an('object');
 
       expect(doc.testFunction).to.be.a('function');
@@ -405,8 +367,7 @@ describe('The Document class', function() {
   });
 
   it('should support extension through the instanceProperties property', function(done) {
-    model.create(function(err, doc) {
-      expect(err).not.to.be.ok;
+    model.create().then(function(doc) {
       expect(doc).to.be.an('object');
 
       function f() {
@@ -421,9 +382,7 @@ describe('The Document class', function() {
   });
 
   it('should fail when required field is missing during updates', function(done) {
-    model.create(function(err, doc) {
-      expect(err).to.not.exist;
-
+    model.create().then(function(doc) {
       doc.name = 'tester';
 
       doc.update({ name : '' }, function(err) {
@@ -439,8 +398,7 @@ describe('The Document class', function() {
   it('should support updating a document then changing to empty value', function(done) {
     async.waterfall([
       function(next) {
-        model.create(function(err, doc) {
-          expect(err).to.not.exist;
+        model.create().then(function(doc) {
           expect(doc).to.be.an('object');
           next(null, doc);
         });
@@ -477,8 +435,7 @@ describe('The Document class', function() {
   });
 
   it('should be able to set to null after being defined', function(done) {
-    model.create(function(err, doc) {
-      expect(err).to.not.be.ok;
+    model.create().then(function(doc) {
       expect(doc).to.be.an('object');
       doc.nullable = 'some_test';
       doc.name = 'Marco';
@@ -493,9 +450,7 @@ describe('The Document class', function() {
   });
 
   it('should be able to set to 0' , function(done) {
-    model.create(function(err, doc) {
-      expect(err).to.not.be.ok;
-
+    model.create().then(function(doc) {
       expect(doc).to.be.an('object');
       doc.age = 10;
       doc.name = 'Marco';
@@ -511,12 +466,10 @@ describe('The Document class', function() {
   });
 
   it('should support updating a document from a JSON payload', function(done) {
-    model.create(function(err, doc) {
-      expect(err).not.to.be.ok;
+    model.create().then(function(doc) {
       expect(doc).to.be.an('object');
 
       doc.update({name : 'Marco'}, function(err) {
-        expect(err).not.to.be.ok;
         expect(doc.name).to.equal('Marco');
 
         done();
@@ -525,8 +478,7 @@ describe('The Document class', function() {
   });
 
   it('should support update hooks when updating a document', function(done) {
-    model.create(function(err, doc) {
-      expect(err).not.to.be.ok;
+    model.create().then(function(doc) {
       expect(doc).to.be.an('object');
 
       doc.update({name : 'Marco'}, function(err) {
@@ -541,7 +493,7 @@ describe('The Document class', function() {
 
   it('should support setting a value to undefined', function(done) {
     function test() {
-      model.create(function(err, doc) {
+      model.create().then(function(doc) {
         doc.name = undefined;
 
         done();
@@ -588,8 +540,7 @@ describe('The Document class', function() {
       x = x;
     }
 
-    localModel.create(function(err, doc) {
-      expect(err).not.to.be.ok;
+    localModel.create().then(function(doc) {
       expect(doc).to.be.an('object');
 
       expect(test.bind(this, doc)).not.to.throw(Error);
@@ -602,7 +553,7 @@ describe('The Document class', function() {
     var original = Document.debug;
     Document.debug = false;
 
-    model.create(function(err, doc) {
+    model.create().then(function(doc) {
       doc.name = 'Marco';
 
       expect(doc.name).to.equal('Marco');
@@ -620,7 +571,7 @@ describe('The Document class', function() {
   });
 
   it('should support clearing a document', function(done) {
-    model.create(function(err, doc) {
+    model.create().then(function(doc) {
       doc.primaryKey = 'Test';
       doc.name = 'marco';
       doc.age = 12;
@@ -635,7 +586,7 @@ describe('The Document class', function() {
   });
 
   it('should support wiping the primary key when clearing a document', function(done) {
-    model.create(function(err, doc) {
+    model.create().then(function(doc) {
       doc.primaryKey = 'Test';
       doc.name = 'marco';
       doc.age = 12;
@@ -650,7 +601,7 @@ describe('The Document class', function() {
   });
 
   it('should support setting empty values in an update (#8)', function(done) {
-    model.create(function(err, doc) {
+    model.create().then(function(doc) {
       doc.name = 'Marco';
 
       doc.update({ name : undefined }, function(err) {
@@ -663,7 +614,7 @@ describe('The Document class', function() {
   });
 
   it('should support a value called `data`', function(done) {
-    model.create(function(err, doc) {
+    model.create().then(function(doc) {
       doc.data = 'Test';
 
       expect(doc.__raw__.data).to.equal('Test');
@@ -673,8 +624,7 @@ describe('The Document class', function() {
   });
 
   it('should only update values that exist in a payload without overriding existing properties that have not been set', function(done) {
-    model.create(function(err, doc) {
-      expect(err).not.to.be.ok;
+    model.create().then(function(doc) {
       expect(doc).to.be.an('object');
 
       doc.name = 'Marco';
@@ -689,8 +639,7 @@ describe('The Document class', function() {
   });
 
   it('should properly support updates to arrays', function(done) {
-     model.create(function(err, doc) {
-      expect(err).not.to.be.ok;
+     model.create().then(function(doc) {
       expect(doc).to.be.an('object');
 
       // This test verifies that the data stored in an array inside the document
@@ -719,5 +668,4 @@ describe('The Document class', function() {
       });
      });
   });
-
 });

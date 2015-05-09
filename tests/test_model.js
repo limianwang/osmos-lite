@@ -83,8 +83,7 @@ describe('The Model class', function() {
   });
 
   it('should allow the creation of new documents', function(done) {
-    model.create(function(err, doc) {
-      expect(err).not.to.be.ok; // jshint ignore:line
+    model.create().then(function(doc) {
       expect(doc).to.be.an('object');
 
       done();
@@ -128,12 +127,10 @@ describe('The Model class', function() {
     async.waterfall(
       [
         function(cb) {
-          model.create(cb);
-        },
-
-        function(doc, cb) {
-          doc.val = 'marcot@tabini.ca';
-          doc.save(cb);
+          model.create().then(function(doc) {
+            doc.val = 'marcot@tabini.ca';
+            doc.save(cb);
+          });
         },
 
         function(doc, cb) {
