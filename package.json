@@ -23,9 +23,7 @@
     "odm",
     "data",
     "nosql",
-    "data mapping",
-    "mongodb",
-    "elasticsearch"
+    "data mapping"
   ],
   "engines": {
     "node": ">=0.10.0"
