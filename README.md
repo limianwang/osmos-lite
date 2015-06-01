@@ -19,8 +19,6 @@ Osmos is a object data mapper (ODM) designed to bridge Node.js apps with any dat
 
 - **Don't replace developer knowledge.** Osmos is designed to be a generic ODM that will work well with just about any data store that supports CRUD operations. However, it is _not_ meant to be an abstraction layer; instead, it assumes that developers know best, and provides only a simple interface that can be easily extended through plugins.
 
-The current version of Osmos supports [MongoDB](http://www.mongodb.org), [MySQL](http://mysql.org) and [ElasticSearch](http://www.elasticsearch.org), but it should be easy to [write drivers](docs/drivers/index.md) for just about any data store—and contributions are warmly welcome! The library also includes a simple, memory-based data store that can be used for testing purposes.
-
 ## Installation
 
 ```
