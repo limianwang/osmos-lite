@@ -8,21 +8,6 @@ Underneath, however, a document enforces a few extra rules, the most important o
 
 Consider the simple scenario in which you write some new code where you mistype the name of a field in your document. Because JavaScript normally allows you to add properties to an object at runtime, that mistake may be very hard to track down—or, worse, it may go unnoticed and cause the loss of data. If you use Osmos, on the other way, the document will notify immediately—in the form of a runtime exception (which will, hopefully, be caught by your unit test coverage).
 
-## Debug vs. Production mode
-
-In debug mode (which is on by default), the Document class enforces read/write constraints by using an ECMA feature called [Direct Proxies](http://wiki.ecmascript.org/doku.php?id=harmony:direct_proxies); this allows Osmos to wrap documents around a “proxy” object that can intercept all attempts to access a property and throw an error when that property is not part of the document.
-
-The downside of this approach is that proxies slow things down and tend to make a mess of Node's memory heap. Therefore, you can turn them off in production by setting the `debug` property of the `Document` class to `false`:
-
-```javascript
-if (config.production) // `config` is an object your app defines
-  // Turn off debugging mode
-  Osmos.Document.debug = false;
-}
-```
-
-When `debug` is `false`, instead of using Direct Proxies, Osmos gives you direct access to the document objects, which, however, are sealed using `Object.seal`.
-
 ## Reading and writing properties
 
 You read and write a document properties the way you normally would, and the same applies to subdocuments and arrays:
@@ -49,6 +34,12 @@ Validation occurs in two phases. As soon as you try to write a value into a fiel
 Additionally, when you attempt to save a document, its contents are validated against the schema. If the validation fails, the data is not written to the underlying raw store; instead, the errors are returned to the `save` callback:
 
 ```javascript
+doc.save().then(function() {}).catch(function(err) {
+  // error is caught here.
+});
+
+// OR
+
 doc.save(function(err) {
   if (err) // report err here
 });
@@ -89,13 +80,13 @@ It's not uncommon to need to perform additional operations as part of an update.
 The data associated with a document is not saved to the backing store implicitly; you need to call the document's `save` method:
 
     document.save(callback(err, document));
-    
+
 When `save()` is executed, it first calls up the underlying schema's `validate()` method, and then attempts to write the data to the backing store. If the document is new and a primary key is not set, Osmos calls the `post` method of the underlying driver and makes the new primary key available. Otherwise, it calls `update()` on the driver.
 
 Note that, as of version 1.0.3, `save()` no longer requires a callback; if you don't care about finding out when the save operation is completed (or whether it reports any errors), you can just avoid passing a callback.
 
 As of version 1.2.0, save passes a reference to the document itself as the second argument of its callback.
-    
+
 ## Deleting a document
 
 The document class implements a `delete` method that can be used to remove the current document from the backing store. This method only works if the document's model has a primary key.
@@ -120,7 +111,7 @@ To accommodate situations in which it is impossible to predict the exact schema 
 
 ## Nested subdocuments and arrays
 
-You should be able to nest subdocuments arbitrarily, and even use them inside arrays. 
+You should be able to nest subdocuments arbitrarily, and even use them inside arrays.
 
 ## Avoiding naming conflicts
 
@@ -136,7 +127,7 @@ The problem with this approach is that it's all too easy to accidentally expose 
 
 Because Osmos uses proxying to strictly marshal access to documents, they cannot be extended through traditional means, like simply adding a new method to their prototype.
 
-Instead, the Model object provides two hashes, `instanceMethods` and `instanceProperties` that can be used to add methods and virtual properties to every object that is instantiated by a particular model. 
+Instead, the Model object provides two hashes, `instanceMethods` and `instanceProperties` that can be used to add methods and virtual properties to every object that is instantiated by a particular model.
 
 For example:
 
@@ -151,7 +142,7 @@ model.instanceProperties.age = {
     get : function getAge() {
         return this.age;
     },
-    
+
     set : function setAge(value) {
         this.age = 10;
     }
@@ -160,7 +151,7 @@ model.instanceProperties.age = {
 model.create(err, doc) {
     doc.outputData(); // will output the contents of the document
     doc.age = 20;
-    
+
     console.log(doc.age);
 };
 ```

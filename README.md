@@ -15,8 +15,6 @@ Osmos is a object data mapper (ODM) designed to bridge Node.js apps with any dat
 
 - **Stay out of the way.** Osmos is intuitive and largely transparent to developers, and, most of all, doesn't attempt to be “smarter” than its human masters. It can also be easily mocked away for testing without having to write specialized code.
 
-- **Fail early, and fail loudly.** In debug mode, Osmos uses [Direct Proxies](http://wiki.ecmascript.org/doku.php?id=harmony:direct_proxies) to trap access to a document; if attempts are made to read or write non-existent fields, an error is immediately thrown to help you and pinpoint common mistakes before they end up in production.
-
 - **Don't replace developer knowledge.** Osmos is designed to be a generic ODM that will work well with just about any data store that supports CRUD operations. However, it is _not_ meant to be an abstraction layer; instead, it assumes that developers know best, and provides only a simple interface that can be easily extended through plugins.
 
 ## Installation
@@ -52,14 +50,16 @@ Contributions are always welcomed via pull requests, and they should always have
 ## Contributors
 
 ```
- project  : osmos
- repo age : 1 year, 11 months
- active   : 117 days
- commits  : 336
- files    : 48
+$ git summary
+
+ project  : osmos-lite
+ repo age : 2 years
+ active   : 128 days
+ commits  : 363
+ files    : 42
  authors  :
-   182	Marco Tabini          54.2%
-   150	Limian Wang           44.6%
-     3	Yehezkiel Syamsuhadi  0.9%
+   182	Marco Tabini          50.1%
+   177	Limian Wang           48.8%
+     3	Yehezkiel Syamsuhadi  0.8%
      1	Daniel Prata          0.3%
 ```
