@@ -7,15 +7,15 @@
     "test": "make test"
   },
   "dependencies": {
-    "async": "^1.0.0",
-    "bluebird": "^2.9.26",
+    "async": "^1.2.0",
+    "bluebird": "^2.9.27",
     "native-or-bluebird": "^1.2.0",
     "node-helper-utilities": "^1.7.5",
-    "request": "^2.54.0",
+    "request": "^2.57.0",
     "tv4": "^1.1.9"
   },
   "devDependencies": {
-    "chai": "^2.3.0",
+    "chai": "^3.0.0",
     "istanbul": "^0.3.14",
     "mocha": "^2.2.5"
   },
