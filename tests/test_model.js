@@ -103,7 +103,7 @@ describe('The Model class', function() {
     var doc = {};
 
     expect(doc).to.not.have.property('primaryKey');
-    model._delete(doc, function(err) {
+    model._delete(doc).catch(function(err) {
       expect(err).to.exist;
       done();
     });
@@ -124,41 +124,39 @@ describe('The Model class', function() {
 
     var primaryKey;
 
-    async.waterfall(
-      [
-        function(cb) {
-          model.create().then(function(doc) {
-            doc.val = 'marcot@tabini.ca';
-            doc.save(cb);
-          });
-        },
+    async.waterfall([
+      function(cb) {
+        model.create().then(function(doc) {
+          doc.val = 'marcot@tabini.ca';
+          doc.save(cb);
+        });
+      },
 
-        function(doc, cb) {
-          primaryKey = doc.primaryKey;
-          model.getOrCreate(doc.primaryKey, cb);
-        },
+      function(doc, cb) {
+        primaryKey = doc.primaryKey;
+        model.getOrCreate(doc.primaryKey, cb);
+      },
 
-        function(doc, created, cb) {
-          expect(created).to.be.false;
-          expect(doc).to.be.an('object');
-          expect(doc.primaryKey).to.equal(primaryKey);
+      function(doc, created, cb) {
+        expect(created).to.be.false;
+        expect(doc).to.be.an('object');
+        expect(doc.primaryKey).to.equal(primaryKey);
 
-          model.getOrCreate('completelyRandom', cb);
-        },
+        model.getOrCreate('completelyRandom', cb);
+      },
 
-        function(doc, created, cb) {
-          expect(created).to.be.true;
-          expect(doc).to.be.an('object');
-          expect(doc.primaryKey).to.equal('completelyRandom');
-          expect(doc).to.have.property('meta').to.deep.equal({});
-          expect(doc).to.have.property('is_valid').to.be.equal(false);
+      function(doc, created, cb) {
+        expect(created).to.be.true;
+        expect(doc).to.be.an('object');
+        expect(doc.primaryKey).to.equal('completelyRandom');
+        expect(doc).to.have.property('meta').to.deep.equal({});
+        expect(doc).to.have.property('is_valid').to.be.equal(false);
 
-          cb(null);
-        }
-      ],
-
-      done
-    );
+        cb(null);
+      }
+    ], function() {
+      done();
+    });
   });
 
   it('should support creation from immediate data', function(done) {
