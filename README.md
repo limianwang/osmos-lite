@@ -23,8 +23,6 @@ Osmos is a object data mapper (ODM) designed to bridge Node.js apps with any dat
 npm install osmos-lite --save
 ```
 
-Note that, in debug mode (which is the default mode), Osmos uses Direct Proxies in order to work. Therefore, you must run your instance of node with the `--harmony-proxies` command-line switch. See the [docs](docs/document.md) for information on how to turn off debug mode in production for extra performance.
-
 ## Usage
 
 Using Osmos requires the following steps:
@@ -53,13 +51,13 @@ Contributions are always welcomed via pull requests, and they should always have
 $ git summary
 
  project  : osmos-lite
- repo age : 2 years
- active   : 128 days
- commits  : 363
- files    : 42
+ repo age : 2 years, 1 month
+ active   : 131 days
+ commits  : 371
+ files    : 41
  authors  :
-   182	Marco Tabini          50.1%
-   177	Limian Wang           48.8%
+   185	Limian Wang           49.9%
+   182	Marco Tabini          49.1%
      3	Yehezkiel Syamsuhadi  0.8%
      1	Daniel Prata          0.3%
 ```
