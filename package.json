@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "async": "^1.2.0",
-    "bluebird": "^2.9.27",
+    "bluebird": "^2.9.33",
     "native-or-bluebird": "^1.2.0",
     "node-helper-utilities": "^1.7.5",
     "request": "^2.57.0",
