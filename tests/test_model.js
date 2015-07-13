@@ -1,6 +1,5 @@
 'use strict';
 
-var async = require('async');
 var expect = require('chai').expect;
 
 var Osmos = require('../lib');
@@ -19,37 +18,34 @@ describe('The Model class', function() {
 
     Osmos.drivers.register('memory', db);
 
-    schema = new Schema(
-      'test',
-      {
-        type: 'object',
-        properties: {
-          _primaryKey: {
-            type: 'string',
-          },
+    schema = new Schema('test', {
+      type: 'object',
+      properties: {
+        _primaryKey: {
+          type: 'string',
+        },
 
-          val: {
-            type: 'string',
-            format: 'email'
-          },
+        val: {
+          type: 'string',
+          format: 'email'
+        },
 
-          meta: {
-            type: 'object',
-            default: {}
-          },
+        meta: {
+          type: 'object',
+          default: {}
+        },
 
-          is_valid: {
-            type: 'boolean',
-            default: false
-          },
+        is_valid: {
+          type: 'boolean',
+          default: false
+        },
 
-          environment: {
-            enum: ['a', null],
-            default: null
-          }
+        environment: {
+          enum: ['a', null],
+          default: null
         }
       }
-    );
+    });
 
     schema.primaryKey = '_primaryKey';
 
@@ -124,39 +120,37 @@ describe('The Model class', function() {
 
     var primaryKey;
 
-    async.waterfall([
-      function(cb) {
-        model.create().then(function(doc) {
-          doc.val = 'marcot@tabini.ca';
-          doc.save(cb);
-        });
-      },
-
-      function(doc, cb) {
+    model
+      .create()
+      .then(function(doc) {
+        doc.val = 'marcot@tabini.ca';
+        return doc.save();
+      })
+      .then(function(doc) {
         primaryKey = doc.primaryKey;
-        model.getOrCreate(doc.primaryKey, cb);
-      },
-
-      function(doc, created, cb) {
+        return model.getOrCreate(doc.primaryKey);
+      })
+      .spread(function(doc, created) {
         expect(created).to.be.false;
         expect(doc).to.be.an('object');
-        expect(doc.primaryKey).to.equal(primaryKey);
+        expect(doc.primaryKey).to.be.equal(primaryKey);
 
-        model.getOrCreate('completelyRandom', cb);
-      },
-
-      function(doc, created, cb) {
+        return model.getOrCreate('completelyRandom');
+      })
+      .spread(function(doc, created) {
         expect(created).to.be.true;
         expect(doc).to.be.an('object');
-        expect(doc.primaryKey).to.equal('completelyRandom');
+        expect(doc.primaryKey).to.be.equal('completelyRandom');
         expect(doc).to.have.property('meta').to.deep.equal({});
-        expect(doc).to.have.property('is_valid').to.be.equal(false);
+        expect(doc).to.have.property('is_valid').to.be.false;
 
-        cb(null);
-      }
-    ], function() {
-      done();
-    });
+        done();
+      })
+      .catch(function(err) {
+        expect(err).to.not.exist;
+
+        done();
+      });
   });
 
   it('should support creation from immediate data', function(done) {
@@ -185,6 +179,6 @@ describe('The Model class', function() {
       expect(count).to.be.equal(1);
       done();
     });
-
   });
+
 });
