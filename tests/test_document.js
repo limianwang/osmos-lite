@@ -1,6 +1,5 @@
 'use strict';
 
-var async = require('async');
 var chai = require('chai');
 var expect = chai.expect;
 
@@ -236,30 +235,16 @@ describe('The Document class', function() {
   });
 
   it('should actually save a document', function(done) {
-    async.waterfall(
-      [
-        function(callback) {
-          model.create().then(function(doc) {
-            doc.name = 'marco';
-            doc.val = 'one';
+    model.create()
+      .then(function(doc) {
+        doc.name = 'marco';
+        doc.val = 'one';
 
-            doc.save(function(err) {
-              expect(err).to.not.be.ok;
-
-              callback(null, doc.primaryKey);
-            });
-          }).catch(function(err) {
-            callback(err);
-          });
-        },
-
-        function(primaryKey, callback) {
-          model.get(primaryKey, function(err, doc) {
-            callback(err, doc, primaryKey);
-          });
-        },
-
-        function(doc, primaryKey, callback) {
+        return doc.save();
+      })
+      .then(function(doc) {
+        var primaryKey = doc.primaryKey;
+        return model.get(primaryKey).then(function(doc) {
           expect(doc).to.be.an('object');
           expect(doc.constructor.name).to.equal('OsmosDataStoreDocument');
 
@@ -272,12 +257,14 @@ describe('The Document class', function() {
           expect(doc.primaryKey).to.be.a('string');
           expect(doc.primaryKey).to.equal(primaryKey);
 
-          callback(null);
-        }
-      ],
+          done();
+        });
+      })
+      .catch(function(err) {
+        expect(err).to.not.exist;
 
-      done
-    );
+        done();
+      });
   });
 
   it('should call the global validator before saving', function(done) {
@@ -295,43 +282,29 @@ describe('The Document class', function() {
   });
 
   it('should properly delete a document', function(done) {
-    async.waterfall(
-      [
-        function(callback) {
-          model.create().then(function(doc) {
-            doc.name = 'marco';
-            doc.val = 'one';
+    model
+      .create()
+      .then(function(doc) {
+        doc.name = 'marco';
+        doc.val = 'one';
 
-            doc.save(function(err) {
-              expect(err).to.not.be.ok;
-
-              callback(err, doc);
-            });
-          });
-        },
-
-        function(doc, callback) {
-          doc.del(function(err) {
-            callback(err, doc.primaryKey);
-          });
-        },
-
-        function(primaryKey, callback) {
-          model.get(primaryKey, function(err, doc) {
-            expect(err).to.not.be.ok;
-            expect(doc).to.equal(undefined);
-
-            callback(null);
-          });
-        }
-      ],
-
-      function(err) {
-        expect(err).to.not.be.ok;
+        return doc.save();
+      })
+      .then(function(doc) {
+        return doc.del().then(function() {
+          return model.get(doc.primaryKey);
+        });
+      })
+      .then(function(doc) {
+        expect(doc).to.be.undefined;
 
         done();
-      }
-    );
+      })
+      .catch(function(err) {
+        expect(err).to.not.exist;
+
+        done();
+      });
   });
 
   it('should throw error when no toJSON specified', function(done) {
@@ -396,42 +369,37 @@ describe('The Document class', function() {
   });
 
   it('should support updating a document then changing to empty value', function(done) {
-    async.waterfall([
-      function(next) {
-        model.create().then(function(doc) {
-          expect(doc).to.be.an('object');
-          next(null, doc);
-        });
-      },
-      function(doc, next) {
+    model
+      .create()
+      .then(function(doc) {
+        expect(doc).to.be.an('object');
+
         doc.name = 'tester';
         doc.val = 'one';
         doc.email = 'test@test.ca';
 
-        doc.save(function(err, doc) {
-          expect(err).to.not.exist;
-          expect(doc).to.be.an('object').to.have.property('name').to.be.equal('tester');
-          next();
-        });
-      },
-      function(next) {
-        model.findOne({ name : 'tester' }, function(err, doc) {
-          expect(err).to.not.exist;
-          doc.update({ email: undefined }, function(err) {
-            expect(err).to.not.exist;
+        return doc.save();
+      })
+      .then(function(doc) {
+        expect(doc).to.have.property('name').to.be.equal('tester');
 
-            doc.save(function(err, doc) {
-              expect(err).to.not.exist;
-
-              expect(doc.email).to.be.undefined;
-              next();
-            });
+        return model.findOne( { name: 'tester' });
+      })
+      .then(function(doc) {
+        return doc.update({ email: undefined })
+          .then(function() {
+            return doc.save();
           });
-        });
-      }
-    ], function() {
-      done();
-    });
+      })
+      .then(function(doc) {
+        expect(doc).to.have.property('email').to.be.undefined;
+        done();
+      })
+      .catch(function(err) {
+        expect(err).to.not.exist;
+
+        done();
+      });
   });
 
   it('should be able to set to null after being defined', function(done) {
