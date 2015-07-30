@@ -7,16 +7,16 @@
     "test": "make test"
   },
   "dependencies": {
-    "async": "^1.2.0",
-    "bluebird": "^2.9.33",
+    "async": "^1.4.0",
+    "bluebird": "^2.9.34",
     "native-or-bluebird": "^1.2.0",
-    "node-helper-utilities": "^1.7.5",
-    "request": "^2.57.0",
-    "tv4": "^1.1.9"
+    "node-helper-utilities": "^2.0.0",
+    "request": "^2.60.0",
+    "tv4": "^1.1.12"
   },
   "devDependencies": {
-    "chai": "^3.0.0",
-    "istanbul": "^0.3.14",
+    "chai": "^3.2.0",
+    "istanbul": "^0.3.17",
     "mocha": "^2.2.5"
   },
   "keywords": [
