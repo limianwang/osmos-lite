@@ -9,6 +9,7 @@
   "dependencies": {
     "async": "^1.4.0",
     "bluebird": "^2.9.34",
+    "lodash": "^3.10.1",
     "native-or-bluebird": "^1.2.0",
     "node-helper-utilities": "^2.0.0",
     "request": "^2.60.0",
