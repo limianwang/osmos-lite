@@ -3,7 +3,9 @@ node_js:
   - "0.10"
   - "0.11"
   - "0.12"
-  - "iojs"
+  - "iojs-v1"
+  - "iojs-v2"
+  - "iojs-v3"
 script: make test-cov
 after_script:
   - npm install coveralls && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
