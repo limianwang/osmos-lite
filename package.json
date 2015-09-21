@@ -8,17 +8,17 @@
   },
   "dependencies": {
     "async": "^1.4.0",
-    "bluebird": "^2.9.34",
+    "bluebird": "^2.10.0",
     "lodash": "^3.10.1",
     "native-or-bluebird": "^1.2.0",
     "node-helper-utilities": "^2.0.0",
-    "request": "^2.60.0",
-    "tv4": "^1.1.12"
+    "request": "^2.62.0",
+    "tv4": "^1.2.7"
   },
   "devDependencies": {
     "chai": "^3.2.0",
-    "istanbul": "^0.3.17",
-    "mocha": "^2.2.5"
+    "istanbul": "^0.3.20",
+    "mocha": "^2.3.3"
   },
   "keywords": [
     "odm",
